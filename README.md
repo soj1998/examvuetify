@@ -22,12 +22,17 @@ exam vuetify
 ```
 #  2.再搞vue
 ```
-（1）运行vscode 打开terminal 运行命令 vue init webpack mycode1。
-	如果直接pull，要注意安装webpack3.6版本， npm install --save-dev webpack@3.6.0。
+（1）运行vscode 打开terminal 运行命令 vue init webpack mycode1。	
+（2）如果直接pull，要注意安装webpack3.6版本， npm install --save-dev webpack@3.6.0。
+	先重新搞 .gitignore
+	git rm -r --cached .
+	git add .
+	git commit -m 'update .gitignore'
 	package-lock.json要记得加入到gitignore
 （2）把mycode1文件加下内容，复制到上面git生成的文件夹mycode下，注意改名readme.md，让两个都保留。
-（3）用vscode带的工具，暂存提交，提交按钮上方输入message
-（4）用git push --force mycode master 推送到github
+（3）git add. 意思是将当前目录下的所有文件再add到index，git commit -m 'ddd'完成提交
+（4）也可以用vscode带的工具，暂存提交，提交按钮上方输入message
+（5）用git push --force mycode master 推送到github
 ```
 # 3.搞vuetify
 ```
