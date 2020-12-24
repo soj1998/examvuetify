@@ -2,18 +2,22 @@
 exam vuetify
 
 
-1.ÏÈ¸ãgithub
-£¨1£©github²Ö¿â£¬Ãû×Ö¿ÉÒÔÆğÓë±¾µØ²»Ò»ÖÂ£¬µ«½¨ÒéÆğÒ»ÖÂµÄÃû×Ö¡£Àı×ÓÈ¡Ãûmyrepo¡£
-£¨2£©±¾µØ´´½¨ÎÄ¼ş¼Ğ£¬È¡ºÃÃû×Ö£¨Àı×ÓÈ¡Ãûmycode£©£¬´ò¿ªÎÄ¼ş¼ş£¬Êó±êÓÒ¼üÔËĞĞgit bash¡£
-£¨3£©ÔËĞĞÃüÁî£º
+#1.å…ˆægithub
+#ï¼ˆ1ï¼‰githubä»“åº“ï¼Œåå­—å¯ä»¥èµ·ä¸æœ¬åœ°ä¸ä¸€è‡´ï¼Œä½†å»ºè®®èµ·ä¸€è‡´çš„åå­—ã€‚ä¾‹å­å–åmyrepoã€‚
+#ï¼ˆ2ï¼‰æœ¬åœ°åˆ›å»ºæ–‡ä»¶å¤¹ï¼Œå–å¥½åå­—ï¼ˆä¾‹å­å–åmycodeï¼‰ï¼Œæ‰“å¼€æ–‡ä»¶ä»¶ï¼Œé¼ æ ‡å³é”®è¿è¡Œgit bashã€‚
+ï¼ˆ3ï¼‰è¿è¡Œå‘½ä»¤ï¼š
 	A.git init
 	B.git config --global user.name "myname"
 	C.git config --global user.email "myname@mymail.com"
-	D.ssh-keygen -t rsa -C "myname@mymail.com"£¬ÃüÁîÖ´ĞĞÍê±Ï»á	Éú³ÉÒ»¸öÃûÎªid_rsa.pubµÄÎÄ¼ş¡£
-	E.´ò¿ªGitHubÉÏµÄmyrepo²Ö¿â£¬½øÈësetting£¬ÉèÖÃdeploy keys£¬½«		id_rsa.pubÖĞµÄÄÚÈİÕ³Ìù½øÈ¥¼´¿É¡£titleËæ±ãÉèÖÃ¡£
-	F.git remote add mycode git@github.com:myname/myrepo.git¡£
-	G.ssh -T git@github.com£¬ÌáÊ¾ÊäÈëyes£¬Ö»ÊäÈëy²»ĞĞ¡£
-	H.ÏÈ×§git pull mycode master£¬
-	ÔÙÍÆgit push --force mycode master
-2.ÔÙ¸ãvue
-£¨1£©
+	D.ssh-keygen -t rsa -C "myname@mymail.com"ï¼Œå‘½ä»¤æ‰§è¡Œå®Œæ¯•ä¼š	ç”Ÿæˆä¸€ä¸ªåä¸ºid_rsa.pubçš„æ–‡ä»¶ã€‚
+	E.æ‰“å¼€GitHubä¸Šçš„myrepoä»“åº“ï¼Œè¿›å…¥settingï¼Œè®¾ç½®deploy keysï¼Œå°†		id_rsa.pubä¸­çš„å†…å®¹ç²˜è´´è¿›å»å³å¯ã€‚titleéšä¾¿è®¾ç½®ã€‚
+	F.git remote add mycode git@github.com:myname/myrepo.gitã€‚
+	G.ssh -T git@github.comï¼Œæç¤ºè¾“å…¥yesï¼Œåªè¾“å…¥yä¸è¡Œã€‚
+	H.å…ˆæ‹½git pull mycode masterï¼Œ
+	ä¿®æ”¹README.mdï¼Œä¿å­˜å…³é—­ã€‚
+	git add README.md
+	git commit -m '1224'
+	å†æ¨git push --force mycode master
+2.å†ævue
+ï¼ˆ1ï¼‰è¿è¡Œvscode æ‰“å¼€terminal è¿è¡Œå‘½ä»¤ vue init webpack mycode1 
+ï¼ˆ2ï¼‰æŠŠmycode1æ–‡ä»¶åŠ ä¸‹å†…å®¹ å¤åˆ¶åˆ°ä¸Šé¢gitç”Ÿæˆçš„æ–‡ä»¶å¤¹mycodeä¸‹ï¼Œæ³¨æ„æ”¹åreadme.mdï¼Œè®©ä¸¤ä¸ªéƒ½ä¿ç•™ã€‚
