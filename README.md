@@ -1,20 +1,18 @@
 # examvuetify
 exam vuetify
 
-
 # 1.先搞github
-# （1）github仓库，名字可以起与本地不一致，但建议起一致的名字。例子取名myrepo。
-# （2）本地创建文件夹，取好名字（例子取名mycode），打开文件件，鼠标右键运行git bash。
-# （3）运行命令：
 ``` 
+  （1）github仓库，名字可以起与本地不一致，但建议起一致的名字。例子取名myrepo。
+  （2）本地创建文件夹，取好名字（例子取名mycode），打开文件件，鼠标右键运行git bash。
+  （3）运行命令：
 	A.git init 
 	B.git config --global user.name "myname" 
 	C.git config --global user.email "myname@mymail.com" 
 	D.ssh-keygen -t rsa -C "myname@mymail.com"，命令执行完毕会	生成一个名为id_rsa.pub的文件。
-```
-# （4）做好github的deploy设置。
-```
-	A.打开GitHub上的myrepo仓库，进入setting，设置deploy keys，将id_rsa.pub中的内容粘贴进去即可。title随便设置。
+   （4）做好github的deploy设置。
+	A.打开GitHub上的myrepo仓库，进入setting，设置deploy keys，将id_rsa.pub中的内容粘贴进去即可。
+	title随便设置。
 	B.git remote add mycode git@github.com:myname/myrepo.git。
 	C.ssh -T git@github.com，提示输入yes，只输入y不行。 	
 	D.先拽git pull mycode master，修改README.md，保存关闭。
@@ -23,10 +21,12 @@ exam vuetify
 	E.再推git push --force mycode master 
 ```
 #  2.再搞vue
-# （1）运行vscode 打开terminal 运行命令 vue init webpack mycode1 
-# （2）把mycode1文件加下内容，复制到上面git生成的文件夹mycode下，注意改名readme.md，让两个都保留。
-#  (3) 用vscode带的工具，暂存提交，提交按钮上方输入message
-# （4）用git push --force mycode master 推送到github
+```
+（1）运行vscode 打开terminal 运行命令 vue init webpack mycode1 
+（2）把mycode1文件加下内容，复制到上面git生成的文件夹mycode下，注意改名readme.md，让两个都保留。
+（3）用vscode带的工具，暂存提交，提交按钮上方输入message
+（4）用git push --force mycode master 推送到github
+```
 # 3.搞vuetify
 ```
 	（1）搞cdn模式 设置index.html
@@ -84,8 +84,8 @@ exam vuetify
 	安装特定版本npm install --save-dev compression-webpack-plugin@1.1.12
 	搞完后运行npm run dev测试
 	运行npm run build看看文件大小
+	上述都搞完 就可以编程序啦 引入axios 搞跨域访问
 ```
-# 上述都搞完 就可以编程序啦 引入axios 搞跨域访问
 # 4.搞axios
 ```
 	(1)首先是引入<script src="https://unpkg.com/axios/dist/axios.min.js"></script>,
@@ -98,6 +98,11 @@ exam vuetify
 	(4)见文件夹api，新建axios.js，在里面引入axios，做好跨域的设置		
 
 ```
-# 5.搞vuetify 设置tree 和页面显示
+# 5.mock
+```
+	（1）设好mock cdn引入<script src="http://mockjs.com/dist/mock.js"></script>
+	（2）搞好webpack external
+```
+# 6.搞vuetify 设置tree 和页面显示
 
 	

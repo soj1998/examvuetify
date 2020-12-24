@@ -34,6 +34,7 @@ module.exports = {
   externals : {
     'vue': 'Vue',
     'axios': 'axios',
+    'mock': 'Mock',
     'vuetify': "Vuetify"
   },
   resolve: {
