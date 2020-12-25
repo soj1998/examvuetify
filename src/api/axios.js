@@ -2,7 +2,7 @@ import axios, {AxiosInstance as router} from 'axios'
 import Qs from 'qs'
 
 var isPro = process.env.NODE_ENV === 'production' // process.env.NODE_ENV用于区分是生产环境还是开发环境
-axios.defaults.baseURL = isPro ? 'http://localhost:8080/houtai' : '/' // '/api'
+axios.defaults.baseURL = isPro ? 'http://localhost:8080/houtai' : 'http://localhost:8080/houtai' // '/api'
 // axios.defaults.baseURL = 'http://localhost:8080/houtai'
 // 请求超时时间
 axios.defaults.timeout = 5000
