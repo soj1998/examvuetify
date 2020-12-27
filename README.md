@@ -15,10 +15,10 @@ exam vuetify
 	title随便设置。
 	B.git remote add mycode git@github.com:myname/myrepo.git。
 	C.ssh -T git@github.com，提示输入yes，只输入y不行。 	
-	D.先拽git pull mycode master，修改README.md，保存关闭。
+	D.先拽git pull examvuetify master，修改README.md，保存关闭。
 	git add README.md
 	git commit -m '1224'
-	E.再推git push --force mycode master 
+	E.再推git push --force examvuetify master 
 ```
 #  2.再搞vue
 ```
@@ -111,5 +111,9 @@ exam vuetify
 	（2）搞好webpack external
 ```
 # 6.搞vuetify 设置tree 和页面显示
+```
+	（1）vuetify颜色显示，在App.vue里面rooterview要用v-app包围
+	（2）
+```
 
 	

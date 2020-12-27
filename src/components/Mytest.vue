@@ -20,11 +20,12 @@
           增值税
         </v-card-title>
         <v-treeview
+          :active.sync="active"
           open-on-click
           activatable
+          return-object
           color = "warning"
           :items = "t_items"
-          :load-children = "loadChildren"
         ></v-treeview>
         </v-card>
       </v-col>
@@ -37,10 +38,8 @@
           outlined
           tile
         >
-        <p class="text-left">
-          Morbi mattis ullamcorper velit. Donec orci lectus, aliquam ut, faucibus non, euismod id, nulla. Fusce convallis metus id felis luctus adipiscing. Aenean massa. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus.
-
-          Nulla consequat massa quis enim. Praesent venenatis metus at tortor pulvinar varius. Donec venenatis vulputate lorem. Phasellus accumsan cursus velit. Pellentesque ut neque.
+        <p class="text-left"  v-cloak>
+          {{pagecontent}}
         </p>
         <div class="purple darken-2 text-center">
           <span class="white--text">Lorem ipsum</span>
@@ -57,7 +56,9 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
+      pagecontent: '',
       active: [],
+      selection: [],
       categoryList: [],
       selected: {
         id: 0,
@@ -75,23 +76,25 @@ export default {
         }
       ],
       t_items: [],
-      t_canshu: 0
+      t_canshu: 0,
+      bianlinr: []
     }
   },
+  method: {},
   watch: {
-    active: {
-      deep: true,
-      handler () {
-        this.selected.id = this.active[0].id
-        const items = this.active[0]._name.split(',')
-        items.map(el => {
-          return {
-            text: el
-          }
-        })
-        this.selected.items = items
-        console.log(this.selected)
+    active (newValue) {
+      // console.log(this.active)
+      this.bianlinr = this.active[0].qbneirong
+      console.log(this.bianlinr)
+      let nr
+      for (var val of this.bianlinr) {
+        console.log(val + '\n')
       }
+      this.bianlinr.forEach(element => {
+        // nr = '<p>' + nr + element.neirong + '</p>'
+        nr = nr + element.neirong
+      })
+      this.pagecontent = nr
     }
   },
   mounted () {
@@ -125,6 +128,7 @@ export default {
                   'parentid': element.parentid,
                   'qbneirong': element.qbneirong
                 }
+                // console.log(element.id + element.btneirong)
                 json.children.push(json2)
               })
             })
@@ -157,5 +161,8 @@ li {
 }
 a {
   color: #42b983;
+}
+[v-cloak] {
+    display: none;
 }
 </style>
