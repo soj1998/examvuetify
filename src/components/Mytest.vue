@@ -21,6 +21,7 @@
         </v-card-title>
         <v-treeview
           :active.sync="active"
+          :open.sync="openids"
           open-on-click
           activatable
           return-object
@@ -58,12 +59,8 @@ export default {
       msg: 'Welcome to Your Vue.js App',
       pagecontent: '',
       active: [],
-      selection: [],
-      categoryList: [],
-      selected: {
-        id: 0,
-        items: []
-      },
+      openids: [],
+      shoucidian: false,
       items: [
         {
           id: 1,
@@ -75,69 +72,80 @@ export default {
           ]
         }
       ],
-      t_items: [],
-      t_canshu: 0,
-      bianlinr: []
+      t_items: []
     }
   },
-  method: {},
+  methods: {
+    getPageContent (parentid1, rootid1) {
+      let that = this
+      console.log('parentid1:' + parentid1 + ' rootid1:' + rootid1)
+      this.$post('atc/gettreeneirongbyid', {parentid: parentid1, rootid: rootid1})
+        .then(res => {
+          console.log('返回数')
+          res.sort((a, b) => {
+            return a.hangshu - b.hangshu
+          })
+          res.forEach(element => {
+            console.log('2.' + element.hangshu + that.pagecontent + element.qbneirong)
+          })
+        })
+        .catch(error => {
+          console.log('error' + error)
+        })
+    },
+    test () {
+      console.log('error')
+    }
+  },
   watch: {
-    active (newValue) {
-      // console.log(this.active)
-      this.bianlinr = this.active[0].qbneirong
-      console.log(this.bianlinr)
-      let nr
-      for (var val of this.bianlinr) {
-        console.log(val + '\n')
+    active (newValue, oldValue) {
+      if (!this.shoucidian && oldValue.length === 0 && this.active.length === 1) {
+        console.log('active-oldvalue为空 ' + newValue[0].name)
+        this.shoucidian = true
+        this.getPageContent(newValue[0].parentid, newValue[0].rootid)
       }
-      this.bianlinr.forEach(element => {
-        // nr = '<p>' + nr + element.neirong + '</p>'
-        nr = nr + element.neirong
-      })
-      this.pagecontent = nr
+      if (this.shoucidian && oldValue.length > 0 && newValue[0].name !== oldValue[0].name) {
+        console.log('active-中间刷了 ' + newValue[0].name)
+      }
+    },
+    openids (newValue) {
+      if (newValue.length > 0) {
+        console.log('openids' + newValue[newValue.length - 1].name)
+        this.active = []
+        this.active.push(newValue[newValue.length - 1].children[0])
+        // this.getPageContent(newValue[newValue.length - 1].rootid, newValue[newValue.length - 1].children[0].rootid)
+      }
     }
   },
   mounted () {
     console.log('赋予初始值')
     let that = this
-    this.$post('atc/gettreebyid', { parentid: 1 })
+    this.$post('atc/gettree', { parentid: 1 })
       .then(res => {
-        // console.log('ok' + res)
         res.forEach(element => {
           // console.log(element)
           let json =
           {
-            'id': element.id,
-            'name': element.btneirong,
-            'biaoti': element.biaoti,
-            'rootid': element.rootid,
-            'parentid': element.parentid,
-            'qbneirong': element.qbneirong,
+            'id': element.yuantou.id,
+            'name': element.yuantou.btneirong,
+            'biaoti': element.yuantou.biaoti,
+            'rootid': element.yuantou.rootid,
+            'parentid': element.yuantou.parentid,
             'children': []
           }
-          that.$post('atc/gettreebyid', { parentid: element.rootid })
-            .then(res => {
-              res.forEach(element => {
-                // console.log('error' + element.btneirong)
-                let json2 =
-                {
-                  'id': element.id,
-                  'name': element.btneirong,
-                  'biaoti': element.biaoti,
-                  'rootid': element.rootid,
-                  'parentid': element.parentid,
-                  'qbneirong': element.qbneirong
-                }
-                // console.log(element.id + element.btneirong)
-                json.children.push(json2)
-              })
-            })
-            .catch(error => {
-              console.log('error' + error)
-            })
+          element.children.forEach(e => {
+            let json2 =
+            {
+              'id': e.id,
+              'name': e.btneirong,
+              'biaoti': e.biaoti,
+              'rootid': e.rootid,
+              'parentid': e.parentid
+            }
+            json.children.push(json2)
+          })
           that.t_items.push(json)
         })
-        // console.log(that.t_items)
       })
       .catch(error => {
         console.log('error' + error)
