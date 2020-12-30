@@ -39,12 +39,9 @@
           outlined
           tile
         >
-        <p class="text-left"  v-cloak>
-          {{pagecontent}}
-        </p>
-        <div class="purple darken-2 text-center">
-          <span class="white--text">Lorem ipsum</span>
-        </div>
+        <div class="text-left teal cyan lighten-5"  v-cloak>
+          <div v-html="pagecontent"></div>
+        </div>12
         </v-card>
       </v-col>
     </v-row>
@@ -82,11 +79,41 @@ export default {
       this.$post('atc/gettreeneirongbyid', {parentid: parentid1, rootid: rootid1})
         .then(res => {
           console.log('返回数')
-          res.sort((a, b) => {
-            return a.hangshu - b.hangshu
+          that.pagecontent = []
+          let neir = res.neirong
+          let zhangj = res.zhangjie
+          let pcsz = []
+          neir.forEach(element => {
+            // console.log('2.' + element.hangshu + that.pagecontent + element.qbneirong)
+            let json =
+            {
+              'hangshu': element.hangshu,
+              'biaoti': 0,
+              'nr': element.qbneirong
+            }
+            pcsz.push(json)
           })
-          res.forEach(element => {
-            console.log('2.' + element.hangshu + that.pagecontent + element.qbneirong)
+          zhangj.forEach(element => {
+            // console.log('3.' + element.hangshu + that.pagecontent + element.btneirong + element.biaoti)
+            let json =
+            {
+              'hangshu': element.hangshu,
+              'biaoti': element.biaoti,
+              'nr': element.btneirong
+            }
+            pcsz.push(json)
+          })
+          pcsz.sort((n1, n2) => {
+            return n1.hangshu - n2.hangshu
+          })
+          // console.log(pcsz)
+          pcsz.forEach(e => {
+            if (e.biaoti > 0) {
+              e.nr = that.syhji(e.biaoti, e.nr)
+            } else {
+              e.nr = '<p>' + e.nr + '</p>'
+            }
+            that.pagecontent = that.pagecontent + e.nr
           })
         })
         .catch(error => {
@@ -95,6 +122,31 @@ export default {
     },
     test () {
       console.log('error')
+    },
+    syhji (hsz, nr) {
+      switch (hsz) {
+        case 1: {
+          return '<h1>' + nr + '</h1>'
+        }
+        case 2: {
+          return '<h2>' + nr + '</h2>'
+        }
+        case 3: {
+          return '<h3>' + nr + '</h3>'
+        }
+        case 4: {
+          return '<h4>' + nr + '</h4>'
+        }
+        case 5: {
+          return '<h5>' + nr + '</h5>'
+        }
+        case 6: {
+          return '<h6>' + nr + '</h6>'
+        }
+        default: {
+          return '<p>' + nr + '</p>'
+        }
+      }
     }
   },
   watch: {
@@ -106,6 +158,7 @@ export default {
       }
       if (this.shoucidian && oldValue.length > 0 && newValue[0].name !== oldValue[0].name) {
         console.log('active-中间刷了 ' + newValue[0].name)
+        this.getPageContent(newValue[0].parentid, newValue[0].rootid)
       }
     },
     openids (newValue) {
