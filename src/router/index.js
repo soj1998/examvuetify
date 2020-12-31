@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Content from '@/components/Content'
-import Mytest from '@/components/Mytest'
+import Zzsmuban from '@/Szmuban/Zzsmuban'
 import Mytest2 from '@/components/Mytest2'
 
 Vue.use(Router)
@@ -21,9 +21,9 @@ export default new Router({
       component: Content
     },
     {
-      path: '/2',
-      name: 'Mytest',
-      component: Mytest
+      path: '/zzs',
+      name: 'Zzsmuban',
+      component: Zzsmuban
     },
     {
       path: '/3',

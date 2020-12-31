@@ -63,7 +63,7 @@
 
 <script>
 export default {
-  name: 'Content',
+  name: 'Zzsmuban',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
@@ -127,7 +127,7 @@ export default {
               let btnr = {
                 name: e.nr
               }
-              console.log(btnr)
+              // console.log(btnr)
               that.t_items2.push(btnr)
               e.nr = that.syhji(e.biaoti + 2, e.nr)
             } else {
@@ -178,7 +178,7 @@ export default {
     },
     openids (newValue) {
       if (newValue.length > 0) {
-        console.log('openids' + newValue[newValue.length - 1].name)
+        console.log('openids1' + newValue[0])
         this.active = []
         this.active.push(newValue[newValue.length - 1].children[0])
         // this.getPageContent(newValue[newValue.length - 1].rootid, newValue[newValue.length - 1].children[0].rootid)
@@ -213,6 +213,7 @@ export default {
             json.children.push(json2)
           })
           that.t_items.push(json)
+          console.log('openids2 ' + that.openids)
         })
       })
       .catch(error => {
