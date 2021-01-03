@@ -1,64 +1,28 @@
 <template>
-  <v-container class="grey lighten-5">
-    <v-tabs>
-    <v-tab>Item One</v-tab>
-    <v-tab>Item Two</v-tab>
-    <v-tab>Item Three</v-tab>
-  </v-tabs>
-    <v-row no-gutters>
-      <v-col
-        cols="4"
-        sm="2"
-        md="3"
-      >
-        <v-card
-          class = "pa-2 align-left"
-          outlined
-          tile
-        >
-        <v-card-title class="indigo white--text headline">
-          增值税
-        </v-card-title>
-        <v-treeview
-          :active.sync="active"
-          :open.sync="openids"
-          open-on-click
-          activatable
-          return-object
-          color = "warning"
-          :items = "t_items"
-        ></v-treeview>
-        </v-card>
-      </v-col>
-      <v-col
-        cols="10"
-        md="7"
-      >
-        <v-card
-          class="pa-2"
-          outlined
-          tile
-        >
-        <div class="text-left teal cyan lighten-5"  v-cloak>
-          <div v-html="pagecontent"></div>
-        </div>
-        </v-card>
-      </v-col>
-      <v-col
-        cols="3"
-        md="2"
-      >
-        <v-card-title class="indigo white--text headline">
-          文章内导航
-        </v-card-title>
-        <v-treeview
-          return-object
-          color = "pink lighten-5"
-          :items = "t_items2"
-        ></v-treeview>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div class="main">
+    <!-- 菜单 -->
+     <div v-for="(item,index) in list" :key="index" >
+      <div  :id="'a'+index" @click="b(index)">哈哈哈</div>
+    </div>
+    <div class="nav">
+      <a href="javascript:" @click="goAnchor('#Java')">Java</a>
+      <a href="javascript:" @click="goAnchor('#Python')">Python</a>
+      <a href="javascript:" @click="goAnchor('#Javascript')">Javascript</a>
+    </div>
+    <!-- 内容 -->
+    <div class="item">
+      <div class="title" id="Java" ref ="java">Java</div>
+      <div class="content"></div>
+    </div>
+    <div class="item">
+      <div class="title" id="Python">Python</div>
+      <div class="content"></div>
+    </div>
+    <div class="item">
+      <div class="title" id="Javascript">Javascript</div>
+      <div class="content"></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -71,6 +35,7 @@ export default {
       active: [],
       openids: [],
       shoucidian: false,
+      list: [1, 2, 3],
       items: [
         {
           id: 1,
@@ -87,62 +52,23 @@ export default {
     }
   },
   methods: {
-    getPageContent (parentid1, rootid1) {
-      let that = this
-      console.log('parentid1:' + parentid1 + ' rootid1:' + rootid1)
-      this.$post('atc/gettreeneirongbyid', {parentid: parentid1, rootid: rootid1})
-        .then(res => {
-          console.log('返回数')
-          that.pagecontent = []
-          let neir = res.neirong
-          let zhangj = res.zhangjie
-          let pcsz = []
-          neir.forEach(element => {
-            // console.log('2.' + element.hangshu + that.pagecontent + element.qbneirong)
-            let json =
-            {
-              'hangshu': element.hangshu,
-              'biaoti': 0,
-              'nr': element.qbneirong
-            }
-            pcsz.push(json)
-          })
-          zhangj.forEach(element => {
-            // console.log('3.' + element.hangshu + that.pagecontent + element.btneirong + element.biaoti)
-            let json =
-            {
-              'hangshu': element.hangshu,
-              'biaoti': element.biaoti,
-              'nr': element.btneirong
-            }
-            pcsz.push(json)
-          })
-          pcsz.sort((n1, n2) => {
-            return n1.hangshu - n2.hangshu
-          })
-          // console.log(pcsz)
-          that.t_items2 = []
-          pcsz.forEach(e => {
-            if (e.biaoti > 0) {
-              let btnr = {
-                name: e.nr
-              }
-              console.log(btnr)
-              that.t_items2.push(btnr)
-              e.nr = that.syhji(e.biaoti + 2, e.nr)
-            } else {
-              e.nr = '<p>' + e.nr + '</p>'
-            }
-            that.pagecontent = that.pagecontent + e.nr
-          })
-          that.pagecontent = '<div class="text-body-1" style="margin-top: 10px">' + that.pagecontent + '</div>'
-        })
-        .catch(error => {
-          console.log('error' + error)
-        })
+    returnTop () {
+      console.log('ref ' + JSON.stringify(this.$refs))
+      document.querySelector('#header').scrollIntoView(true)
+    },
+    goAnchor (selector) {
+      this.$el.querySelector(selector).scrollIntoView({
+        behavior: 'smooth', // 平滑过渡
+        block: 'start' // 上边框与视窗顶部平齐。默认值
+      })
     },
     test () {
       console.log('error')
+    },
+    b (e) {
+      console.log('ref ' + JSON.stringify(this.$refs))
+      console.log('e  ' + e)
+      this.active.push(1)
     },
     syhji (hsz, nr) {
       switch (hsz) {
@@ -166,15 +92,7 @@ export default {
   },
   watch: {
     active (newValue, oldValue) {
-      if (!this.shoucidian && oldValue.length === 0 && this.active.length === 1) {
-        console.log('active-oldvalue为空 ' + newValue[0].name)
-        this.shoucidian = true
-        this.getPageContent(newValue[0].parentid, newValue[0].rootid)
-      }
-      if (this.shoucidian && oldValue.length > 0 && newValue[0].name !== oldValue[0].name) {
-        console.log('active-中间刷了 ' + newValue[0].name)
-        this.getPageContent(newValue[0].parentid, newValue[0].rootid)
-      }
+      console.log('ref ' + JSON.stringify(this.$refs))
     },
     openids (newValue) {
       if (newValue.length > 0) {
@@ -224,33 +142,37 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
+.main {
+  width: 600px;
+  margin: 0 auto;
+  margin-top: 20px;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.nav a {
+  text-decoration: none;
+  color: #333;
+  padding: 0 10px;
+  margin: 0 5px;
+  background: #9e9e9e;
+  line-height: 2;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+
+.nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
-a {
-  color: #42b983;
+
+.item{
+    margin-top: 20px;
 }
-[v-cloak] {
-    display: none;
+
+.title{
+    background: #9e9e9e;
+    line-height: 2;
 }
-#divmar {
-  color: red;
-}
-#zzsdh-title-right {
-  width: 5px;
-  height: 23px;
-  background: #AB0B22;
-  display: inline-block;
-  margin-top: 3px;
-  vertical-align: top;
-  margin-right: 10px;
+.content {
+  height: 300px;
+  background: #eeeeee;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="grey lighten-5">
+  <v-container class="grey lighten-5" id="dingtop">
     <v-tabs>
     <v-tab>Item One</v-tab>
     <v-tab>Item Two</v-tab>
@@ -24,6 +24,7 @@
           :open.sync="openids"
           open-on-click
           activatable
+          hoverable
           return-object
           color = "warning"
           :items = "t_items"
@@ -53,8 +54,11 @@
         </v-card-title>
         <v-treeview
           return-object
-          color = "pink lighten-5"
+          color = "pink lighten-3"
           :items = "t_items2"
+          open-on-click
+          activatable
+          :active.sync="active2"
         ></v-treeview>
       </v-col>
     </v-row>
@@ -83,7 +87,8 @@ export default {
         }
       ],
       t_items: [],
-      t_items2: []
+      t_items2: [],
+      active2: []
     }
   },
   methods: {
@@ -125,11 +130,12 @@ export default {
           pcsz.forEach(e => {
             if (e.biaoti > 0) {
               let btnr = {
+                id: 'a' + e.hangshu,
                 name: e.nr
               }
               // console.log(btnr)
               that.t_items2.push(btnr)
-              e.nr = that.syhji(e.biaoti + 2, e.nr)
+              e.nr = that.syhji(e.biaoti + 2, e.nr, 'a' + e.hangshu)
             } else {
               e.nr = '<p>' + e.nr + '</p>'
             }
@@ -144,45 +150,56 @@ export default {
     test () {
       console.log('error')
     },
-    syhji (hsz, nr) {
+    scrollviewtop (e) {
+      document.querySelector('#dingtop').scrollIntoView(true)
+    },
+    syhji (hsz, nr, hangshu) {
       switch (hsz) {
         case 1: {
-          return '<div class="text-h1 text-center">' + nr + '</div>'
+          return '<div id= "' + hangshu + '" class="text-h1 text-center">' + nr + '</div>'
         }
         case 2: {
-          return '<div class="text-h2 text-center">' + nr + '</div>'
+          return '<div id= "' + hangshu + '" class="text-h2 text-center">' + nr + '</div>'
         }
         case 3: {
-          return '<div class="text-h3 text-center">' + nr + '</div>'
+          return '<div id= "' + hangshu + '" class="text-h3 text-center">' + nr + '</div>'
+          // return '<div  :id="a' + hangshu + '" @click="scrollviewtop(index)">哈哈哈</div>'
         }
         case 4: {
-          return '<div class="text-h4 text-center">' + nr + '</div>'
+          return '<div ref= "' + hangshu + '" class="text-h4 text-center">' + nr + '</div>'
         }
         default: {
-          return '<div class="text-h5 text-center">' + nr + '</div>'
+          return '<div ref= "' + hangshu + '" class="text-h5 text-center">' + nr + '</div>'
         }
       }
     }
   },
   watch: {
     active (newValue, oldValue) {
-      if (!this.shoucidian && oldValue.length === 0 && this.active.length === 1) {
+      console.log('newValue ' + JSON.stringify(newValue))
+      console.log('oldValue ' + JSON.stringify(oldValue))
+      if (!this.shoucidian && oldValue.length === 0 && this.active.length === 1 && newValue.length > 0) {
         console.log('active-oldvalue为空 ' + newValue[0].name)
         this.shoucidian = true
         this.getPageContent(newValue[0].parentid, newValue[0].rootid)
       }
-      if (this.shoucidian && oldValue.length > 0 && newValue[0].name !== oldValue[0].name) {
+      if (this.shoucidian && oldValue.length > 0 && newValue.length > 0 && newValue[0].name !== oldValue[0].name) {
         console.log('active-中间刷了 ' + newValue[0].name)
         this.getPageContent(newValue[0].parentid, newValue[0].rootid)
       }
     },
     openids (newValue) {
       if (newValue.length > 0) {
-        console.log('openids1' + newValue[0])
+        // console.log(JSON.stringify(this.openids))
         this.active = []
         this.active.push(newValue[newValue.length - 1].children[0])
         // this.getPageContent(newValue[newValue.length - 1].rootid, newValue[newValue.length - 1].children[0].rootid)
       }
+    },
+    active2 (newValue, oldValue) {
+      console.log('newValue ' + JSON.stringify(newValue))
+      console.log('oldValue ' + JSON.stringify(oldValue))
+      this.scrollviewtop(newValue[newValue.length - 1].id)
     }
   },
   mounted () {
@@ -213,8 +230,8 @@ export default {
             json.children.push(json2)
           })
           that.t_items.push(json)
-          console.log('openids2 ' + that.openids)
         })
+        this.getPageContent(that.t_items[0].children[0].parentid, that.t_items[0].children[0].rootid)
       })
       .catch(error => {
         console.log('error' + error)
