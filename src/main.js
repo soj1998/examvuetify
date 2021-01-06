@@ -4,11 +4,12 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import vuetify from '@/plugins/vuetify' // path to vuetify export
-import {fetch, post} from './api/axios'// 这里就写了两种方式（fetch）get 和post方式
+import {fetch, post, postfile} from './api/axios'// 这里就写了两种方式（fetch）get 和post方式
 import './mock/mock'
 
 Vue.prototype.$fetch = fetch
 Vue.prototype.$post = post
+Vue.prototype.$postfile = postfile
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

@@ -1,70 +1,84 @@
 <template>
   <div class="main">
+    <v-select
+          v-model="szselect"
+          :items="szitems"
+          :rules= "[v => !!v || '税种不能为空']"
+          label="税种"
+          required
+        ></v-select>
+    <v-select
+          v-model="wzlxselect"
+          :items="wzlxitems"
+          :rules= "[v => !!v || '文章类型不能为空']"
+          label="文章类型"
+          required
+        ></v-select>
     <v-form
        ref="uploadFileForm"
        v-model="uploadFormValid"
        lazy-validation>
-      <v-file-input
-              v-model="fileInfo"
-              required
-              :rules="[v => !!v || '文件必选']"
-              show-size accept=".docx"
-              @change="uploadFile"
-              :disabled="loading.uploadIsLoading"
-              :loading="loading.uploadIsLoading"
-              label="点击选择文件，文件格后缀为：.docx"></v-file-input>
-      <v-text-field
+       <v-text-field
         v-model="wzlx"
         :rules="nameRules"
         :counter="10"
         label="文章类型"
         required
       ></v-text-field>
+      <v-file-input
+            v-model="fileInfo"
+            required
+            :rules="[v => !!v || '文件必选']"
+            show-size accept=".docx"
+            @change="uploadFile"
+            :disabled="loading.uploadIsLoading"
+            :loading="loading.uploadIsLoading"
+            label="点击选择文件，文件格后缀为：.docx">
+        </v-file-input>
     </v-form>
     <v-btn
       :disabled="!uploadFormValid"
+      color="success"
+      class="mr-4"
       @click="submitform"
     >
       保存
     </v-btn>
-    <v-btn @click="clear">clear</v-btn>
-
-    <div ref = "notify"></div>
+    <v-btn color="warning"
+      class="mr-4"
+      @click="clear">
+      清空
+    </v-btn>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Content',
+  name: 'SavetoSql',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      pagecontent: '',
-      active: [],
-      openids: [],
-      shoucidian: false,
-      list: [1, 2, 3],
-      items: [
-        {
-          id: 1,
-          name: 'Applications :',
-          children: [
-            { id: 2, name: 'Calendar' },
-            { id: 3, name: 'Chrome' },
-            { id: 4, name: 'Webstorm' }
-          ]
-        }
-      ],
-      t_items: [],
-      t_items2: [],
       loading: {uploadIsLoading: false},
       fileInfo: '',
       wzlx: '',
       nameRules: [
-        v => !!v || '文章类型不能为空',
-        v => v.length > 1 || '不能少于2个字'
+        v => !!v || '文章类型不能为空'
       ],
-      uploadFormValid: false
+      uploadFormValid: false,
+      wzlxitems: [
+        'Item 1',
+        'Item 2',
+        'Item 3',
+        'Item 4'
+      ],
+      wzlxselect: null,
+      szitems: [
+        'Item 1',
+        'Item 2',
+        'Item 3',
+        'Item 4'
+      ],
+      szselect: null
     }
   },
   methods: {
@@ -91,12 +105,18 @@ export default {
             that.loading.uploadIsLoading = false
             that.$refs.notify.show('文件上传成功', {timeout: 1000, color: 'success'})
             that.uploadDialog = false
-            that.search()
+            that.clear()
           }).catch(err => {
             console.log(err)
             that.loading.uploadIsLoading = false
           })
       }
+    },
+    clear () {
+      // this.$refs.uploadFileForm.reset()
+      this.fileInfo = ''
+      this.wzlx = ''
+      this.uploadFormValid = false
     },
     uploadFile1 () {
       // console.log(this.fileInfo, '文件信息');
@@ -146,51 +166,13 @@ export default {
     }
   },
   watch: {
-    active (newValue, oldValue) {
-      console.log('ref ' + JSON.stringify(this.$refs))
-    },
-    openids (newValue) {
-      if (newValue.length > 0) {
-        console.log('openids' + newValue[newValue.length - 1].name)
-        this.active = []
-        this.active.push(newValue[newValue.length - 1].children[0])
-        // this.getPageContent(newValue[newValue.length - 1].rootid, newValue[newValue.length - 1].children[0].rootid)
-      }
+    uploadFormValid (newValue, oldValue) {
+      console.log('uploadFormValid ' + newValue)
     }
   },
   mounted () {
-    console.log('赋予初始值')
-    let that = this
-    this.$post('atc/gettree', { parentid: 1 })
-      .then(res => {
-        res.forEach(element => {
-          // console.log(element)
-          let json =
-          {
-            'id': element.yuantou.id,
-            'name': element.yuantou.btneirong,
-            'biaoti': element.yuantou.biaoti,
-            'rootid': element.yuantou.rootid,
-            'parentid': element.yuantou.parentid,
-            'children': []
-          }
-          element.children.forEach(e => {
-            let json2 =
-            {
-              'id': e.id,
-              'name': e.btneirong,
-              'biaoti': e.biaoti,
-              'rootid': e.rootid,
-              'parentid': e.parentid
-            }
-            json.children.push(json2)
-          })
-          that.t_items.push(json)
-        })
-      })
-      .catch(error => {
-        console.log('error' + error)
-      })
+    console.log('准备搞文件上传')
+    this.uploadFormValid = false
   }
 }
 </script>

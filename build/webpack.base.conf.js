@@ -36,6 +36,7 @@ module.exports = {
     'axios': 'axios',
     'mock': 'Mock',
     'vuetify': "Vuetify"
+    //'vee-validate': "VeeValidate"
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],

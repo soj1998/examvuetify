@@ -4,6 +4,8 @@ import HelloWorld from '@/components/HelloWorld'
 import Content from '@/components/Content'
 import Zzsmuban from '@/Szmuban/Zzsmuban'
 import Mytest from '@/components/Mytest'
+import Mytest2 from '@/components/Mytest2'
+import SavetoSql from '@/sysman/SavetoSql'
 
 Vue.use(Router)
 
@@ -29,6 +31,16 @@ export default new Router({
       path: '/3',
       name: 'Mytest',
       component: Mytest
+    },
+    {
+      path: '/4',
+      name: 'Mytest2',
+      component: Mytest2
+    },
+    {
+      path: '/sys',
+      name: 'SavetoSql',
+      component: SavetoSql
     }
   ]
 })

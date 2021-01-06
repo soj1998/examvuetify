@@ -90,6 +90,14 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  mounted () {
+    let that = this
+    this.$post('up', { parentid: 1 })
+      .then(res => {
+        console.log(res)
+        that.msg = res.message
+      })
   }
 }
 </script>

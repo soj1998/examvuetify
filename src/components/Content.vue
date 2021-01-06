@@ -1,18 +1,13 @@
 <template>
-<v-app>
-<v-app-bar app></v-app-bar>
-<v-main>
-  <v-container>
-    Hello World
-    <v-btn
-      elevation="2"
-      rounded
-      large
-      @click="change"
-    >按我</v-btn>
-  </v-container>
-</v-main>
-</v-app>
+  <div>
+    <h1>首页</h1>
+    <div>
+      <label class="label">
+        <input type="file" ref='file' @change='up'/>
+        <span class="before" :style="{width:pre+'%'}"></span>
+      </label>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -20,35 +15,32 @@ export default {
   name: 'Content',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Welcome to Your Vue.js App',
+      pre: 0
     }
   },
   methods: {
-    change: function () {
-      console.log('局部组件中methods方法')
-      let that = this
-      that.$fetch('/', '')
-        .then(function (res) {
-          console.log('ok' + res)
-        })
-        .catch(function (error) {
-          console.log('error' + error)
-        })
-        /**
-        that.$axios({
-          method: 'get',
-          url: '/',
-          data: {
-            abc: 'abc'
-          }
-        })
-          .then(function (res) {
-            console.log('接口成功返回结果执行')
-          })
-          .catch(function (error) {
-            console.log(error + '请求失败或者接口返回失败或者.then()中的代码发生错误')
-          })
-        */
+    up () {
+      // var that = this
+      // 获取到this 赋值个that
+      var file = this.$refs.file.files[0]
+      if (!file) {
+        return
+      } // 如果没有文件就返回
+      // 拿到上传的文件
+      var data = new FormData()
+      // 创建一个表单数据
+      data.append('file', file)
+      console.log('ASas', data)
+      // 把图片或文件添加到data
+      let headers = {headers: {'Content-Type': 'multipart/form-data'}}
+      this.$http.post('say5', data, headers).then(function (data) {
+        console.log(data)
+      },
+      function (err) {
+        console.log('err------: ')
+        console.log(err)
+      })
     }
   }
 }
