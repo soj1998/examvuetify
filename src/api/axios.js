@@ -1,5 +1,5 @@
 import axios, {AxiosInstance as router} from 'axios'
-// import Qs from 'qs'
+import Qs from 'qs'
 
 var isPro = process.env.NODE_ENV === 'production' // process.env.NODE_ENV用于区分是生产环境还是开发环境
 axios.defaults.baseURL = isPro ? 'http://localhost:8080/houtai' : 'http://localhost:8080/houtai' // '/api'
@@ -45,7 +45,21 @@ export function fetch (url, params = {}) {
   })
 }
 
-export function post (url, data = {}) {
+export function post (
+  url,
+  data = {}) {
+  axios.interceptors.request.use(
+    config => {
+      config.data = Qs.stringify(config.data)
+      // 在这里添加请求头数据
+      config.headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+      return config
+    }, error => {
+      return Promise.reject(error)
+    }
+  )
   return new Promise((resolve, reject) => {
     axios.post(url, data)
       .then(response => {

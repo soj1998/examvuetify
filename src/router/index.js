@@ -6,6 +6,7 @@ import Zzsmuban from '@/Szmuban/Zzsmuban'
 import Mytest from '@/components/Mytest'
 import Mytest2 from '@/components/Mytest2'
 import SavetoSql from '@/sysman/SavetoSql'
+import EditShuiZhong from '@/sysman/EditShuiZhong'
 
 Vue.use(Router)
 
@@ -41,6 +42,11 @@ export default new Router({
       path: '/sys',
       name: 'SavetoSql',
       component: SavetoSql
+    },
+    {
+      path: '/editsz',
+      name: 'EditShuiZhong',
+      component: EditShuiZhong
     }
   ]
 })
