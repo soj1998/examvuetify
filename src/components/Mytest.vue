@@ -1,35 +1,33 @@
 <template>
-  <div class="main">
-    <v-form
-       ref="uploadFileForm"
-       v-model="uploadFormValid"
-       lazy-validation>
-      <v-file-input
-              v-model="fileInfo"
-              required
-              :rules="[v => !!v || '文件必选']"
-              show-size accept=".docx"
-              @change="uploadFile"
-              :disabled="loading.uploadIsLoading"
-              :loading="loading.uploadIsLoading"
-              label="点击选择文件，文件格后缀为：.docx"></v-file-input>
-      <v-text-field
-        v-model="wzlx"
-        :rules="nameRules"
-        :counter="10"
-        label="文章类型"
-        required
-      ></v-text-field>
-    </v-form>
-    <v-btn
-      :disabled="!uploadFormValid"
-      @click="submitform"
-    >
-      保存
-    </v-btn>
-    <v-btn @click="clear">clear</v-btn>
-
-    <div ref = "notify"></div>
+  <div class="footer">
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <p>我是一只小可爱</p>
+    <div class="gotop" v-show="gotop" @click="toTop">Top</div>
   </div>
 </template>
 
@@ -38,196 +36,42 @@ export default {
   name: 'Content',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      pagecontent: '',
-      active: [],
-      openids: [],
-      shoucidian: false,
-      list: [1, 2, 3],
-      items: [
-        {
-          id: 1,
-          name: 'Applications :',
-          children: [
-            { id: 2, name: 'Calendar' },
-            { id: 3, name: 'Chrome' },
-            { id: 4, name: 'Webstorm' }
-          ]
-        }
-      ],
-      t_items: [],
-      t_items2: [],
-      loading: {uploadIsLoading: false},
-      fileInfo: '',
-      wzlx: '',
-      nameRules: [
-        v => !!v || '文章类型不能为空',
-        v => v.length > 1 || '不能少于2个字'
-      ],
-      uploadFormValid: false
-    }
-  },
-  methods: {
-    returnTop () {
-      console.log('ref ' + JSON.stringify(this.$refs))
-      document.querySelector('#header').scrollIntoView(true)
-    },
-    goAnchor (selector) {
-      this.$el.querySelector(selector).scrollIntoView({
-        behavior: 'smooth', // 平滑过渡
-        block: 'start' // 上边框与视窗顶部平齐。默认值
-      })
-    },
-    submitform () {
-      // console.log(this.fileInfo, '文件信息');
-      if (this.$refs.uploadFileForm.validate()) {
-        this.loading.uploadIsLoading = true
-        var formData = new window.FormData()
-        formData.append('file', this.fileInfo)
-        formData.append('wzlx', this.wzlx)
-        let that = this
-        this.$postfile('say3', formData)
-          .then(res => {
-            that.loading.uploadIsLoading = false
-            that.$refs.notify.show('文件上传成功', {timeout: 1000, color: 'success'})
-            that.uploadDialog = false
-            that.search()
-          }).catch(err => {
-            console.log(err)
-            that.loading.uploadIsLoading = false
-          })
-      }
-    },
-    uploadFile1 () {
-      // console.log(this.fileInfo, '文件信息');
-      if (this.$refs.uploadFileForm.validate()) {
-        this.loading.uploadIsLoading = true
-        var formData = new window.FormData()
-        formData.append('file', this.fileInfo)
-        let that = this
-        this.$postfile('say3', formData)
-          .then(res => {
-            that.loading.uploadIsLoading = false
-            that.$refs.notify.show('文件上传成功', {timeout: 1000, color: 'success'})
-            that.uploadDialog = false
-            that.search()
-          }).catch(err => {
-            console.log(err)
-            that.loading.uploadIsLoading = false
-          })
-      }
-    },
-    test () {
-      console.log('error')
-    },
-    b (e) {
-      console.log('ref ' + JSON.stringify(this.$refs))
-      console.log('e  ' + e)
-      this.active.push(1)
-    },
-    syhji (hsz, nr) {
-      switch (hsz) {
-        case 1: {
-          return '<div class="text-h1 text-center">' + nr + '</div>'
-        }
-        case 2: {
-          return '<div class="text-h2 text-center">' + nr + '</div>'
-        }
-        case 3: {
-          return '<div class="text-h3 text-center">' + nr + '</div>'
-        }
-        case 4: {
-          return '<div class="text-h4 text-center">' + nr + '</div>'
-        }
-        default: {
-          return '<div class="text-h5 text-center">' + nr + '</div>'
-        }
-      }
-    }
-  },
-  watch: {
-    active (newValue, oldValue) {
-      console.log('ref ' + JSON.stringify(this.$refs))
-    },
-    openids (newValue) {
-      if (newValue.length > 0) {
-        console.log('openids' + newValue[newValue.length - 1].name)
-        this.active = []
-        this.active.push(newValue[newValue.length - 1].children[0])
-        // this.getPageContent(newValue[newValue.length - 1].rootid, newValue[newValue.length - 1].children[0].rootid)
-      }
+      gotop: false
     }
   },
   mounted () {
-    console.log('赋予初始值')
-    let that = this
-    this.$post('atc/gettree', { parentid: 1 })
-      .then(res => {
-        res.forEach(element => {
-          // console.log(element)
-          let json =
-          {
-            'id': element.yuantou.id,
-            'name': element.yuantou.btneirong,
-            'biaoti': element.yuantou.biaoti,
-            'rootid': element.yuantou.rootid,
-            'parentid': element.yuantou.parentid,
-            'children': []
-          }
-          element.children.forEach(e => {
-            let json2 =
-            {
-              'id': e.id,
-              'name': e.btneirong,
-              'biaoti': e.biaoti,
-              'rootid': e.rootid,
-              'parentid': e.parentid
-            }
-            json.children.push(json2)
-          })
-          that.t_items.push(json)
-        })
-      })
-      .catch(error => {
-        console.log('error' + error)
-      })
+    window.addEventListener('scroll', this.handleScroll, true)
+  },
+  methods: {
+    handleScroll () {
+      // 注意不同浏览器之间的兼容性
+      let scrolltop = document.documentElement.scrollTop || document.body.scrollTop
+      scrolltop > 30 ? (this.gotop = true) : (this.gotop = false)
+    },
+    toTop () {
+      let top = document.documentElement.scrollTop || document.body.scrollTop
+      const timeTop = setInterval(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = top -= 50
+        if (top <= 0) {
+          clearInterval(timeTop)
+        }
+      }, 10)
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.main {
-  width: 600px;
-  margin: 0 auto;
-  margin-top: 20px;
-}
-
-.nav a {
-  text-decoration: none;
-  color: #333;
-  padding: 0 10px;
-  margin: 0 5px;
-  background: #9e9e9e;
-  line-height: 2;
-}
-
-.nav {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.item{
-    margin-top: 20px;
-}
-
-.title{
-    background: #9e9e9e;
-    line-height: 2;
-}
-.content {
-  height: 300px;
-  background: #eeeeee;
+.footer .gotop {
+  text-align: center;
+  position: fixed;
+  right: 50px;
+  bottom: 30px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  background: white;
+  color: #000000;
 }
 </style>

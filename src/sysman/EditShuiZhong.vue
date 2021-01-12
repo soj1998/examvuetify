@@ -52,6 +52,10 @@
                         label="序号"
                         disabled
                       ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.ycid"
+                        v-if="1!==1"
+                      ></v-text-field>
                     </v-col>
                     <v-col
                       cols="12"
@@ -87,6 +91,22 @@
               </v-btn>
             </v-card-actions>
           </v-card>
+          <v-snackbar
+            v-model="snackbar"
+          >
+            {{ tishisnack }}
+
+            <template v-slot:action="{ attrs }">
+              <v-btn
+                color="pink"
+                text
+                v-bind="attrs"
+                @click="snackbar = false"
+              >
+                关闭
+              </v-btn>
+            </template>
+          </v-snackbar>
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
@@ -117,12 +137,7 @@
       </v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
+      暂无数据
     </template>
   </v-data-table>
 </template>
@@ -155,7 +170,9 @@ export default {
       ycid: 0,
       sz: ''
     },
-    saveform: false
+    saveform: false,
+    snackbar: false,
+    tishisnack: ''
   }),
 
   computed: {
@@ -198,32 +215,51 @@ export default {
     },
     savesz (szid1, szmc1) {
       // console.log(this.fileInfo, '文件信息')
-      let rs = -1
       let sz = {szid: szid1, szmc: szmc1}
+      let that = this
       this.$post('sys/sz/add', sz)
         .then(res => {
           console.log(res)
-          rs = 1
-          if (res.indexOf('not save') > 0) {
-            rs = 2
+          console.log(typeof res)
+          if (typeof res === 'string' && res.indexOf('not save') > 0) {
+            console.log('该税种已存在')
+            that.tishisnack = '该税种已存在'
+            that.snackbar = true
+            return
           }
+          console.log('成功保存' + res)
+          if (that.editedIndex > -1) {
+            Object.assign(that.desserts[that.editedIndex], that.editedItem)
+          } else {
+            that.editedItem.id = that.desserts.length + 1
+            that.editedItem.ycid = res
+            that.desserts.push(this.editedItem)
+          }
+          that.close()
         }).catch(err => {
           console.log(err)
+          console.log('保存失败，服务器错误')
+          that.tishisnack = '保存失败，服务器错误'
+          that.snackbar = true
         })
-      return rs
     },
     delsz (szid1) {
       // console.log(this.fileInfo, '文件信息')
-      let rs = -1
       let sz = {szid: szid1}
+      let that = this
       this.$post('sys/sz/delete', sz)
         .then(res => {
           console.log(res)
-          rs = 1
+          that.desserts.splice(this.editedIndex, 1)
+          let ind = 1
+          this.desserts.forEach(e => {
+            e.id = ind
+            ind++
+          })
+          that.closeDelete()
         }).catch(err => {
           console.log(err)
         })
-      return rs
     },
     editItem (item) {
       console.log(item)
@@ -242,9 +278,7 @@ export default {
 
     deleteItemConfirm () {
       // this.desserts.splice(this.edited Index, 1)
-      console.log(this.editedItem.sz + '  ' + this.editedIndex)
       this.delsz(this.editedItem.ycid)
-      this.closeDelete()
     },
     close () {
       this.dialog = false
@@ -262,17 +296,8 @@ export default {
     },
     save () {
       if (this.$refs.saveform.validate()) {
-        let id1 = this.editedItem.id
-        let a = this.savesz(id1, this.editedItem.sz)
-        if (a === 0) {
-          console.log(a)
-        }
-        if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
-        } else {
-          this.desserts.push(this.editedItem)
-        }
-        this.close()
+        let id1 = this.editedItem.ycid
+        this.savesz(id1, this.editedItem.sz)
       }
     }
   }

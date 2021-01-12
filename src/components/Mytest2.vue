@@ -215,6 +215,7 @@ export default {
     },
 
     save () {
+      console.log(this.editedItem)
       if (this.editedIndex > -1) {
         Object.assign(this.desserts[this.editedIndex], this.editedItem)
       } else {

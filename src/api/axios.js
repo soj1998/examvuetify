@@ -48,20 +48,11 @@ export function fetch (url, params = {}) {
 export function post (
   url,
   data = {}) {
-  axios.interceptors.request.use(
-    config => {
-      config.data = Qs.stringify(config.data)
-      // 在这里添加请求头数据
-      config.headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-      return config
-    }, error => {
-      return Promise.reject(error)
-    }
-  )
+  const options = {
+    headers: { 'content-type': 'application/x-www-form-urlencoded' }
+  }
   return new Promise((resolve, reject) => {
-    axios.post(url, data)
+    axios.post(url, Qs.stringify(data), options)
       .then(response => {
         resolve(response.data)
       }, err => {

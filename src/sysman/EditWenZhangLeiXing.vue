@@ -1,215 +1,329 @@
 <template>
-  <div class="main">
-    <v-select
-          v-model="szselect"
-          :items="szitems"
-          :rules= "[v => !!v || '税种不能为空']"
-          label="税种"
-          required
-        ></v-select>
-    <v-select
-          v-model="wzlxselect"
-          :items="wzlxitems"
-          :rules= "[v => !!v || '文章类型不能为空']"
-          label="文章类型"
-          required
-        ></v-select>
-    <v-form
-       ref="uploadFileForm"
-       v-model="uploadFormValid"
-       lazy-validation>
-       <v-text-field
-        v-model="wzlx"
-        :rules="nameRules"
-        :counter="10"
-        label="文章类型"
-        required
-      ></v-text-field>
-      <v-file-input
-            v-model="fileInfo"
-            required
-            :rules="[v => !!v || '文件必选']"
-            show-size accept=".docx"
-            @change="uploadFile"
-            :disabled="loading.uploadIsLoading"
-            :loading="loading.uploadIsLoading"
-            label="点击选择文件，文件格后缀为：.docx">
-        </v-file-input>
-    </v-form>
-    <v-btn
-      :disabled="!uploadFormValid"
-      color="success"
-      class="mr-4"
-      @click="submitform"
-    >
-      保存
-    </v-btn>
-    <v-btn color="warning"
-      class="mr-4"
-      @click="clear">
-      清空
-    </v-btn>
-  </div>
+  <v-data-table
+    :headers="headers"
+    :items="desserts"
+    sort-by="id"
+    class="elevation-1"
+  >
+    <template v-slot:top>
+      <v-toolbar
+        flat
+      >
+        <v-toolbar-title>文章类型</v-toolbar-title>
+        <v-divider
+          class="mx-4"
+          inset
+          vertical
+        ></v-divider>
+        <v-spacer></v-spacer>
+        <v-dialog
+          v-model="dialog"
+          max-width="500px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              class="mb-2"
+              v-bind="attrs"
+              v-on="on"
+            >
+              新建
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="headline">{{ formTitle }}</span>
+            </v-card-title>
+            <v-form
+              ref="saveform"
+              v-model="saveform"
+              lazy-validation>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.id"
+                        label="序号"
+                        disabled
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.ycid"
+                        v-if="1!==1"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.sz"
+                        :rules="[v =>  v.length > 0 || '不能为空']"
+                        label="文章类型"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-form>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="close"
+              >
+                取消
+              </v-btn>
+              <v-btn
+                :disabled="!saveform"
+                color="blue darken-1"
+                text
+                @click="save"
+              >
+                保存
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+          <v-snackbar
+            v-model="snackbar"
+          >
+            {{ tishisnack }}
+            <template v-slot:action="{ attrs }">
+              <v-btn
+                color="pink"
+                text
+                v-bind="attrs"
+                @click="snackbar = false"
+              >
+                关闭
+              </v-btn>
+            </template>
+          </v-snackbar>
+        </v-dialog>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="headline">确定要删除此文章类型吗?</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeDelete">取消</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm">确定</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+    <template v-slot:item.actions="{ item }">
+      <v-icon
+        small
+        class="mr-2"
+        @click="editItem(item)"
+      >
+        mdi-pencil
+      </v-icon>
+      <v-icon
+        small
+        @click="deleteItem(item)"
+      >
+        mdi-delete
+      </v-icon>
+    </template>
+    <template v-slot:no-data>
+      暂无数据
+    </template>
+  </v-data-table>
 </template>
 
 <script>
 export default {
-  name: 'SavetoSql',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App',
-      loading: {uploadIsLoading: false},
-      fileInfo: '',
-      wzlx: '',
-      nameRules: [
-        v => !!v || '文章类型不能为空'
-      ],
-      uploadFormValid: false,
-      wzlxitems: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4'
-      ],
-      wzlxselect: null,
-      szitems: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4'
-      ],
-      szselect: null
+  data: () => ({
+    name: 'EditWenZhangLeiXing',
+    dialog: false,
+    dialogDelete: false,
+    headers: [
+      {
+        text: '序号',
+        align: 'start',
+        sortable: false,
+        value: 'id'
+      },
+      { text: '文章类型', value: 'sz', sortable: false },
+      { text: '操作', value: 'actions', sortable: false }
+    ],
+    desserts: [],
+    editedIndex: -1,
+    editedItem: {
+      id: -1,
+      ycid: 0,
+      sz: ''
+    },
+    defaultItem: {
+      id: 0,
+      ycid: 0,
+      sz: ''
+    },
+    saveform: false,
+    snackbar: false,
+    tishisnack: ''
+  }),
+
+  computed: {
+    formTitle () {
+      return this.editedIndex === -1 ? '新建' : '编辑'
     }
   },
-  methods: {
-    returnTop () {
-      console.log('ref ' + JSON.stringify(this.$refs))
-      document.querySelector('#header').scrollIntoView(true)
+
+  watch: {
+    dialog (val) {
+      val || this.close()
     },
-    goAnchor (selector) {
-      this.$el.querySelector(selector).scrollIntoView({
-        behavior: 'smooth', // 平滑过渡
-        block: 'start' // 上边框与视窗顶部平齐。默认值
+    dialogDelete (val) {
+      val || this.closeDelete()
+    }
+  },
+
+  created () {
+    this.initialize()
+  },
+
+  methods: {
+    initialize () {
+      this.listall()
+    },
+    listall () {
+      let that = this
+      // console.log(this.fileInfo, '文件信息')
+      this.$post('sys/wzlx/listall')
+        .then(res => {
+          let ind = 1
+          res.forEach(e => {
+            let it = {id: ind, ycid: e.id, sz: e.wzlxmc}
+            that.desserts.push(it)
+            ind++
+          })
+        }).catch(err => {
+          console.log(err)
+        })
+    },
+    savesz (szid1, szmc1) {
+      // console.log(this.fileInfo, '文件信息')
+      let sz = {szid: szid1, szmc: szmc1}
+      let that = this
+      this.$post('sys/wzlx/add', sz)
+        .then(res => {
+          console.log(res)
+          console.log(typeof res)
+          if (typeof res === 'string' && res.indexOf('not save') > 0) {
+            console.log('文章类型已存在')
+            that.tishisnack = '文章类型已存在'
+            that.snackbar = true
+            return
+          }
+          console.log('成功保存' + res)
+          if (that.editedIndex > -1) {
+            Object.assign(that.desserts[that.editedIndex], that.editedItem)
+          } else {
+            that.editedItem.id = that.desserts.length + 1
+            that.editedItem.ycid = res
+            that.desserts.push(this.editedItem)
+          }
+          that.close()
+        }).catch(err => {
+          console.log(err)
+          console.log('保存失败，服务器错误')
+          that.tishisnack = '保存失败，服务器错误'
+          that.snackbar = true
+        })
+    },
+    delsz (szid1) {
+      // console.log(this.fileInfo, '文件信息')
+      let sz = {szid: szid1}
+      let that = this
+      this.$post('sys/wzlx/delete', sz)
+        .then(res => {
+          console.log(res)
+          that.desserts.splice(this.editedIndex, 1)
+          let ind = 1
+          this.desserts.forEach(e => {
+            e.id = ind
+            ind++
+          })
+          that.closeDelete()
+        }).catch(err => {
+          console.log(err)
+        })
+    },
+    editItem (item) {
+      console.log(item)
+      this.editedIndex = this.desserts.indexOf(item)
+      console.log(this.desserts.indexOf(item))
+      this.editedItem = Object.assign({}, item)
+      console.log(this.editedItem)
+      this.dialog = true
+    },
+
+    deleteItem (item) {
+      this.editedIndex = this.desserts.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialogDelete = true
+      console.log('1   ' + JSON.stringify(this.editedItem))
+    },
+
+    deleteItemConfirm () {
+      // this.desserts.splice(this.edited Index, 1)
+      console.log('2   ' + JSON.stringify(this.editedItem))
+      this.delsz(this.editedItem.ycid)
+    },
+    close () {
+      this.dialog = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
       })
     },
-    submitform () {
-      // console.log(this.fileInfo, '文件信息');
-      if (this.$refs.uploadFileForm.validate()) {
-        this.loading.uploadIsLoading = true
-        var formData = new window.FormData()
-        formData.append('file', this.fileInfo)
-        formData.append('wzlx', this.wzlx)
-        let that = this
-        this.$postfile('say3', formData)
-          .then(res => {
-            that.loading.uploadIsLoading = false
-            that.$refs.notify.show('文件上传成功', {timeout: 1000, color: 'success'})
-            that.uploadDialog = false
-            that.clear()
-          }).catch(err => {
-            console.log(err)
-            that.loading.uploadIsLoading = false
-          })
-      }
+    closeDelete () {
+      this.dialogDelete = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
     },
-    clear () {
-      // this.$refs.uploadFileForm.reset()
-      this.fileInfo = ''
-      this.wzlx = ''
-      this.uploadFormValid = false
-    },
-    uploadFile1 () {
-      // console.log(this.fileInfo, '文件信息');
-      if (this.$refs.uploadFileForm.validate()) {
-        this.loading.uploadIsLoading = true
-        var formData = new window.FormData()
-        formData.append('file', this.fileInfo)
-        let that = this
-        this.$postfile('say3', formData)
-          .then(res => {
-            that.loading.uploadIsLoading = false
-            that.$refs.notify.show('文件上传成功', {timeout: 1000, color: 'success'})
-            that.uploadDialog = false
-            that.search()
-          }).catch(err => {
-            console.log(err)
-            that.loading.uploadIsLoading = false
-          })
-      }
-    },
-    test () {
-      console.log('error')
-    },
-    b (e) {
-      console.log('ref ' + JSON.stringify(this.$refs))
-      console.log('e  ' + e)
-      this.active.push(1)
-    },
-    syhji (hsz, nr) {
-      switch (hsz) {
-        case 1: {
-          return '<div class="text-h1 text-center">' + nr + '</div>'
-        }
-        case 2: {
-          return '<div class="text-h2 text-center">' + nr + '</div>'
-        }
-        case 3: {
-          return '<div class="text-h3 text-center">' + nr + '</div>'
-        }
-        case 4: {
-          return '<div class="text-h4 text-center">' + nr + '</div>'
-        }
-        default: {
-          return '<div class="text-h5 text-center">' + nr + '</div>'
-        }
+    save () {
+      if (this.$refs.saveform.validate()) {
+        let id1 = this.editedItem.ycid
+        this.savesz(id1, this.editedItem.sz)
       }
     }
-  },
-  watch: {
-    uploadFormValid (newValue, oldValue) {
-      console.log('uploadFormValid ' + newValue)
-    }
-  },
-  mounted () {
-    console.log('准备搞文件上传')
-    this.uploadFormValid = false
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.main {
-  width: 600px;
-  margin: 0 auto;
-  margin-top: 20px;
+h1, h2 {
+  font-weight: normal;
 }
-
-.nav a {
-  text-decoration: none;
-  color: #333;
-  padding: 0 10px;
-  margin: 0 5px;
-  background: #9e9e9e;
-  line-height: 2;
+ul {
+  list-style-type: none;
+  padding: 0;
 }
-
-.nav {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+li {
+  display: inline-block;
+  margin: 0 10px;
 }
-
-.item{
-    margin-top: 20px;
+a {
+  color: #42b983;
 }
-
-.title{
-    background: #9e9e9e;
-    line-height: 2;
-}
-.content {
-  height: 300px;
-  background: #eeeeee;
+#upload {
+  height: 0;
+  width: 0;
+  visibility: hidden;
 }
 </style>

@@ -49,7 +49,7 @@
         cols="3"
         md="2"
       >
-        <v-card-title class="indigo white--text headline">
+        <v-card-title class="blue lighten-3 white--text headline">
           文章内导航
         </v-card-title>
         <v-treeview
@@ -88,7 +88,8 @@ export default {
       ],
       t_items: [],
       t_items2: [],
-      active2: []
+      active2: [],
+      gotop: false // 判断是否应该上滚
     }
   },
   methods: {
@@ -142,6 +143,7 @@ export default {
             that.pagecontent = that.pagecontent + e.nr
           })
           that.pagecontent = '<div class="text-body-1" style="margin-top: 10px">' + that.pagecontent + '</div>'
+          that.toTop()
         })
         .catch(error => {
           console.log('error' + error)
@@ -172,6 +174,21 @@ export default {
           return '<div ref= "' + hangshu + '" class="text-h5 text-center">' + nr + '</div>'
         }
       }
+    },
+    handleScroll () {
+      // 注意不同浏览器之间的兼容性
+      let scrolltop = document.documentElement.scrollTop || document.body.scrollTop
+      scrolltop > 30 ? (this.gotop = true) : (this.gotop = false)
+    },
+    toTop () {
+      let top = document.documentElement.scrollTop || document.body.scrollTop
+      console.log('滚不滚' + top)
+      const timeTop = setInterval(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = top -= 50
+        if (top <= 0) {
+          clearInterval(timeTop)
+        }
+      }, 10)
     }
   },
   watch: {
@@ -204,11 +221,16 @@ export default {
   },
   mounted () {
     console.log('赋予初始值')
+    window.addEventListener('scroll', this.handleScroll, true)
     let that = this
     this.$post('atc/gettree', { parentid: 1 })
       .then(res => {
+        console.log(res.length + typeof res)
+        if (res.length === 0) {
+          return
+        }
         res.forEach(element => {
-          // console.log(element)
+          console.log(element)
           let json =
           {
             'id': element.yuantou.id,
@@ -217,6 +239,9 @@ export default {
             'rootid': element.yuantou.rootid,
             'parentid': element.yuantou.parentid,
             'children': []
+          }
+          if (element.children.length === 0) {
+            return
           }
           element.children.forEach(e => {
             let json2 =

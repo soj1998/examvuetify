@@ -1,28 +1,32 @@
 <template>
   <div class="main">
-    <v-select
-          v-model="szselect"
-          :items="szitems"
-          :rules= "[v => !!v || '税种不能为空']"
-          label="税种"
-          required
-        ></v-select>
-    <v-select
-          v-model="wzlxselect"
-          :items="wzlxitems"
-          :rules= "[v => !!v || '文章类型不能为空']"
-          label="文章类型"
-          required
-        ></v-select>
     <v-form
        ref="uploadFileForm"
        v-model="uploadFormValid"
        lazy-validation>
-       <v-text-field
-        v-model="wzlx"
+      <v-select
+            v-model="szselect"
+            :items="szitems"
+            item-text="sz"
+            item-value="id"
+            :rules= "[v => !!v || '税种不能为空']"
+            label="税种"
+            required
+          ></v-select>
+      <v-select
+            v-model="wzlxselect"
+            :items="wzlxitems"
+            item-text="sz"
+            item-value="id"
+            :rules= "[v => !!v || '文章类型不能为空']"
+            label="文章类型"
+            required
+          ></v-select>
+      <v-text-field
+        v-model="wzbanben"
         :rules="nameRules"
-        :counter="10"
-        label="文章类型"
+        :counter="20"
+        :label="wzbblabel"
         required
       ></v-text-field>
       <v-file-input
@@ -37,6 +41,14 @@
         </v-file-input>
     </v-form>
     <v-btn
+      color="success"
+      class="mr-4"
+      @click="submitform1"
+      v-if="1!==1"
+    >
+      保存1
+    </v-btn>
+    <v-btn
       :disabled="!uploadFormValid"
       color="success"
       class="mr-4"
@@ -49,6 +61,22 @@
       @click="clear">
       清空
     </v-btn>
+    <v-snackbar
+      v-model="snackbar"
+    >
+      {{ uploadok }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="pink"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          关闭
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -60,54 +88,52 @@ export default {
       msg: 'Welcome to Your Vue.js App',
       loading: {uploadIsLoading: false},
       fileInfo: '',
-      wzlx: '',
+      wzbanben: '',
+      wzbblabel: '版本',
       nameRules: [
-        v => !!v || '文章类型不能为空'
+        v => !!v || '版本号不能为空',
+        v => /^([1-9]\d|[1-9])(\.([1-9]\d|\d)){3}$/.test(v) || '格式:1.0.0.0'
       ],
       uploadFormValid: false,
-      wzlxitems: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4'
-      ],
+      wzlxitems: [],
       wzlxselect: null,
-      szitems: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4'
-      ],
-      szselect: null
+      szitems: [],
+      szselect: null,
+      uploadok: '',
+      snackbar: false
     }
   },
   methods: {
-    returnTop () {
-      console.log('ref ' + JSON.stringify(this.$refs))
-      document.querySelector('#header').scrollIntoView(true)
-    },
-    goAnchor (selector) {
-      this.$el.querySelector(selector).scrollIntoView({
-        behavior: 'smooth', // 平滑过渡
-        block: 'start' // 上边框与视窗顶部平齐。默认值
-      })
+    submitform1 () {
+      // console.log(this.fileInfo, '文件信息');
+      console.log(this.wzlxselect)
+      this.snackbar = true
     },
     submitform () {
       // console.log(this.fileInfo, '文件信息');
+      if (!this.$refs.uploadFileForm.validate()) {
+        console.log(this.wzlxselect)
+        return
+      }
       if (this.$refs.uploadFileForm.validate()) {
         this.loading.uploadIsLoading = true
         var formData = new window.FormData()
         formData.append('file', this.fileInfo)
-        formData.append('wzlx', this.wzlx)
+        formData.append('wzlx', this.wzlxselect)
+        formData.append('sz', this.szselect)
+        formData.append('wzversion', this.wzbanben)
         let that = this
-        this.$postfile('say3', formData)
+        this.$postfile('sys/szwz/uploadsave', formData)
           .then(res => {
             that.loading.uploadIsLoading = false
-            that.$refs.notify.show('文件上传成功', {timeout: 1000, color: 'success'})
             that.uploadDialog = false
+            that.uploadok = '上传成功'
+            that.snackbar = true
             that.clear()
           }).catch(err => {
             console.log(err)
+            that.uploadok = '失败，服务器故障'
+            that.snackbar = true
             that.loading.uploadIsLoading = false
           })
       }
@@ -115,7 +141,9 @@ export default {
     clear () {
       // this.$refs.uploadFileForm.reset()
       this.fileInfo = ''
-      this.wzlx = ''
+      this.szselect = null
+      this.wzlxselect = null
+      this.wzbanben = ''
       this.uploadFormValid = false
     },
     uploadFile1 () {
@@ -163,16 +191,73 @@ export default {
           return '<div class="text-h5 text-center">' + nr + '</div>'
         }
       }
+    },
+    getsz () {
+      let that = this
+      // console.log(this.fileInfo, '文件信息')
+      this.$post('sys/sz/listall')
+        .then(res => {
+          res.forEach(e => {
+            let it = {id: e.id, sz: e.szmc}
+            that.szitems.push(it)
+          })
+        }).catch(err => {
+          console.log(err)
+        })
+    },
+    getwzlx () {
+      let that = this
+      // console.log(this.fileInfo, '文件信息')
+      this.$post('sys/wzlx/listall')
+        .then(res => {
+          res.forEach(e => {
+            let it = {id: e.id, sz: e.wzlxmc}
+            that.wzlxitems.push(it)
+          })
+        }).catch(err => {
+          console.log(err)
+        })
+    },
+    getbanben (szid, wzlxid) {
+      if (szid === null) {
+        this.wzbblabel = '版本号'
+        return
+      }
+      if (wzlxid === null) {
+        this.wzbblabel = '版本号'
+        return
+      }
+      let that = this
+      // console.log(this.fileInfo, '文件信息')
+      let data = {szid: szid, wzlxid: wzlxid}
+      this.$post('sys/szwz/getbanben', data)
+        .then(res => {
+          console.log('aa' + res)
+          if (res.length > 0) {
+            that.wzbblabel = '当前最新版本为' + res[0].version
+          }
+        }).catch(err => {
+          console.log(err)
+        })
     }
   },
   watch: {
     uploadFormValid (newValue, oldValue) {
       console.log('uploadFormValid ' + newValue)
+    },
+    wzlxselect () {
+      this.getbanben(this.szselect, this.wzlxselect)
+    },
+    szselect () {
+      this.getbanben(this.szselect, this.wzlxselect)
     }
   },
   mounted () {
     console.log('准备搞文件上传')
     this.uploadFormValid = false
+    // 取得文章类型 和 税种 并列举
+    this.getsz()
+    this.getwzlx()
   }
 }
 </script>
