@@ -29,6 +29,18 @@
         :label="wzbblabel"
         required
       ></v-text-field>
+      <v-text-field
+        v-model="wzlaiyuan"
+        :counter="1000"
+        label="文章来源"
+        required
+      ></v-text-field>
+      <v-text-field
+        v-model="wzjiagou"
+        :counter="5000"
+        label="文章架构"
+        required
+      ></v-text-field>
       <v-file-input
             v-model="fileInfo"
             required
@@ -90,6 +102,8 @@ export default {
       fileInfo: '',
       wzbanben: '',
       wzbblabel: '版本',
+      wzjiagou: '',
+      wzlaiyuan: '',
       nameRules: [
         v => !!v || '版本号不能为空',
         v => /^([1-9]\d|[1-9])(\.([1-9]\d|\d)){3}$/.test(v) || '格式:1.0.0.0'
@@ -122,6 +136,8 @@ export default {
         formData.append('wzlx', this.wzlxselect)
         formData.append('sz', this.szselect)
         formData.append('wzversion', this.wzbanben)
+        formData.append('wzjiagou', this.wzjiagou)
+        formData.append('wzlaiyuan', this.wzlaiyuan)
         let that = this
         this.$postfile('sys/szwz/uploadsave', formData)
           .then(res => {

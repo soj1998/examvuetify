@@ -89,14 +89,15 @@ export default {
       t_items: [],
       t_items2: [],
       active2: [],
-      gotop: false // 判断是否应该上滚
+      gotop: false, // 判断是否应该上滚
+      atcid: 1
     }
   },
   methods: {
-    getPageContent (parentid1, rootid1) {
+    getPageContent (parentid1, rootid1, atcid) {
       let that = this
       console.log('parentid1:' + parentid1 + ' rootid1:' + rootid1)
-      this.$post('atc/gettreeneirongbyid', {parentid: parentid1, rootid: rootid1})
+      this.$post('atc/gettreeneirongbyid', {parentid: parentid1, rootid: rootid1, atctreenodesjkid: atcid})
         .then(res => {
           console.log('返回数')
           that.pagecontent = []
@@ -198,11 +199,11 @@ export default {
       if (!this.shoucidian && oldValue.length === 0 && this.active.length === 1 && newValue.length > 0) {
         console.log('active-oldvalue为空 ' + newValue[0].name)
         this.shoucidian = true
-        this.getPageContent(newValue[0].parentid, newValue[0].rootid)
+        this.getPageContent(newValue[0].parentid, newValue[0].rootid, this.atcid)
       }
       if (this.shoucidian && oldValue.length > 0 && newValue.length > 0 && newValue[0].name !== oldValue[0].name) {
         console.log('active-中间刷了 ' + newValue[0].name)
-        this.getPageContent(newValue[0].parentid, newValue[0].rootid)
+        this.getPageContent(newValue[0].parentid, newValue[0].rootid, this.atcid)
       }
     },
     openids (newValue) {
@@ -223,7 +224,8 @@ export default {
     console.log('赋予初始值')
     window.addEventListener('scroll', this.handleScroll, true)
     let that = this
-    this.$post('atc/gettree', { parentid: 1 })
+    this.atcid = 3
+    this.$post('atc/gettree', { parentid: 1, atctreenodesjkid: this.atcid })
       .then(res => {
         console.log(res.length + typeof res)
         if (res.length === 0) {
@@ -256,7 +258,7 @@ export default {
           })
           that.t_items.push(json)
         })
-        this.getPageContent(that.t_items[0].children[0].parentid, that.t_items[0].children[0].rootid)
+        that.getPageContent(that.t_items[0].children[0].parentid, that.t_items[0].children[0].rootid, that.atcid)
       })
       .catch(error => {
         console.log('error' + error)
