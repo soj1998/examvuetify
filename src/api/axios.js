@@ -87,3 +87,34 @@ export function postfile (
       })
   })
 }
+
+export function postall (url1, data1 = {}, url2, data2 = {}) {
+  const options = {
+    headers: { 'content-type': 'application/x-www-form-urlencoded' }
+  }
+  var p1 = new Promise((resolve, reject) => {
+    axios.post(url1, Qs.stringify(data1), options)
+      .then(response => {
+        resolve(response.data)
+      }, err => {
+        reject(err)
+      })
+  })
+  var p2 = new Promise((resolve, reject) => {
+    axios.post(url2, Qs.stringify(data2), options)
+      .then(response => {
+        resolve(response.data)
+      }, err => {
+        reject(err)
+      })
+  })
+  // 同时执行p1和p2，并在它们都完成后执行then:
+  return new Promise((resolve, reject) => {
+    Promise.all([p1, p2]).then(function (results) {
+      console.log(results) // 获得一个Array: ['P1', 'P2']
+      resolve(results)
+    }, err => {
+      reject(err)
+    })
+  })
+}

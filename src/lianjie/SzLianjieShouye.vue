@@ -66,7 +66,7 @@ export default {
   methods: {
     daohangsz (item) {
       console.log(item.text)
-      this.$router.push({name: 'Zzsmuban', params: { szid: item.sz }})
+      this.$router.push({name: 'Zzsmuban', params: { szid: item.sz, szmc: item.text }})
     }
   }
 }

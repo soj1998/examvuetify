@@ -35,8 +35,9 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('scroll', this.handleScroll, true)
-    console.log(this.$route.params.userId)
+    this.$postall('sys/sz/listall', null, 'sys/wzlx/listall', null).then(res => {
+      console.log('ok')
+    })
   },
   methods: {
     enternext () {
@@ -50,6 +51,26 @@ export default {
           clearInterval(timeTop)
         }
       }, 10)
+    },
+    postone () {
+      return this.$post('sys/sz/listall')
+        .then(res => {
+          res.forEach(e => {
+            console.log(e)
+          })
+        }).catch(err => {
+          console.log(err)
+        })
+    },
+    posttwo () {
+      return this.$post('sys/wzlx/listall')
+        .then(res => {
+          res.forEach(e => {
+            console.log(e)
+          })
+        }).catch(err => {
+          console.log(err)
+        })
     }
   }
 }

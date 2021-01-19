@@ -17,7 +17,7 @@
           tile
         >
         <v-card-title class="indigo white--text headline">
-          增值税
+          {{ymszmc}}
         </v-card-title>
         <v-treeview
           :active.sync="active"
@@ -90,7 +90,8 @@ export default {
       t_items2: [],
       active2: [],
       gotop: false, // 判断是否应该上滚
-      atcid: 1
+      atcid: 1,
+      ymszmc: ''
     }
   },
   methods: {
@@ -223,6 +224,9 @@ export default {
   mounted () {
     console.log('赋予初始值')
     console.log(this.$route.params.szid) // 根据szid 得到税种id 和文章类型id
+    console.log(this.$route.params.szmc)
+    let cdszmc = this.$route.params.szmc
+    let cdwzmc = '税种基础'
     var grade = 'A'
     switch (grade) {
       case 'A': {
@@ -249,44 +253,79 @@ export default {
     window.addEventListener('scroll', this.handleScroll, true)
     let that = this
     this.atcid = 3
-    this.$post('atc/gettree', { parentid: 1, atctreenodesjkid: this.atcid })
-      .then(res => {
-        console.log(res.length + typeof res)
-        if (res.length === 0) {
-          return
+    this.$postall('sys/sz/listall', null, 'sys/wzlx/listall', null).then(res => {
+      let szzu = res[0]
+      let wzzu = res[1]
+      let szid = 0
+      let wzid = 0
+      szzu.forEach(element => {
+        console.log(element)
+        if (element.szmc === cdszmc) {
+          szid = element.id
+          that.ymszmc = that.ymszmc + element.szmc
         }
-        res.forEach(element => {
-          console.log(element)
-          let json =
-          {
-            'id': element.yuantou.id,
-            'name': element.yuantou.btneirong,
-            'biaoti': element.yuantou.biaoti,
-            'rootid': element.yuantou.rootid,
-            'parentid': element.yuantou.parentid,
-            'children': []
-          }
-          if (element.children.length === 0) {
+      })
+      wzzu.forEach(element => {
+        console.log(element)
+        if (element.wzlxmc === cdwzmc) {
+          wzid = element.id
+        }
+      })
+      console.log('now: ' + szid + ', ' + wzid)
+      that.$post('atc/getatcidbyszwzlx', { szid: szid, wzlxid: wzid })
+        .then(res => {
+          if (!res || res.length < 1) {
+            console.log('还没有这种类型的文章')
+            that.ymszmc = that.ymszmc + '还没有这种类型的文章'
             return
           }
-          element.children.forEach(e => {
-            let json2 =
-            {
-              'id': e.id,
-              'name': e.btneirong,
-              'biaoti': e.biaoti,
-              'rootid': e.rootid,
-              'parentid': e.parentid
-            }
-            json.children.push(json2)
-          })
-          that.t_items.push(json)
+          console.log(res[0].id)
+          that.atcid = res[0].id
+          that.$post('atc/gettree', { parentid: 1, atctreenodesjkid: that.atcid })
+            .then(res => {
+              console.log(res.length + typeof res)
+              if (res.length === 0) {
+                return
+              }
+              res.forEach(element => {
+                console.log(element)
+                let json =
+                {
+                  'id': element.yuantou.id,
+                  'name': element.yuantou.btneirong,
+                  'biaoti': element.yuantou.biaoti,
+                  'rootid': element.yuantou.rootid,
+                  'parentid': element.yuantou.parentid,
+                  'children': []
+                }
+                if (element.children.length === 0) {
+                  return
+                }
+                element.children.forEach(e => {
+                  let json2 =
+                  {
+                    'id': e.id,
+                    'name': e.btneirong,
+                    'biaoti': e.biaoti,
+                    'rootid': e.rootid,
+                    'parentid': e.parentid
+                  }
+                  json.children.push(json2)
+                })
+                that.t_items.push(json)
+              })
+              that.getPageContent(that.t_items[0].children[0].parentid, that.t_items[0].children[0].rootid, that.atcid)
+            })
+            .catch(error => {
+              console.log('error' + error)
+            })
         })
-        that.getPageContent(that.t_items[0].children[0].parentid, that.t_items[0].children[0].rootid, that.atcid)
-      })
-      .catch(error => {
-        console.log('error' + error)
-      })
+        .catch(error => {
+          console.log('error' + error)
+        })
+    }).catch(error => {
+      console.log('error' + error)
+    })
   }
 }
 </script>
