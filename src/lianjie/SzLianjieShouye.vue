@@ -22,22 +22,27 @@
 <script>
 export default {
   data: () => ({
+    name: 'SzLianjieShouye',
     items: [
       {
         src: 'backgrounds/bg.jpg',
-        text: '增值税'
+        text: '增值税',
+        sz: 'zzs'
       },
       {
         src: 'backgrounds/md.jpg',
-        text: '企业所得税'
+        text: '企业所得税',
+        sz: 'qysds'
       },
       {
         src: 'backgrounds/bg-2.jpg',
-        text: '个人所得税'
+        text: '个人所得税',
+        sz: 'grsds'
       },
       {
         src: 'backgrounds/md2.jpg',
-        text: '消费税'
+        text: '消费税',
+        sz: 'xfs'
       }
     ],
     selected: []
@@ -61,7 +66,7 @@ export default {
   methods: {
     daohangsz (item) {
       console.log(item.text)
-      this.$router.push({name: 'Mytest', params: { userId: 12 }})
+      this.$router.push({name: 'Zzsmuban', params: { szid: item.sz }})
     }
   }
 }

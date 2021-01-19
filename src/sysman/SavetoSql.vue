@@ -31,12 +31,14 @@
       ></v-text-field>
       <v-text-field
         v-model="wzlaiyuan"
+        :rules= "[v => !!v || '文章来源不能为空']"
         :counter="1000"
         label="文章来源"
         required
       ></v-text-field>
       <v-text-field
         v-model="wzjiagou"
+        :rules= "[v => !!v || '文章架构不能为空']"
         :counter="5000"
         label="文章架构"
         required
@@ -160,6 +162,8 @@ export default {
       this.szselect = null
       this.wzlxselect = null
       this.wzbanben = ''
+      this.wzjiagou = ''
+      this.wzlaiyuan = ''
       this.uploadFormValid = false
     },
     uploadFile1 () {

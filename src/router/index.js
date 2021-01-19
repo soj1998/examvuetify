@@ -2,12 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Content from '@/components/Content'
-import Zzsmuban from '@/Szmuban/Zzsmuban'
+import Zzsmuban from '@/szmuban/Zzsmuban'
 import Mytest from '@/components/Mytest'
 import Mytest2 from '@/components/Mytest2'
 import SavetoSql from '@/sysman/SavetoSql'
 import EditShuiZhong from '@/sysman/EditShuiZhong'
 import EditWenZhangLeiXing from '@/sysman/EditWenZhangLeiXing'
+import SzLianjieShouye from '@/lianjie/SzLianjieShouye'
 
 Vue.use(Router)
 
@@ -25,7 +26,12 @@ export default new Router({
       component: Content
     },
     {
-      path: '/zzs',
+      path: '/sy',
+      name: 'SzLianjieShouye',
+      component: SzLianjieShouye
+    },
+    {
+      path: '/sz',
       name: 'Zzsmuban',
       component: Zzsmuban
     },

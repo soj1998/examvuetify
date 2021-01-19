@@ -1,63 +1,7 @@
 <template>
-  <v-sheet
-    class="mx-auto"
-    elevation="8"
-    max-width="800"
-  >
-    <v-slide-group
-      v-model="model"
-      class="pa-4"
-      show-arrows
-    >
-      <v-slide-item
-        v-for="(item, i) in items"
-        :key="i"
-        v-slot="{ active, toggle }"
-      >
-        <v-card
-          :color="active ? 'primary' : 'grey lighten-1'"
-          class="ma-4"
-          height="138"
-          width="120"
-          @click="toggle"
-        >
-          <v-row
-            class="fill-height"
-            align="center"
-            justify="center"
-          >
-            <v-scale-transition>
-              <v-img
-                :src="`https://cdn.vuetifyjs.com/images/${item.src}`"
-                height="150"
-                class="text-right pa-2"
-                @click="toggle"
-              >
-              </v-img>
-            </v-scale-transition>
-          </v-row>
-        </v-card>
-      </v-slide-item>
-    </v-slide-group>
-
-    <v-expand-transition>
-      <v-sheet
-        v-if="model != null"
-        height="200"
-        tile
-      >
-        <v-row
-          class="fill-height"
-          align="center"
-          justify="center"
-        >
-          <h3 class="title">
-            Selected {{ model }}
-          </h3>
-        </v-row>
-      </v-sheet>
-    </v-expand-transition>
-  </v-sheet>
+  <div class="example">hi
+    <v-btn class="example">aaa</v-btn>
+  </div>
 </template>
 
 <script>
@@ -92,6 +36,7 @@ export default {
   },
   mounted () {
     window.addEventListener('scroll', this.handleScroll, true)
+    console.log(this.$route.params.userId)
   },
   methods: {
     enternext () {
@@ -122,5 +67,8 @@ export default {
   border-radius: 50%;
   background: white;
   color: #000000;
+}
+.example {
+  color: red;
 }
 </style>

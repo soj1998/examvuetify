@@ -222,6 +222,30 @@ export default {
   },
   mounted () {
     console.log('赋予初始值')
+    console.log(this.$route.params.szid) // 根据szid 得到税种id 和文章类型id
+    var grade = 'A'
+    switch (grade) {
+      case 'A': {
+        console.log('Excellent')
+        break
+      }
+      case 'B': {
+        console.log('Good')
+        break
+      }
+      case 'C': {
+        console.log('Fair')
+        break
+      }
+      case 'D': {
+        console.log('Poor')
+        break
+      }
+      default: {
+        console.log('Invalid choice')
+        break
+      }
+    }
     window.addEventListener('scroll', this.handleScroll, true)
     let that = this
     this.atcid = 3
