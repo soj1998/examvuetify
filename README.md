@@ -113,7 +113,7 @@ exam vuetify
 # 6.搞vuetify 设置tree 和页面显示
 ```
 	（1）vuetify颜色显示，在App.vue里面rooterview要用v-app包围
-	（2）
 ```
+
 
 	

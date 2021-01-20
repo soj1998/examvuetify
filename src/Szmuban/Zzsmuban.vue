@@ -226,7 +226,7 @@ export default {
     console.log(this.$route.params.szid) // 根据szid 得到税种id 和文章类型id
     console.log(this.$route.params.szmc)
     let cdszmc = this.$route.params.szmc
-    let cdwzmc = '税种基础'
+    let cdwzmc = '基础类'
     var grade = 'A'
     switch (grade) {
       case 'A': {
