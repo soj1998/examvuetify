@@ -147,8 +147,8 @@ export default {
       }
       let a = 1
       if (a === 1) {
-        alert(this.wzlxselect)
-        return
+        // alert(this.wzlxselect)
+        // return
       }
       if (!this.gaojichu) {
         console.log('不是搞基础类，不要继续往下了，下面是提交基础文章')
@@ -286,8 +286,8 @@ export default {
       let data = {szid: szid, wzlxid: wzlxid}
       this.$post('sys/szwz/getbanben', data)
         .then(res => {
-          console.log('aa' + res)
           if (res.length > 0) {
+            console.log('aa' + res[0].version)
             that.wzbblabel = '当前最新版本为' + res[0].version
           }
         }).catch(err => {
@@ -301,20 +301,23 @@ export default {
     },
     wzlxselect () {
       this.getselectedwzlxmc()
-      if (this.wzlxselectmc === '基础类') {
+      if (this.wzlxselectmc.indexOf('基础') >= 0) {
+        console.log('选中了搞基础 ')
         this.gaojichu = true
-        this.getbanben(this.szselect, this.wzlxselect)
+        this.getandrefreshbanben(this.szselect, this.wzlxselect)
       } else {
         this.gaojichu = false
       }
-      if (this.wzlxselectmc === '试题类') {
+      if (this.wzlxselectmc.indexOf('试题') >= 0) {
         this.gaoshiti = true
       } else {
-        this.gaojichu = false
+        this.gaoshiti = false
       }
     },
     szselect () {
-      this.getbanben(this.szselect, this.wzlxselect)
+      if (this.gaojichu) {
+        this.getandrefreshbanben(this.szselect, this.wzlxselect)
+      }
     }
   },
   mounted () {
