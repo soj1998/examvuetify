@@ -27,6 +27,7 @@
         :rules="nameRules"
         :counter="20"
         :label="wzbblabel"
+        v-if="gaojichu"
         required
       ></v-text-field>
       <v-text-field
@@ -41,6 +42,7 @@
         :rules= "[v => !!v || '文章架构不能为空']"
         :counter="5000"
         label="文章架构"
+        v-if="gaojichu"
         required
       ></v-text-field>
       <v-file-input
@@ -113,10 +115,13 @@ export default {
       uploadFormValid: false,
       wzlxitems: [],
       wzlxselect: null,
+      wzlxselectmc: '',
       szitems: [],
       szselect: null,
       uploadok: '',
-      snackbar: false
+      snackbar: false,
+      gaoshiti: false,
+      gaojichu: false
     }
   },
   methods: {
@@ -131,30 +136,51 @@ export default {
         console.log(this.wzlxselect)
         return
       }
-      if (this.$refs.uploadFileForm.validate()) {
+      if (this.gaoshiti) {
         this.loading.uploadIsLoading = true
-        var formData = new window.FormData()
+        let formData = new window.FormData()
+        formData.append('file', this.fileInfo)
+        formData.append('wzlx', this.wzlxselect)
+        formData.append('sz', this.szselect)
+        formData.append('wzlaiyuan', this.wzlaiyuan)
+        this.zhidingurlpost('sys/szexam/uploadsave', formData)
+      }
+      let a = 1
+      if (a === 1) {
+        alert(this.wzlxselect)
+        return
+      }
+      if (!this.gaojichu) {
+        console.log('不是搞基础类，不要继续往下了，下面是提交基础文章')
+        return
+      }
+      if (this.gaojichu && this.$refs.uploadFileForm.validate()) {
+        this.loading.uploadIsLoading = true
+        let formData = new window.FormData()
         formData.append('file', this.fileInfo)
         formData.append('wzlx', this.wzlxselect)
         formData.append('sz', this.szselect)
         formData.append('wzversion', this.wzbanben)
         formData.append('wzjiagou', this.wzjiagou)
         formData.append('wzlaiyuan', this.wzlaiyuan)
-        let that = this
-        this.$postfile('sys/szwz/uploadsave', formData)
-          .then(res => {
-            that.loading.uploadIsLoading = false
-            that.uploadDialog = false
-            that.uploadok = '上传成功'
-            that.snackbar = true
-            that.clear()
-          }).catch(err => {
-            console.log(err)
-            that.uploadok = '失败，服务器故障'
-            that.snackbar = true
-            that.loading.uploadIsLoading = false
-          })
+        this.zhidingurlpost('sys/szwz/uploadsave', formData)
       }
+    },
+    zhidingurlpost (url, formData) {
+      let that = this
+      this.$postfile(url, formData)
+        .then(res => {
+          that.loading.uploadIsLoading = false
+          that.uploadDialog = false
+          that.uploadok = '上传成功'
+          that.snackbar = true
+          that.clear()
+        }).catch(err => {
+          console.log(err)
+          that.uploadok = '失败，服务器故障'
+          that.snackbar = true
+          that.loading.uploadIsLoading = false
+        })
     },
     clear () {
       // this.$refs.uploadFileForm.reset()
@@ -212,7 +238,15 @@ export default {
         }
       }
     },
-    getsz () {
+    getselectedwzlxmc () {
+      let that = this
+      this.wzlxitems.forEach(e => {
+        if (e.id === that.wzlxselect) {
+          that.wzlxselectmc = e.sz
+        }
+      })
+    },
+    getandputsz () {
       let that = this
       // console.log(this.fileInfo, '文件信息')
       this.$post('sys/sz/listall')
@@ -225,7 +259,7 @@ export default {
           console.log(err)
         })
     },
-    getwzlx () {
+    getandputwzlx () {
       let that = this
       // console.log(this.fileInfo, '文件信息')
       this.$post('sys/wzlx/listall')
@@ -238,7 +272,7 @@ export default {
           console.log(err)
         })
     },
-    getbanben (szid, wzlxid) {
+    getandrefreshbanben (szid, wzlxid) {
       if (szid === null) {
         this.wzbblabel = '版本号'
         return
@@ -266,7 +300,18 @@ export default {
       console.log('uploadFormValid ' + newValue)
     },
     wzlxselect () {
-      this.getbanben(this.szselect, this.wzlxselect)
+      this.getselectedwzlxmc()
+      if (this.wzlxselectmc === '基础类') {
+        this.gaojichu = true
+        this.getbanben(this.szselect, this.wzlxselect)
+      } else {
+        this.gaojichu = false
+      }
+      if (this.wzlxselectmc === '试题类') {
+        this.gaoshiti = true
+      } else {
+        this.gaojichu = false
+      }
     },
     szselect () {
       this.getbanben(this.szselect, this.wzlxselect)
@@ -276,8 +321,8 @@ export default {
     console.log('准备搞文件上传')
     this.uploadFormValid = false
     // 取得文章类型 和 税种 并列举
-    this.getsz()
-    this.getwzlx()
+    this.getandputsz()
+    this.getandputwzlx()
   }
 }
 </script>

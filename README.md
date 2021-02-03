@@ -115,5 +115,10 @@ exam vuetify
 	（1）vuetify颜色显示，在App.vue里面rooterview要用v-app包围
 ```
 
+# 7.运行网站
+```
+	npm run dev
+```
+
 
 	
