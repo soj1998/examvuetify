@@ -45,9 +45,9 @@
                 <v-container>
                   <v-row>
                     <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
+                      cols="30"
+                      sm="16"
+                      md="10"
                     >
                       <v-text-field
                         v-model="editedItem.id"
@@ -284,7 +284,7 @@ export default {
     },
     listall () {
       let that = this
-      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage}
+      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1} // 加一了删除一个有补得 删除两个有补得 就加2
       let psz = []
       psz.push({url: 'sys/sz/listall', data: null})
       psz.push({url: 'sys/szexam/getcount', data: null})
@@ -324,7 +324,7 @@ export default {
     },
     listzhiding (dqy, pagesz) {
       let that = this
-      let data = {pageNum: dqy, pageSize: pagesz}
+      let data = {pageNum: dqy, pageSize: pagesz + 1}
       this.$post('sys/szexam/listdaican', data)
         .then(res => {
           let ind = (dqy - 1) * pagesz + 1
@@ -353,7 +353,7 @@ export default {
       this.$postalldayu2(psz)
         .then(res => {
           that.editedItem.ycid = res[0].id
-          that.editedItem.id = that.editedIndex
+          that.editedItem.id = that.editedIndex + 1
           let szmc1 = that.zhuanhuan('sz', res[0].szid)
           let tmlx = that.zhuanhuan('tmlx', res[0].examtype)
           that.editedItem.sz = szmc1
