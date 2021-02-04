@@ -5,13 +5,13 @@
     sort-by="id"
     class="elevation-1"
     :items-per-page.sync="perpage"
-    :page="2"
+    :page.sync="dangqianpage"
   >
     <template v-slot:top>
       <v-toolbar
         flat
       >
-        <v-toolbar-title>已保存试题概览</v-toolbar-title>
+        <v-toolbar-title>试题概览(非综合)</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -58,16 +58,45 @@
                         v-model="editedItem.ycid"
                         v-if="1!==1"
                       ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
                       <v-text-field
                         v-model="editedItem.sz"
                         :rules="[v =>  v.length > 0 || '不能为空']"
                         label="税种"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.zsd"
+                        :rules="[v =>  v.length > 0 || '不能为空']"
+                        label="知识点"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.leix"
+                        :rules="[v =>  v.length > 0 || '不能为空']"
+                        label="类型"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.yxbz"
+                        :rules="[v =>  v.length > 0 || '不能为空']"
+                        label="有效标志"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.timu"
+                        :rules="[v =>  v.length > 0 || '不能为空']"
+                        label="题目"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.xuanx"
+                        :rules="[v =>  v.length > 0 || '不能为空']"
+                        label="选项"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.daan"
+                        :rules="[v =>  v.length > 0 || '不能为空']"
+                        label="答案"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.jiexi"
+                        :rules="[v =>  v.length > 0 || '不能为空']"
+                        label="解析"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -112,7 +141,7 @@
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="headline">确定要删除此税种吗?</v-card-title>
+            <v-card-title class="headline">确定要删除此条试题吗?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">取消</v-btn>
@@ -157,26 +186,42 @@ export default {
         sortable: false,
         value: 'id'
       },
-      { text: '税种', value: 'sz', sortable: false },
-      { text: '知识点', value: 'sz', sortable: false },
-      { text: '类型', value: 'sz', sortable: false },
-      { text: '题目', value: 'sz', sortable: false },
+      { text: '税种', value: 'szmc', sortable: false },
+      { text: '知识点', value: 'zsd', sortable: false },
+      { text: '类型', value: 'leix', sortable: false },
+      { text: '题目', value: 'timu', sortable: false },
       { text: '有效标志', value: 'yxbz', sortable: false },
       { text: '操作', value: 'actions', sortable: false }
     ],
     desserts: [],
-    dangqianpage: 2,
+    dangqianpage: 1,
     perpage: 10,
+    totalrecord: 1,
+    szlist: [],
     editedIndex: -1,
     editedItem: {
       id: -1,
       ycid: 0,
-      sz: ''
+      sz: '',
+      zsd: '',
+      leix: '',
+      timu: '',
+      yxbz: '',
+      xuanx: [],
+      daan: '',
+      jiexi: ''
     },
     defaultItem: {
       id: 0,
       ycid: 0,
-      sz: ''
+      sz: '',
+      zsd: '',
+      leix: '',
+      timu: '',
+      yxbz: '',
+      xuanx: [],
+      daan: '',
+      jiexi: ''
     },
     saveform: false,
     snackbar: false,
@@ -195,6 +240,10 @@ export default {
     },
     dialogDelete (val) {
       val || this.closeDelete()
+    },
+    dangqianpage () {
+      console.log('当前页: ' + this.dangqianpage)
+      this.listzhiding(this.dangqianpage, this.perpage)
     }
   },
 
@@ -206,17 +255,115 @@ export default {
     initialize () {
       this.listall()
     },
+    zhuanhuan (zhmc, srx) {
+      let rs = ''
+      if (zhmc.indexOf('sz') >= 0) {
+        this.szlist.forEach(e => {
+          if (e.id === srx) {
+            rs = e.sz
+          }
+        })
+      }
+      if (zhmc.indexOf('tmlx') >= 0) {
+        switch (srx) {
+          case 'danxuan':
+            rs = '单选'
+            break
+          case 'duoxuan':
+            rs = '多选'
+            break
+          case 'jisuan':
+            rs = '计算'
+            break
+          case 'panduan':
+            rs = '判断'
+            break
+        }
+      }
+      return rs
+    },
     listall () {
       let that = this
-      // console.log(this.fileInfo, '文件信息')
-      this.$post('sys/szexam/listall')
+      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage}
+      let psz = []
+      psz.push({url: 'sys/sz/listall', data: null})
+      psz.push({url: 'sys/szexam/getcount', data: null})
+      psz.push({url: 'sys/szexam/listdaican', data: data2})
+      this.$postalldayu2(psz)
         .then(res => {
+          res[0].forEach(e => {
+            let it = {id: e.id, sz: e.szmc}
+            that.szlist.push(it)
+          })
+          that.totalrecord = res[1]
+          let lb = res[2]
           let ind = 1
-          res.forEach(e => {
-            let it = {id: ind, ycid: e.id, sz: e.examtype, yxbz: e.yxbz}
+          lb.forEach(e => {
+            let szmc1 = that.zhuanhuan('sz', e.szid)
+            let tmlx = that.zhuanhuan('tmlx', e.examtype)
+            let tmgs = e.examque.substring(0, 15)
+            let zsd1 = e.zzd.substring(0, 5)
+            let xuanx1 = 'a'
+            let xxiang = []
+            xxiang.push(xuanx1)
+            let it = {id: ind, ycid: e.id, szmc: szmc1, zsd: zsd1, leix: tmlx, timu: tmgs, yxbz: e.yxbz, xuanx: xxiang}
             that.desserts.push(it)
             ind++
           })
+          console.log('a  ' + that.desserts.length)
+          that.dangqianpage = 1
+          if (ind > 10) {
+            for (let i = ind; i < that.totalrecord + 1; i++) {
+              let myarray = {id: i}
+              that.desserts.push(myarray)
+            }
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+    },
+    listzhiding (dqy, pagesz) {
+      let that = this
+      let data = {pageNum: dqy, pageSize: pagesz}
+      this.$post('sys/szexam/listdaican', data)
+        .then(res => {
+          let ind = (dqy - 1) * pagesz + 1
+          let desserts2 = []
+          res.forEach(e => {
+            let szmc1 = that.zhuanhuan('sz', e.szid)
+            let tmlx = that.zhuanhuan('tmlx', e.examtype)
+            let tmgs = e.examque.substring(0, 15)
+            let zsd1 = e.zzd.substring(0, 5)
+            let it = {id: ind, ycid: e.id, szmc: szmc1, zsd: zsd1, leix: tmlx, timu: tmgs, yxbz: e.yxbz}
+            desserts2.push(it)
+            that.desserts.splice(ind - 1, 1, it)
+            ind++
+          })
+          // that.desserts.splice(2, 1, 'hello')
+        }).catch(err => {
+          console.log(err)
+        })
+    },
+    getxxtoedit (zsid) {
+      let that = this
+      let psz = []
+      let data1 = {tid: zsid}
+      psz.push({url: 'sys/szexam/getquebyid', data: data1})
+      psz.push({url: 'sys/szexam/listchoi', data: data1})
+      this.$postalldayu2(psz)
+        .then(res => {
+          that.editedItem.ycid = res[0].id
+          that.editedItem.id = that.editedIndex
+          let szmc1 = that.zhuanhuan('sz', res[0].szid)
+          let tmlx = that.zhuanhuan('tmlx', res[0].examtype)
+          that.editedItem.sz = szmc1
+          that.editedItem.leix = tmlx
+          that.editedItem.zsd = res[0].zzd
+          that.editedItem.timu = res[0].examque
+          that.editedItem.yxbz = res[0].yxbz
+          that.editedItem.xuanx = res[0].zzd
+          that.editedItem.daan = res[0].examans
+          that.editedItem.jiexi = res[0].examanal
         }).catch(err => {
           console.log(err)
         })
@@ -255,7 +402,8 @@ export default {
       // console.log(this.fileInfo, '文件信息')
       let sz = {szid: szid1}
       let that = this
-      this.$post('sys/sz/delete', sz)
+      console.log(that.desserts.length)
+      this.$post('sys/szexam/delete', sz)
         .then(res => {
           console.log(res)
           that.desserts.splice(this.editedIndex, 1)
@@ -264,16 +412,17 @@ export default {
             e.id = ind
             ind++
           })
+          console.log(that.desserts.length)
           that.closeDelete()
         }).catch(err => {
           console.log(err)
         })
     },
     editItem (item) {
-      console.log(item)
       this.editedIndex = this.desserts.indexOf(item)
-      console.log(this.desserts.indexOf(item))
-      this.editedItem = Object.assign({}, item)
+      // console.log(item.ycid)
+      // this.editedItem = Object.assign({}, item)
+      this.getxxtoedit(item.ycid)
       console.log(this.editedItem)
       this.dialog = true
     },

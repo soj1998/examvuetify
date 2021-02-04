@@ -111,7 +111,34 @@ export function postall (url1, data1 = {}, url2, data2 = {}) {
   // 同时执行p1和p2，并在它们都完成后执行then:
   return new Promise((resolve, reject) => {
     Promise.all([p1, p2]).then(function (results) {
-      console.log(results) // 获得一个Array: ['P1', 'P2']
+      console.log('axios公用的返回值: ' + results) // 获得一个Array: ['P1', 'P2']
+      resolve(results)
+    }, err => {
+      reject(err)
+    })
+  })
+}
+
+export function postalldayu2 (sz) {
+  const options = {
+    headers: { 'content-type': 'application/x-www-form-urlencoded' }
+  }
+  let p = []
+  sz.forEach(e => {
+    let p1 = new Promise((resolve, reject) => {
+      axios.post(e.url, Qs.stringify(e.data), options)
+        .then(response => {
+          resolve(response.data)
+        }, err => {
+          reject(err)
+        })
+    })
+    p.push(p1)
+  })
+  // 同时执行p1和p2，并在它们都完成后执行then:
+  return new Promise((resolve, reject) => {
+    Promise.all(p).then(function (results) {
+      console.log('axios2以上公用的返回值: ' + results) // 获得一个Array: ['P1', 'P2']
       resolve(results)
     }, err => {
       reject(err)
