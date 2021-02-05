@@ -113,6 +113,7 @@ exam vuetify
 # 6.搞vuetify 设置tree 和页面显示
 ```
 	（1）vuetify颜色显示，在App.vue里面rooterview要用v-app包围
+	（2）axios 发送object spring 后台用requestbody接收并处理对象 且一次只能处理一个对象
 ```
 
 # 7.运行网站

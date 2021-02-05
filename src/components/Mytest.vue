@@ -161,34 +161,20 @@ export default {
     }
   },
   mounted () {
-    let arr = [1, 2, 3, 4, 5, 6, 7, 8]
+    let arr = [{id: 1, xx: 'ddd'}, {id: 2, xx: 'xxx'}]
     console.log(arr)
-    arr.splice(2, 2, 'hello')
-    let day = '0'
-    switch (new Date().getDay()) {
-      case 0:
-        day = '7'
-        break
-      case 1:
-        day = '1'
-        break
-      case 2:
-        day = '2'
-        break
-      case 3:
-        day = '3'
-        break
-      case 4:
-        day = '4'
-        break
-      case 5:
-        day = '5'
-        break
-      case 6:
-        day = '6'
-        break
-    }
-    console.log(day)
+    arr.sort((a, b) => {
+      let val1 = a.id
+      let val2 = b.id
+      if (val1 < val2) {
+        return 1
+      } else if (val1 > val2) {
+        return -1
+      } else {
+        return 0
+      }
+    })
+    console.log(arr)
   },
   methods: {
     enternext () {

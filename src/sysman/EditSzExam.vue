@@ -116,7 +116,7 @@
                 :disabled="!saveform"
                 color="blue darken-1"
                 text
-                @click="save"
+                @click="save()"
               >
                 保存
               </v-btn>
@@ -223,6 +223,7 @@ export default {
       daan: '',
       jiexi: ''
     },
+    xuanxjiange: '||',
     saveform: false,
     snackbar: false,
     tishisnack: ''
@@ -257,14 +258,21 @@ export default {
     },
     zhuanhuan (zhmc, srx) {
       let rs = ''
-      if (zhmc.indexOf('sz') >= 0) {
+      if (zhmc === 'sz') {
         this.szlist.forEach(e => {
           if (e.id === srx) {
             rs = e.sz
           }
         })
       }
-      if (zhmc.indexOf('tmlx') >= 0) {
+      if (zhmc === 'szmc') {
+        this.szlist.forEach(e => {
+          if (e.sz === srx) {
+            rs = e.id
+          }
+        })
+      }
+      if (zhmc === 'tmlx') {
         switch (srx) {
           case 'danxuan':
             rs = '单选'
@@ -277,6 +285,22 @@ export default {
             break
           case 'panduan':
             rs = '判断'
+            break
+        }
+      }
+      if (zhmc === 'tmlxmc') {
+        switch (srx) {
+          case '单选':
+            rs = 'danxuan'
+            break
+          case '多选':
+            rs = 'duoxuan'
+            break
+          case '计算':
+            rs = 'jisuan'
+            break
+          case '判断':
+            rs = 'panduan'
             break
         }
       }
@@ -310,7 +334,6 @@ export default {
             that.desserts.push(it)
             ind++
           })
-          console.log('a  ' + that.desserts.length)
           that.dangqianpage = 1
           if (ind > 10) {
             for (let i = ind; i < that.totalrecord + 1; i++) {
@@ -339,7 +362,6 @@ export default {
             that.desserts.splice(ind - 1, 1, it)
             ind++
           })
-          // that.desserts.splice(2, 1, 'hello')
         }).catch(err => {
           console.log(err)
         })
@@ -361,18 +383,62 @@ export default {
           that.editedItem.zsd = res[0].zzd
           that.editedItem.timu = res[0].examque
           that.editedItem.yxbz = res[0].yxbz
-          that.editedItem.xuanx = res[0].zzd
+          let xx = []
+          res[1].sort((a, b) => {
+            let val1 = a.id
+            let val2 = b.id
+            if (val1 < val2) {
+              return -1
+            } else if (val1 > val2) {
+              return 1
+            } else {
+              return 0
+            }
+          })
+          res[1].forEach(e => {
+            xx.push(e.xuanxiang)
+          })
+          that.editedItem.xuanx = xx.join(that.xuanxjiange)
           that.editedItem.daan = res[0].examans
           that.editedItem.jiexi = res[0].examanal
         }).catch(err => {
           console.log(err)
         })
     },
-    savesz (szid1, szmc1) {
-      // console.log(this.fileInfo, '文件信息')
-      let sz = {szid: szid1, szmc: szmc1}
+    saveexam (item) {
+      console.log('aaaa', item)
+      let szmc1 = this.zhuanhuan('szmc', item.sz)
+      let tmlx = this.zhuanhuan('tmlxmc', item.leix)
+      let eque1 = {
+        id: item.ycid,
+        szid: szmc1,
+        zzd: item.zsd,
+        examtype: tmlx,
+        examque: item.timu,
+        yxbz: item.yxbz,
+        examans: item.daan,
+        examanal: item.jiexi
+      }
+      let echoilist1 = item.xuanx.split(this.xuanxjiange)
+      let echoilist2 = []
+      echoilist1.forEach(e => {
+        let a = {xuanxiang: e}
+        echoilist2.push(a)
+      })
+      let sz1 = {'eque': eque1, 'echoi': echoilist2}
+      this.$postobject('sys/szexam/add', sz1)
+        .then(res => {
+          console.log(res)
+        }).catch(err => {
+          console.log(err)
+        })
+      let a = 1
+      if (a === 1) {
+        return
+      }
+      let sz = {eque: eque1, echoi: echoilist2}
       let that = this
-      this.$post('sys/sz/add', sz)
+      this.$postobject('sys/szexam/add', sz)
         .then(res => {
           console.log(res)
           console.log(typeof res)
@@ -399,7 +465,6 @@ export default {
         })
     },
     delsz (szid1) {
-      // console.log(this.fileInfo, '文件信息')
       let sz = {szid: szid1}
       let that = this
       console.log(that.desserts.length)
@@ -452,9 +517,9 @@ export default {
       })
     },
     save () {
+      let item = this.editedItem
       if (this.$refs.saveform.validate()) {
-        let id1 = this.editedItem.ycid
-        this.savesz(id1, this.editedItem.sz)
+        this.saveexam(item)
       }
     }
   }

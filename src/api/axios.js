@@ -74,6 +74,22 @@ export function postjson (
   })
 }
 
+export function postobject (
+  url,
+  data = {}) {
+  const options = {
+    headers: { 'content-type': 'application/json; charset=UTF-8' }
+  }
+  return new Promise((resolve, reject) => {
+    axios.post(url, data, options)
+      .then(response => {
+        resolve(response.data)
+      }, err => {
+        reject(err)
+      })
+  })
+}
+
 export function postfile (
   url,
   data = {},
