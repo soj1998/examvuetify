@@ -9,6 +9,7 @@ import SavetoSql from '@/sysman/SavetoSql'
 import EditShuiZhong from '@/sysman/EditShuiZhong'
 import EditWenZhangLeiXing from '@/sysman/EditWenZhangLeiXing'
 import EditSzExam from '@/sysman/EditSzExam'
+import EditSzZhuanLan from '@/sysman/EditSzZhuanLan'
 import SzLianjieShouye from '@/lianjie/SzLianjieShouye'
 
 Vue.use(Router)
@@ -65,6 +66,11 @@ export default new Router({
       path: '/sys/peizhi/editexam',
       name: 'EditSzExam',
       component: EditSzExam
+    },
+    {
+      path: '/sys/peizhi/editzhuanl',
+      name: 'EditSzZhuanLan',
+      component: EditSzZhuanLan
     }
   ]
 })

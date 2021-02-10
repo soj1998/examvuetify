@@ -114,6 +114,7 @@ exam vuetify
 ```
 	（1）vuetify颜色显示，在App.vue里面rooterview要用v-app包围
 	（2）axios 发送object spring 后台用requestbody接收并处理对象 且一次只能处理一个对象
+	（3）用requestbody的方式接受，前台以json方式发送对象，当有多个对象时，前台发送的是map格式，后台用map转json，然后json转类
 ```
 
 # 7.运行网站

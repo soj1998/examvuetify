@@ -11,7 +11,7 @@
       <v-toolbar
         flat
       >
-        <v-toolbar-title>试题概览(非综合)</v-toolbar-title>
+        <v-toolbar-title>专栏文章概览</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -29,6 +29,7 @@
               class="mb-2"
               v-bind="attrs"
               v-on="on"
+              disabled
             >
               新建
             </v-btn>
@@ -142,6 +143,37 @@
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="headline">确定要删除此条试题吗?</v-card-title>
+            <v-form
+              ref="saveform"
+              v-model="saveform"
+              lazy-validation>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col
+                      cols="30"
+                      sm="16"
+                      md="10"
+                    >
+                      <v-text-field
+                        v-model="editedItem.id"
+                        label="序号"
+                        disabled
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.ycid"
+                        v-if="1!==1"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="editedItem.sz"
+                        label="税种"
+                        disabled
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-form>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">取消</v-btn>
@@ -176,7 +208,7 @@
 <script>
 export default {
   data: () => ({
-    name: 'EditSzExam',
+    name: 'EditSzZhuanLan',
     dialog: false,
     dialogDelete: false,
     headers: [
@@ -187,9 +219,8 @@ export default {
         value: 'id'
       },
       { text: '税种', value: 'szmc', sortable: false },
-      { text: '知识点', value: 'zsd', sortable: false },
-      { text: '类型', value: 'leix', sortable: false },
-      { text: '题目', value: 'timu', sortable: false },
+      { text: '标题', value: 'biaoti', sortable: false },
+      { text: '系列', value: 'xilie', sortable: false },
       { text: '有效标志', value: 'yxbz', sortable: false },
       { text: '操作', value: 'actions', sortable: false }
     ],
@@ -274,38 +305,6 @@ export default {
           }
         })
       }
-      if (zhmc === 'tmlx') {
-        switch (srx) {
-          case 'danxuan':
-            rs = '单选'
-            break
-          case 'duoxuan':
-            rs = '多选'
-            break
-          case 'jisuan':
-            rs = '计算'
-            break
-          case 'panduan':
-            rs = '判断'
-            break
-        }
-      }
-      if (zhmc === 'tmlxmc') {
-        switch (srx) {
-          case '单选':
-            rs = 'danxuan'
-            break
-          case '多选':
-            rs = 'duoxuan'
-            break
-          case '计算':
-            rs = 'jisuan'
-            break
-          case '判断':
-            rs = 'panduan'
-            break
-        }
-      }
       return rs
     },
     listall () {
@@ -313,8 +312,8 @@ export default {
       let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1} // 加一了删除一个有补得 删除两个有补得 就加2
       let psz = []
       psz.push({url: 'sys/sz/listall', data: null})
-      psz.push({url: 'sys/szexam/getcount', data: null})
-      psz.push({url: 'sys/szexam/listdaican', data: data2})
+      psz.push({url: 'sys/zhuanlan/getcount', data: null})
+      psz.push({url: 'sys/zhuanlan/listdaican', data: data2})
       this.$postalldayu2(psz)
         .then(res => {
           res[0].forEach(e => {
@@ -325,14 +324,8 @@ export default {
           let lb = res[2]
           let ind = 1
           lb.forEach(e => {
-            let szmc1 = that.zhuanhuan('sz', e.szid)
-            let tmlx = that.zhuanhuan('tmlx', e.examtype)
-            let tmgs = e.examque.substring(0, 15)
-            let zsd1 = e.zzd.substring(0, 5)
-            let xuanx1 = 'a'
-            let xxiang = []
-            xxiang.push(xuanx1)
-            let it = {id: ind, ycid: e.id, szmc: szmc1, zsd: zsd1, leix: tmlx, timu: tmgs, yxbz: e.yxbz, xuanx: xxiang}
+            let szmc1 = that.zhuanhuan('sz', e.atcSjk.szid)
+            let it = {id: ind, ycid: e.id, szmc: szmc1, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.atcSjk.yxbz}
             that.desserts.push(it)
             ind++
           })
@@ -350,16 +343,13 @@ export default {
     listzhiding (dqy, pagesz) {
       let that = this
       let data = {pageNum: dqy, pageSize: pagesz + 1}
-      this.$post('sys/szexam/listdaican', data)
+      this.$post('sys/zhuanlan/listdaican', data)
         .then(res => {
           let ind = (dqy - 1) * pagesz + 1
           let desserts2 = []
           res.forEach(e => {
-            let szmc1 = that.zhuanhuan('sz', e.szid)
-            let tmlx = that.zhuanhuan('tmlx', e.examtype)
-            let tmgs = e.examque.substring(0, 15)
-            let zsd1 = e.zzd.substring(0, 5)
-            let it = {id: ind, ycid: e.id, szmc: szmc1, zsd: zsd1, leix: tmlx, timu: tmgs, yxbz: e.yxbz}
+            let szmc1 = that.zhuanhuan('sz', e.atcSjk.szid)
+            let it = {id: ind, ycid: e.id, szmc: szmc1, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.atcSjk.yxbz}
             desserts2.push(it)
             that.desserts.splice(ind - 1, 1, it)
             ind++
@@ -477,7 +467,7 @@ export default {
       let sz = {szid: szid1}
       let that = this
       console.log(that.desserts.length)
-      this.$post('sys/szexam/delete', sz)
+      this.$post('sys/zhuanlan/delete', sz)
         .then(res => {
           console.log(res)
           that.desserts.splice(this.editedIndex, 1)
@@ -500,15 +490,13 @@ export default {
       console.log(this.editedItem)
       this.dialog = true
     },
-
     deleteItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
+      console.log(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
-
     deleteItemConfirm () {
-      // this.desserts.splice(this.edited Index, 1)
       this.delsz(this.editedItem.ycid)
     },
     close () {

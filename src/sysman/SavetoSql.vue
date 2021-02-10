@@ -11,6 +11,7 @@
             item-value="id"
             :rules= "[v => !!v || '税种不能为空']"
             label="税种"
+            v-if="!gaozhuanlan"
             required
           ></v-select>
       <v-select
@@ -35,6 +36,7 @@
         :rules= "[v => !!v || '文章来源不能为空']"
         :counter="1000"
         label="文章来源"
+        v-if="!gaozhuanlan"
         required
       ></v-text-field>
       <v-text-field
@@ -121,7 +123,8 @@ export default {
       uploadok: '',
       snackbar: false,
       gaoshiti: false,
-      gaojichu: false
+      gaojichu: false,
+      gaozhuanlan: false
     }
   },
   methods: {
@@ -136,6 +139,20 @@ export default {
         console.log(this.wzlxselect)
         return
       }
+      let a = 2
+      if (a === 1) {
+        alert(this.wzlxselect)
+        return
+      }
+      if (this.gaozhuanlan) {
+        this.loading.uploadIsLoading = true
+        let formData = new window.FormData()
+        formData.append('file', this.fileInfo)
+        formData.append('wzlx', this.wzlxselect)
+        this.zhidingurlpost('sys/zhuanlan/uploadsave', formData)
+        console.log('搞专栏，不是搞基础类或问题类，不要继续往下了')
+        return
+      }
       if (this.gaoshiti) {
         this.loading.uploadIsLoading = true
         let formData = new window.FormData()
@@ -144,11 +161,6 @@ export default {
         formData.append('sz', this.szselect)
         formData.append('wzlaiyuan', this.wzlaiyuan)
         this.zhidingurlpost('sys/szexam/uploadsave', formData)
-      }
-      let a = 1
-      if (a === 1) {
-        // alert(this.wzlxselect)
-        // return
       }
       if (!this.gaojichu) {
         console.log('不是搞基础类，不要继续往下了，下面是提交基础文章')
@@ -312,6 +324,11 @@ export default {
         this.gaoshiti = true
       } else {
         this.gaoshiti = false
+      }
+      if (this.wzlxselectmc.indexOf('专栏') >= 0) {
+        this.gaozhuanlan = true
+      } else {
+        this.gaozhuanlan = false
       }
     },
     szselect () {
