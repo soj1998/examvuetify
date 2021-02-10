@@ -18,26 +18,9 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog
-          v-model="dialog"
-          max-width="500px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="mb-2"
-              v-bind="attrs"
-              v-on="on"
-              disabled
-            >
-              新建
-            </v-btn>
-          </template>
+        <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+            <v-card-title class="headline">确定要删除此条专栏吗?</v-card-title>
             <v-form
               ref="saveform"
               v-model="saveform"
@@ -60,113 +43,23 @@
                         v-if="1!==1"
                       ></v-text-field>
                       <v-text-field
-                        v-model="editedItem.sz"
-                        :rules="[v =>  v.length > 0 || '不能为空']"
+                        v-model="editedItem.szmc"
                         label="税种"
+                        disabled
                       ></v-text-field>
                       <v-text-field
-                        v-model="editedItem.zsd"
-                        :rules="[v =>  v.length > 0 || '不能为空']"
-                        label="知识点"
+                        v-model="editedItem.biaoti"
+                        label="标题"
+                        disabled
                       ></v-text-field>
                       <v-text-field
-                        v-model="editedItem.leix"
-                        :rules="[v =>  v.length > 0 || '不能为空']"
-                        label="类型"
+                        v-model="editedItem.xilie"
+                        label="系列"
+                        disabled
                       ></v-text-field>
                       <v-text-field
                         v-model="editedItem.yxbz"
-                        :rules="[v =>  v.length > 0 || '不能为空']"
                         label="有效标志"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="editedItem.timu"
-                        :rules="[v =>  v.length > 0 || '不能为空']"
-                        label="题目"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="editedItem.xuanx"
-                        :rules="[v =>  v.length > 0 || '不能为空']"
-                        label="选项"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="editedItem.daan"
-                        :rules="[v =>  v.length > 0 || '不能为空']"
-                        label="答案"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="editedItem.jiexi"
-                        :rules="[v =>  v.length > 0 || '不能为空']"
-                        label="解析"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-            </v-form>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-              >
-                取消
-              </v-btn>
-              <v-btn
-                :disabled="!saveform"
-                color="blue darken-1"
-                text
-                @click="save()"
-              >
-                保存
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-          <v-snackbar
-            v-model="snackbar"
-          >
-            {{ tishisnack }}
-
-            <template v-slot:action="{ attrs }">
-              <v-btn
-                color="pink"
-                text
-                v-bind="attrs"
-                @click="snackbar = false"
-              >
-                关闭
-              </v-btn>
-            </template>
-          </v-snackbar>
-        </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="headline">确定要删除此条试题吗?</v-card-title>
-            <v-form
-              ref="saveform"
-              v-model="saveform"
-              lazy-validation>
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col
-                      cols="30"
-                      sm="16"
-                      md="10"
-                    >
-                      <v-text-field
-                        v-model="editedItem.id"
-                        label="序号"
-                        disabled
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="editedItem.ycid"
-                        v-if="1!==1"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="editedItem.sz"
-                        label="税种"
                         disabled
                       ></v-text-field>
                     </v-col>
@@ -187,13 +80,6 @@
     <template v-slot:item.actions="{ item }">
       <v-icon
         small
-        class="mr-2"
-        @click="editItem(item)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        small
         @click="deleteItem(item)"
       >
         mdi-delete
@@ -209,7 +95,6 @@
 export default {
   data: () => ({
     name: 'EditSzZhuanLan',
-    dialog: false,
     dialogDelete: false,
     headers: [
       {
@@ -358,115 +243,9 @@ export default {
           console.log(err)
         })
     },
-    getxxtoedit (zsid) {
-      let that = this
-      let psz = []
-      let data1 = {tid: zsid}
-      psz.push({url: 'sys/szexam/getquebyid', data: data1})
-      psz.push({url: 'sys/szexam/listchoi', data: data1})
-      this.$postalldayu2(psz)
-        .then(res => {
-          that.editedItem.ycid = res[0].id
-          that.editedItem.id = that.editedIndex + 1
-          let szmc1 = that.zhuanhuan('sz', res[0].szid)
-          let tmlx = that.zhuanhuan('tmlx', res[0].examtype)
-          that.editedItem.sz = szmc1
-          that.editedItem.leix = tmlx
-          that.editedItem.zsd = res[0].zzd
-          that.editedItem.timu = res[0].examque
-          that.editedItem.yxbz = res[0].yxbz
-          let xx = []
-          res[1].sort((a, b) => {
-            let val1 = a.id
-            let val2 = b.id
-            if (val1 < val2) {
-              return -1
-            } else if (val1 > val2) {
-              return 1
-            } else {
-              return 0
-            }
-          })
-          that.xuanxids = []
-          res[1].forEach(e => {
-            xx.push(e.xuanxiang)
-            that.xuanxids.push(e.id)
-          })
-          that.editedItem.xuanx = xx.join(that.xuanxjiange)
-          that.editedItem.daan = res[0].examans
-          that.editedItem.jiexi = res[0].examanal
-        }).catch(err => {
-          console.log(err)
-        })
-    },
-    saveexam (item) {
-      let szmc1 = this.zhuanhuan('szmc', item.sz)
-      let tmlx = this.zhuanhuan('tmlxmc', item.leix)
-      let eque1 = {
-        id: item.ycid,
-        szid: szmc1,
-        zzd: item.zsd,
-        examtype: tmlx,
-        examque: item.timu,
-        yxbz: item.yxbz,
-        examans: item.daan,
-        examanal: item.jiexi
-      }
-      let echoilist1 = item.xuanx.split(this.xuanxjiange)
-      let echoilist2 = []
-      console.log('1', echoilist2.length)
-      let duoyuxuanx = []
-      // 选项大于 等于 小于 当初给定选项的情况 注意 删除不是与后台一一对应的
-      // 如果删除一个 一般是删除后台的最后一个
-      for (let i = 0; i < echoilist1.length; i++) {
-        let a
-        let xx1 = echoilist1[i]
-        let id1 = null
-        if (i < item.xuanxids.length) {
-          id1 = item.xuanxids[i]
-        }
-        a = {id: id1, xuanxiang: xx1}
-        echoilist2.push(a)
-      }
-      for (let i = 0; i < item.xuanxids.length; i++) {
-        if (i >= echoilist1.length) {
-          duoyuxuanx.push(item.xuanxids[i])
-        }
-      }
-      let a = 2
-      if (a === 1) {
-        return
-      }
-      let sz = {eque: eque1, echoi: echoilist2, duoyuxuanxiang: duoyuxuanx}
-      let that = this
-      this.$postobject('sys/szexam/add', sz)
-        .then(res => {
-          if (typeof res === 'string' && res.indexOf('not save') > 0) {
-            console.log('有一道相似题,不再保存')
-            that.tishisnack = '有一道相似题,不再保存'
-            that.snackbar = true
-            return
-          }
-          console.log('成功保存' + res)
-          if (that.editedIndex > -1) {
-            Object.assign(that.desserts[that.editedIndex], that.editedItem)
-          } else {
-            that.editedItem.id = that.desserts.length + 1
-            that.editedItem.ycid = res
-            that.desserts.push(this.editedItem)
-          }
-          that.close()
-        }).catch(err => {
-          console.log(err)
-          console.log('保存失败，服务器错误')
-          that.tishisnack = '保存失败，服务器错误'
-          that.snackbar = true
-        })
-    },
     delsz (szid1) {
       let sz = {szid: szid1}
       let that = this
-      console.log(that.desserts.length)
       this.$post('sys/zhuanlan/delete', sz)
         .then(res => {
           console.log(res)
@@ -476,19 +255,10 @@ export default {
             e.id = ind
             ind++
           })
-          console.log(that.desserts.length)
           that.closeDelete()
         }).catch(err => {
           console.log(err)
         })
-    },
-    editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      // console.log(item.ycid)
-      // this.editedItem = Object.assign({}, item)
-      this.getxxtoedit(item.ycid)
-      console.log(this.editedItem)
-      this.dialog = true
     },
     deleteItem (item) {
       this.editedIndex = this.desserts.indexOf(item)
@@ -512,12 +282,6 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
-    },
-    save () {
-      let item = this.editedItem
-      if (this.$refs.saveform.validate()) {
-        this.saveexam(item)
-      }
     }
   }
 }
