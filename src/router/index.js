@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Content from '@/components/Content'
-import Zzsmuban from '@/szmuban/Zzsmuban'
+import Szmuban from '@/szmuban/Szmuban'
+import ZhuanLanMx from '@/szmuban/ZhuanLanMx'
 import Mytest from '@/components/Mytest'
 import Mytest2 from '@/components/Mytest2'
 import SavetoSql from '@/sysman/SavetoSql'
@@ -33,9 +34,14 @@ export default new Router({
       component: SzLianjieShouye
     },
     {
-      path: '/sz',
-      name: 'Zzsmuban',
-      component: Zzsmuban
+      path: '/szmb',
+      name: 'Szmuban',
+      component: Szmuban
+    },
+    {
+      path: '/zlmx',
+      name: 'ZhuanLanMx',
+      component: ZhuanLanMx
     },
     {
       path: '/3',

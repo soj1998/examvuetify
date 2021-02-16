@@ -25,25 +25,22 @@
             <v-card-actions>
             <v-btn
               color="orange lighten-2"
+              @click="showdaan(index)"
               text
             >
               显示答案
             </v-btn>
-
             <v-spacer></v-spacer>
-
             <v-btn
               icon
-              @click="show = !show"
+              @click="showdaan(index)"
             >
-              <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+              <v-icon>{{ item.ifshow ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
             </v-btn>
           </v-card-actions>
-
           <v-expand-transition>
-            <div v-show="show">
+            <div v-show="item.ifshow">
               <v-divider></v-divider>
-
               <v-card-text class="text-start">
                 {{daan}}
               </v-card-text>
@@ -56,45 +53,6 @@
         </v-list-item>
       </template>
     </v-list>
-    <v-card-title>
-      单选
-    </v-card-title>
-    <v-card-subtitle class="text-start">
-      题目奥术大师大所大所大所大所大所大所大所大所多奥术大师
-    </v-card-subtitle>
-    <v-card-text class="text-start">
-      选项.
-    </v-card-text>
-    <v-card-actions>
-      <v-btn
-        color="orange lighten-2"
-        text
-      >
-        显示答案
-      </v-btn>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        icon
-        @click="show = !show"
-      >
-        <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
-    </v-card-actions>
-
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-
-        <v-card-text class="text-start">
-           {{daan}}
-        </v-card-text>
-        <v-card-text class="text-start">
-           {{jiexi}}
-        </v-card-text>
-      </div>
-    </v-expand-transition>
   </v-card>
 </template>
 
@@ -108,31 +66,36 @@ export default {
         {
           avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
           title: 'Brunch this weekend?',
-          subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`
+          subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+          ifshow: false
         },
         { divider: true },
         {
           avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
           title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>',
-          subtitle: `<span class="text--primary">to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend.`
+          subtitle: `<span class="text--primary">to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend.`,
+          ifshow: false
         },
         { divider: true, inset: true },
         {
           avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
           title: 'Oui oui',
-          subtitle: '<span class="text--primary">Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?'
+          subtitle: '<span class="text--primary">Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?',
+          ifshow: false
         },
         { divider: true, inset: true },
         {
           avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
           title: 'Birthday gift',
-          subtitle: '<span class="text--primary">Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?'
+          subtitle: '<span class="text--primary">Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?',
+          ifshow: false
         },
         { divider: true, inset: true },
         {
           avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
           title: 'Recipe to try',
-          subtitle: '<span class="text--primary">Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos.'
+          subtitle: '<span class="text--primary">Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
+          ifshow: false
         }
       ],
       show: false,
@@ -162,8 +125,8 @@ export default {
     console.log(arr)
   },
   methods: {
-    enternext () {
-      console.log('aaa')
+    showdaan (index) {
+      this.items[index].ifshow = !this.items[index].ifshow
     },
     toTop () {
       let top = document.documentElement.scrollTop || document.body.scrollTop

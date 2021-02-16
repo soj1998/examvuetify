@@ -209,7 +209,7 @@ export default {
           let lb = res[2]
           let ind = 1
           lb.forEach(e => {
-            let szmc1 = that.zhuanhuan('sz', e.atcSjk.szid)
+            let szmc1 = that.zhuanhuan('sz', e.szid)
             let it = {id: ind, ycid: e.id, szmc: szmc1, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.atcSjk.yxbz}
             that.desserts.push(it)
             ind++

@@ -1,10 +1,5 @@
 <template>
   <v-container class="grey lighten-5" id="dingtop">
-    <v-tabs>
-    <v-tab>Item One</v-tab>
-    <v-tab>Item Two</v-tab>
-    <v-tab>Item Three</v-tab>
-  </v-tabs>
     <v-row no-gutters>
       <v-col
         cols="4"
@@ -91,6 +86,7 @@ export default {
       active2: [],
       gotop: false, // 判断是否应该上滚
       atcid: 1,
+      fuyuchushicishu: 0,
       ymszmc: ''
     }
   },
@@ -191,6 +187,113 @@ export default {
           clearInterval(timeTop)
         }
       }, 10)
+    },
+    fuyuchushi2 () {
+      console.log('次数zzsmuban' + this.fuyuchushicishu)
+      this.fuyuchushicishu++
+    },
+    fuyuchushi () {
+      console.log('赋予初始值2')
+      // console.log(this.$route.params.szid) // szid grsds zzs
+      console.log(typeof (this.$route.params.szmc))
+      if (this.$route.params.szmc === undefined) {
+        console.log('router没有带过来')
+        return
+      }
+      let cdszmc = this.$route.params.szmc
+      let szid = this.$route.params.szid
+      this.ymszmc = this.ymszmc + cdszmc
+      let cdwzmc = '基础'
+      var grade = 'A'
+      switch (grade) {
+        case 'A': {
+          console.log('Excellent')
+          break
+        }
+        case 'B': {
+          console.log('Good')
+          break
+        }
+        case 'C': {
+          console.log('Fair')
+          break
+        }
+        case 'D': {
+          console.log('Poor')
+          break
+        }
+        default: {
+          console.log('Invalid choice')
+          break
+        }
+      }
+      window.addEventListener('scroll', this.handleScroll, true)
+      let that = this
+      this.atcid = 3
+      this.$post('sys/wzlx/listall', null).then(res => {
+        let wzzu = res
+        let wzid = 0
+        wzzu.forEach(element => {
+          console.log(element)
+          if (element.wzlxmc.indexOf(cdwzmc) >= 0) {
+            wzid = element.id
+          }
+        })
+        console.log('now: ' + szid + ', ' + wzid)
+        that.$post('atc/getatcidbyszwzlx', { szid: szid, wzlxid: wzid })
+          .then(res => {
+            if (!res || res.length < 1) {
+              console.log('还没有这种类型的文章')
+              that.ymszmc = that.ymszmc + '还没有这种类型的文章'
+              return
+            }
+            console.log(res[0].id)
+            that.atcid = res[0].id
+            that.$post('atc/gettree', { parentid: 1, atctreenodesjkid: that.atcid })
+              .then(res => {
+                console.log(res.length + typeof res)
+                if (res.length === 0) {
+                  return
+                }
+                res.forEach(element => {
+                  console.log(element)
+                  let json =
+                  {
+                    'id': element.yuantou.id,
+                    'name': element.yuantou.btneirong,
+                    'biaoti': element.yuantou.biaoti,
+                    'rootid': element.yuantou.rootid,
+                    'parentid': element.yuantou.parentid,
+                    'children': []
+                  }
+                  if (element.children.length === 0) {
+                    return
+                  }
+                  element.children.forEach(e => {
+                    let json2 =
+                    {
+                      'id': e.id,
+                      'name': e.btneirong,
+                      'biaoti': e.biaoti,
+                      'rootid': e.rootid,
+                      'parentid': e.parentid
+                    }
+                    json.children.push(json2)
+                  })
+                  that.t_items.push(json)
+                })
+                that.getPageContent(that.t_items[0].children[0].parentid, that.t_items[0].children[0].rootid, that.atcid)
+              })
+              .catch(error => {
+                console.log('error' + error)
+              })
+          })
+          .catch(error => {
+            console.log('error' + error)
+          })
+      }).catch(error => {
+        console.log('error' + error)
+      })
     }
   },
   watch: {
@@ -221,111 +324,9 @@ export default {
       this.scrollviewtop(newValue[newValue.length - 1].id)
     }
   },
+
   mounted () {
-    console.log('赋予初始值')
-    console.log(this.$route.params.szid) // 根据szid 得到税种id 和文章类型id
-    console.log(this.$route.params.szmc)
-    let cdszmc = this.$route.params.szmc
-    let cdwzmc = '基础类'
-    var grade = 'A'
-    switch (grade) {
-      case 'A': {
-        console.log('Excellent')
-        break
-      }
-      case 'B': {
-        console.log('Good')
-        break
-      }
-      case 'C': {
-        console.log('Fair')
-        break
-      }
-      case 'D': {
-        console.log('Poor')
-        break
-      }
-      default: {
-        console.log('Invalid choice')
-        break
-      }
-    }
-    window.addEventListener('scroll', this.handleScroll, true)
-    let that = this
-    this.atcid = 3
-    this.$postall('sys/sz/listall', null, 'sys/wzlx/listall', null).then(res => {
-      let szzu = res[0]
-      let wzzu = res[1]
-      let szid = 0
-      let wzid = 0
-      szzu.forEach(element => {
-        console.log(element)
-        if (element.szmc === cdszmc) {
-          szid = element.id
-          that.ymszmc = that.ymszmc + element.szmc
-        }
-      })
-      wzzu.forEach(element => {
-        console.log(element)
-        if (element.wzlxmc === cdwzmc) {
-          wzid = element.id
-        }
-      })
-      console.log('now: ' + szid + ', ' + wzid)
-      that.$post('atc/getatcidbyszwzlx', { szid: szid, wzlxid: wzid })
-        .then(res => {
-          if (!res || res.length < 1) {
-            console.log('还没有这种类型的文章')
-            that.ymszmc = that.ymszmc + '还没有这种类型的文章'
-            return
-          }
-          console.log(res[0].id)
-          that.atcid = res[0].id
-          that.$post('atc/gettree', { parentid: 1, atctreenodesjkid: that.atcid })
-            .then(res => {
-              console.log(res.length + typeof res)
-              if (res.length === 0) {
-                return
-              }
-              res.forEach(element => {
-                console.log(element)
-                let json =
-                {
-                  'id': element.yuantou.id,
-                  'name': element.yuantou.btneirong,
-                  'biaoti': element.yuantou.biaoti,
-                  'rootid': element.yuantou.rootid,
-                  'parentid': element.yuantou.parentid,
-                  'children': []
-                }
-                if (element.children.length === 0) {
-                  return
-                }
-                element.children.forEach(e => {
-                  let json2 =
-                  {
-                    'id': e.id,
-                    'name': e.btneirong,
-                    'biaoti': e.biaoti,
-                    'rootid': e.rootid,
-                    'parentid': e.parentid
-                  }
-                  json.children.push(json2)
-                })
-                that.t_items.push(json)
-              })
-              that.getPageContent(that.t_items[0].children[0].parentid, that.t_items[0].children[0].rootid, that.atcid)
-            })
-            .catch(error => {
-              console.log('error' + error)
-            })
-        })
-        .catch(error => {
-          console.log('error' + error)
-        })
-    }).catch(error => {
-      console.log('error' + error)
-    })
+    this.fuyuchushi()
   }
 }
 </script>

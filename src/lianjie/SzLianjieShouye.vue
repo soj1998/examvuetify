@@ -66,7 +66,26 @@ export default {
   methods: {
     daohangsz (item) {
       console.log(item.text)
-      this.$router.push({name: 'Zzsmuban', params: { szid: item.sz, szmc: item.text }})
+      let zhaodao = false
+      this.$post('sys/sz/listall')
+        .then(res => {
+          let szzu = res
+          let szid2 = 0
+          szzu.forEach(element => {
+            if (element.szmc === item.text) {
+              szid2 = element.id
+              this.$router.push({name: 'Szmuban', params: { szid: szid2, szmc: item.text }})
+              zhaodao = true
+            }
+          })
+          if (!zhaodao) {
+            console.log('没有找到对应的税种,无法导航到下一界面')
+            alert('没有找到对应的税种,无法导航到下一界面')
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }
