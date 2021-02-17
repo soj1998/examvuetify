@@ -92,14 +92,14 @@ export default {
     }
   },
   methods: {
-    listall () {
+    listall (szid) {
       this.desserts.push({ header: '今日试题' })
       let that = this
-      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1} // 加一了删除一个有补得 删除两个有补得 就加2
+      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1, sid: szid} // 加一了删除一个有补得 删除两个有补得 就加2
       let psz = []
       psz.push({url: 'sys/sz/listall', data: null})
       psz.push({url: 'sys/szexam/getcount', data: null})
-      psz.push({url: 'sys/szexam/listdaican', data: data2})
+      psz.push({url: 'sys/szexam/listdaicanzhanshi', data: data2})
       this.$postalldayu2(psz)
         .then(res => {
           res[0].forEach(e => {
@@ -187,7 +187,13 @@ export default {
     }
   },
   mounted () {
-    this.listall()
+    console.log(typeof (this.$route.params.szmc))
+    if (this.$route.params.szmc === undefined) {
+      console.log('router没有带过来')
+      return
+    }
+    let szid = this.$route.params.szid
+    this.listall(szid)
   }
 }
 </script>

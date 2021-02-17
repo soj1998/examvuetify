@@ -1,59 +1,30 @@
 <template>
- <v-card
+<div class = "example">
+  <v-card
     class="mx-auto"
+    max-width="344"
   >
-    <v-list three-line>
-      <template v-for="(item, index) in items">
-        <v-subheader
-          v-if="item.header"
-          :key="item.header"
-          v-text="item.header"
-        ></v-subheader>
-
-        <v-divider
-          v-else-if="item.divider"
-          :key="index"
-        ></v-divider>
-
-        <v-list-item
-          v-else
-          :key="item.title"
-        >
-          <v-list-item-content>
-            <v-list-item-title v-html="item.title"></v-list-item-title>
-            <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>
-            <v-card-actions>
-            <v-btn
-              color="orange lighten-2"
-              @click="showdaan(index)"
-              text
-            >
-              显示答案
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-              icon
-              @click="showdaan(index)"
-            >
-              <v-icon>{{ item.ifshow ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-            </v-btn>
-          </v-card-actions>
-          <v-expand-transition>
-            <div v-show="item.ifshow">
-              <v-divider></v-divider>
-              <v-card-text class="text-start">
-                {{daan}}
-              </v-card-text>
-              <v-card-text class="text-start">
-                {{jiexi}}
-              </v-card-text>
-            </div>
-          </v-expand-transition>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
-    </v-list>
+    <v-card-text>
+      <div>Word of the Day</div>
+      <p class="display-1 text--primary">
+        be•nev•o•lent
+      </p>
+      <p>adjective</p>
+      <div class="text--primary">
+        well meaning and kindly.<br>
+        "a benevolent smile"
+      </div>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn
+        text
+        color="deep-purple accent-4"
+      >
+        Learn More
+      </v-btn>
+    </v-card-actions>
   </v-card>
+  </div>
 </template>
 
 <script>
@@ -163,18 +134,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.footer .gotop {
-  text-align: center;
-  position: fixed;
-  right: 50px;
-  bottom: 30px;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 50%;
-  background: white;
-  color: #000000;
-}
 .example {
   color: red;
+  background: red;
 }
 </style>

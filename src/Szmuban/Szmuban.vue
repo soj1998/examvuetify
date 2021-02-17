@@ -1,17 +1,38 @@
 <template>
   <v-card>
-    <v-tabs
-      v-model="tab"
-      background-color="primary"
+    <v-toolbar
+      color="cyan"
       dark
+      flat
     >
-      <v-tab
-        v-for="item in items"
-        :key="item.tab"
-      >
-        {{ item.tab }}
-      </v-tab>
-    </v-tabs>
+      <v-toolbar-title>{{szsyszmingzi}}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-text-field
+        class="mx-4"
+        flat
+        hide-details
+        label="Search"
+        prepend-inner-icon="mdi-magnify"
+        solo-inverted
+        ></v-text-field>
+        <v-btn icon @click="gohome">
+          <v-icon x-large>mdi-home</v-icon>
+        </v-btn>
+        <template v-slot:extension>
+        <v-tabs
+          v-model="tab"
+          slider-color="yellow"
+          grow
+        >
+          <v-tab
+            v-for="item in items"
+            :key="item.tab"
+          >
+            {{ item.tab }}
+          </v-tab>
+        </v-tabs>
+        </template>
+    </v-toolbar>
     <v-tabs-items v-model="tab">
       <v-tab-item>
         <v-card flat>
@@ -51,6 +72,7 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       pagecontent: '',
+      szsyszmingzi: '',
       active: [],
       openids: [],
       shoucidian: false,
@@ -77,6 +99,16 @@ export default {
     fuyuchushi2 () {
       console.log('次数' + this.fuyuchushicishu)
       this.fuyuchushicishu++
+      console.log(typeof (this.$route.params.szmc))
+      if (this.$route.params.szmc === undefined) {
+        console.log('router没有带过来')
+        return
+      }
+      let cdszmc = this.$route.params.szmc
+      this.szsyszmingzi = this.szsyszmingzi + cdszmc
+    },
+    gohome () {
+      this.$router.push({name: 'SzLianjieShouye'})
     }
   },
 

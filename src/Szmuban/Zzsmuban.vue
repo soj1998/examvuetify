@@ -11,9 +11,6 @@
           outlined
           tile
         >
-        <v-card-title class="indigo white--text headline">
-          {{ymszmc}}
-        </v-card-title>
         <v-treeview
           :active.sync="active"
           :open.sync="openids"
@@ -44,9 +41,6 @@
         cols="3"
         md="2"
       >
-        <v-card-title class="blue lighten-3 white--text headline">
-          文章内导航
-        </v-card-title>
         <v-treeview
           return-object
           color = "pink lighten-3"
@@ -133,10 +127,12 @@ export default {
                 name: e.nr
               }
               // console.log(btnr)
-              that.t_items2.push(btnr)
+              if (e.biaoti > 2) {
+                that.t_items2.push(btnr)
+              }
               e.nr = that.syhji(e.biaoti + 2, e.nr, 'a' + e.hangshu)
             } else {
-              e.nr = '<p>' + e.nr + '</p>'
+              e.nr = '<p style="text-indent: 2em; line-height:40px; font-size:20px;">' + e.nr + '</p>'
             }
             that.pagecontent = that.pagecontent + e.nr
           })
@@ -361,5 +357,9 @@ a {
   margin-top: 3px;
   vertical-align: top;
   margin-right: 10px;
+}
+.classp {
+  text-indent: 2em; /*em是相对单位，2em即现在一个字大小的两倍*/
+  color: red;
 }
 </style>
