@@ -1,21 +1,52 @@
 <template>
-  <div>
-    <span
-      class="myspancalss"
-      v-for="(item, i) in items"
-      :key="i"
-      cols="12"
-      md="6">
-      <v-btn
-        x-large
-        color="success"
-        dark
-        class="mybtncalss"
-        @click="daohangsz(item)"
-      >
-        {{item.text}}
-      </v-btn>
-    </span>
+<div class="d-flex flex-column mb-6">
+    <v-card
+      class="pa-2"
+      outlined
+      tile
+    >
+      左侧图标，中间搜索
+    </v-card>
+    <v-card
+      class="pa-2"
+      outlined
+      tile
+      style = "height:260px;"
+    >
+      一个大图标和部分介绍的话
+    </v-card>
+    <v-card
+      class="pa-2"
+      outlined
+      tile
+    >
+      <template>
+      <span
+        class="myspancalss"
+        v-for="(item, i) in items"
+        :key="i"
+        cols="12"
+        md="6">
+        <v-btn
+          x-large
+          color="success"
+          dark
+          class="mybtncalss"
+          @click="daohangsz(item)"
+        >
+          {{item.text}}
+        </v-btn>
+      </span>
+      </template>
+    </v-card>
+    <v-card
+      class="pa-2"
+      outlined
+      tile
+      style="margin-top:120px;"
+    >
+      版权所有 联系我们
+    </v-card>
   </div>
 </template>
 

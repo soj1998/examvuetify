@@ -1,29 +1,27 @@
 <template>
-<div class = "example">
-  <v-card
-    class="mx-auto"
-    max-width="344"
-  >
-    <v-card-text>
-      <div>Word of the Day</div>
-      <p class="display-1 text--primary">
-        be•nev•o•lent
-      </p>
-      <p>adjective</p>
-      <div class="text--primary">
-        well meaning and kindly.<br>
-        "a benevolent smile"
-      </div>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn
-        text
-        color="deep-purple accent-4"
-      >
-        Learn More
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+  <div class="d-flex flex-column mb-6">
+    <v-card
+      class="pa-2"
+      outlined
+      tile
+    >
+      左侧图标，中间搜索
+    </v-card>
+    <v-card
+      class="pa-2"
+      outlined
+      tile
+      style = "height:260px;"
+    >
+      一个大图标和部分介绍的话
+    </v-card>
+    <v-card
+      class="pa-2"
+      outlined
+      tile
+    >
+      一堆图标导航进入
+    </v-card>
   </div>
 </template>
 
