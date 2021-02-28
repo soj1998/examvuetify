@@ -23,7 +23,7 @@
       <template>
       <span
         class="myspancalss"
-        v-for="(item, i) in items"
+        v-for="(item, i) in myitems"
         :key="i"
         cols="12"
         md="6">
@@ -34,7 +34,7 @@
           class="mybtncalss"
           @click="daohangsz(item)"
         >
-          {{item.text}}
+          {{item.szmc}}
         </v-btn>
       </span>
       </template>
@@ -76,6 +76,8 @@ export default {
         sz: 'xfs'
       }
     ],
+    myitems: [],
+    szzu: [],
     selected: []
   }),
 
@@ -96,28 +98,26 @@ export default {
 
   methods: {
     daohangsz (item) {
-      console.log(item.text)
-      let zhaodao = false
+      console.log(item.szmc)
+      this.$router.push({name: 'Szmuban', params: { szid: item.id, szmc: item.szmc }})
+    },
+    getszfromhoutai () {
+      let that = this
       this.$post('sys/sz/listall')
         .then(res => {
-          let szzu = res
-          let szid2 = 0
-          szzu.forEach(element => {
-            if (element.szmc === item.text) {
-              szid2 = element.id
-              this.$router.push({name: 'Szmuban', params: { szid: szid2, szmc: item.text }})
-              zhaodao = true
-            }
+          let szzu1 = res
+          szzu1.forEach(element => {
+            that.szzu.push({id: element.id, szmc: element.szmc})
+            that.myitems.push({src: 'backgrounds/md.jpg', id: element.id, szmc: element.szmc})
           })
-          if (!zhaodao) {
-            console.log('没有找到对应的税种,无法导航到下一界面')
-            alert('没有找到对应的税种,无法导航到下一界面')
-          }
         })
         .catch(err => {
           console.log(err)
         })
     }
+  },
+  mounted () {
+    this.getszfromhoutai()
   }
 }
 </script>

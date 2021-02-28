@@ -111,7 +111,7 @@ export default {
           let ind = 1
           lb.forEach(e => {
             let tmlx = that.zhuanhuan('tmlx', e.examtype)
-            let tmgs = e.examque
+            let tmgs = e.que
             this.$post('sys/szexam/listchoi', {tid: e.id})
               .then(res => {
                 let xxiang = []
@@ -120,7 +120,7 @@ export default {
                   xxiang.push('<p>' + ea + '</p>')
                 })
                 let xxs = xxiang.join(' ')
-                let it = {id: ind, ycid: e.id, leix: tmlx, timu: tmgs, tmxuanx: xxs, daan: e.examans, jiexi: e.examanal, ifshow: false}
+                let it = {id: ind, ycid: e.id, leix: tmlx, timu: tmgs, tmxuanx: xxs, daan: e.ans, jiexi: e.jiexi, ifshow: false}
                 that.desserts.push(it)
                 that.desserts.push({ divider: true })
               })

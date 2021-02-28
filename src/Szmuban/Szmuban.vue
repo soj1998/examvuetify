@@ -37,18 +37,22 @@
       <v-tab-item>
         <v-card flat>
           <template>
-          <Zzsmuban></Zzsmuban>
+            <Exam></Exam>
           </template>
         </v-card>
       </v-tab-item>
       <v-tab-item>
         <v-card flat>
-          <Exam></Exam>
+          <template>
+            <Zzsmuban></Zzsmuban>
+          </template>
         </v-card>
       </v-tab-item>
       <v-tab-item>
         <v-card flat>
-          <ZhuanLanLieBiao></ZhuanLanLieBiao>
+          <template>
+            <ZhuanLanLieBiao></ZhuanLanLieBiao>
+          </template>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -83,9 +87,9 @@ export default {
       atcid: 1,
       tab: null,
       items: [
-        { tab: '学研基础' },
-        { tab: '学研试题', content: 'Tab 2 Content' },
-        { tab: '学研专栏', content: 'Tab 3 Content' }
+        { tab: '学研基础', tabtemp: '<Zzsmuban></Zzsmuban>', content: 'Tab 1 Content' },
+        { tab: '学研试题', tabtemp: Exam, content: 'Tab 2 Content' },
+        { tab: '学研专栏', content: 'Tab 3 Content', ifshow: false }
       ],
       fuyuchushicishu: 0,
       ymszmc: ''
