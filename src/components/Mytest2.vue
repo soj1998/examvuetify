@@ -41,7 +41,9 @@
         v-for="item in myitems"
         :key="item"
       >
-        <div v-html="item.content"></div>
+        <component v-bind:is="item.tabtemp">
+          <!-- 组件在 vm.currentview 变化时改变！ -->
+        </component>
       </v-tab-item>
     </v-tabs-items>
   </v-card>
@@ -53,15 +55,17 @@ export default {
   components: {
     UploadBtnHaoKan
   },
+  template: '<UploadBtnHaoKan/>',
   data: () => ({
     tab: null,
     reveal: true,
+    currentView: UploadBtnHaoKan,
     items: [
       'web', 'shopping', 'videos', 'images', 'news'
     ],
     myitems: [
-      { tab: '学研基础', tabtemp: '<Zzsmuban></Zzsmuban>', content: '<div><UploadBtnHaoKan></UploadBtnHaoKan></div>' },
-      { tab: '学研试题', tabtemp: 'Exam', content: 'Tab 2 Content' }
+      { tab: '学研基础', tabtemp: UploadBtnHaoKan, content: '<div><UploadBtnHaoKan></UploadBtnHaoKan></div>' },
+      { tab: '学研试题', tabtemp: UploadBtnHaoKan, content: 'Tab 2 Content' }
     ],
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
   }),

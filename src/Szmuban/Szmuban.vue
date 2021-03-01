@@ -34,26 +34,13 @@
         </template>
     </v-toolbar>
     <v-tabs-items v-model="tab">
-      <v-tab-item>
-        <v-card flat>
-          <template>
-            <Exam></Exam>
-          </template>
-        </v-card>
-      </v-tab-item>
-      <v-tab-item>
-        <v-card flat>
-          <template>
-            <Zzsmuban></Zzsmuban>
-          </template>
-        </v-card>
-      </v-tab-item>
-      <v-tab-item>
-        <v-card flat>
-          <template>
-            <ZhuanLanLieBiao></ZhuanLanLieBiao>
-          </template>
-        </v-card>
+      <v-tab-item
+        v-for="item in items"
+        :key="item"
+      >
+        <component v-bind:is="item.tabtemp">
+          <!-- 组件在 vm.currentview 变化时改变！ -->
+        </component>
       </v-tab-item>
     </v-tabs-items>
   </v-card>
@@ -87,9 +74,9 @@ export default {
       atcid: 1,
       tab: null,
       items: [
-        { tab: '学研基础', tabtemp: '<Zzsmuban></Zzsmuban>', content: 'Tab 1 Content' },
+        { tab: '学研基础', tabtemp: Zzsmuban, content: 'Tab 1 Content' },
         { tab: '学研试题', tabtemp: Exam, content: 'Tab 2 Content' },
-        { tab: '学研专栏', content: 'Tab 3 Content', ifshow: false }
+        { tab: '学研专栏', tabtemp: ZhuanLanLieBiao, content: 'Tab 3 Content', ifshow: false }
       ],
       fuyuchushicishu: 0,
       ymszmc: ''
