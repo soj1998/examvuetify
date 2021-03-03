@@ -1,64 +1,92 @@
 <template>
- <v-card
-    class="mx-auto"
+  <v-data-table
+    :headers="headers"
+    :items="desserts"
+    hide-default-header
+    sort-by="id"
+    class="elevation-1"
+    :items-per-page.sync="perpage"
+    :page.sync="dangqianpage"
   >
-    <v-list three-line>
-      <template v-for="(item, index) in desserts">
-        <v-subheader
-          v-if="item.header"
-          :key="item.header"
-          v-text="item.header"
-        ></v-subheader>
-
+    <template v-slot:top>
+      <v-toolbar
+        flat
+      >
+        <v-toolbar-title>试题通览</v-toolbar-title>
         <v-divider
-          v-else-if="item.divider"
-          :key="index"
+          class="mx-4"
+          inset
+          vertical
         ></v-divider>
+        <v-spacer></v-spacer>
+      </v-toolbar>
+    </template>
+    <template v-slot:body>
+      <v-card
+        class="mx-auto"
+      >
+        <v-list three-line>
+          <template v-for="(item, index) in desserts">
+            <v-subheader
+              v-if="item.header"
+              :key="item.header"
+              v-text="item.header"
+            ></v-subheader>
 
-        <v-list-item
-          v-else
-          :key="item.id"
-        >
-          <v-list-item-content>
-            <v-card-text class="text-start" v-html="item.timu"></v-card-text>
-            <v-card-text class="text-start" v-html="item.tmxuanx"></v-card-text>
-            <v-card-actions>
-            <v-btn
-              color="orange lighten-2"
-              @click="showdaan(index)"
-              text
+            <v-divider
+              v-else-if="item.divider"
+              :key="index"
+            ></v-divider>
+
+            <v-list-item
+              v-else
+              :key="item.id"
             >
-              显示答案
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-              icon
-              @click="showdaan(index)"
-            >
-              <v-icon>{{ item.ifshow ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-            </v-btn>
-          </v-card-actions>
-          <v-expand-transition>
-            <div v-show="item.ifshow">
-              <v-divider></v-divider>
-              <v-card-text class="text-start">
-                {{item.daan}}
-              </v-card-text>
-              <v-card-text class="text-start">
-                {{item.jiexi}}
-              </v-card-text>
-            </div>
-          </v-expand-transition>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
-    </v-list>
-  </v-card>
+              <v-list-item-content>
+                <v-card-text class="text-start" v-html="item.timu"></v-card-text>
+                <v-card-text class="text-start" v-html="item.tmxuanx"></v-card-text>
+                <v-card-actions>
+                  <v-btn
+                    color="orange lighten-2"
+                    @click="showdaan(index)"
+                    text
+                  >
+                    显示答案
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    icon
+                    @click="showdaan(index)"
+                  >
+                    <v-icon>{{ item.ifshow ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <v-expand-transition>
+                  <div v-show="item.ifshow">
+                    <v-divider></v-divider>
+                    <v-card-text class="text-start">
+                      {{item.daan}}
+                    </v-card-text>
+                    <v-card-text class="text-start">
+                      {{item.jiexi}}
+                    </v-card-text>
+                  </div>
+                </v-expand-transition>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-card>
+    </template>
+    <template v-slot:no-data>
+      暂无数据
+    </template>
+  </v-data-table>
 </template>
 
 <script>
 export default {
-  name: 'Zzsmuban',
+  name: 'Exam',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
@@ -66,18 +94,6 @@ export default {
       active: [],
       openids: [],
       shoucidian: false,
-      items: [
-        { header: 'Today' },
-        {
-          avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-          title: 'Brunch this weekend?',
-          subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-          ifshow: false,
-          daan: 'add',
-          jiexi: 'dddd'
-        },
-        { divider: true }
-      ],
       desserts: [],
       dangqianpage: 1,
       perpage: 10,
@@ -95,10 +111,12 @@ export default {
     listall (szid) {
       this.desserts.push({ header: '今日试题' })
       let that = this
-      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1, sid: szid} // 加一了删除一个有补得 删除两个有补得 就加2
+      // 索取全部题，还是知识点限定题，还是单一题目类型题
+      let sqtm = ['quanbu', 'danxuan', '待定知识点']
+      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage, sid: szid, sqtm: sqtm[0]}
       let psz = []
       psz.push({url: 'sys/sz/listall', data: null})
-      psz.push({url: 'sys/szexam/getcount', data: null})
+      psz.push({url: 'wbzt/gettab', data: {szid: szid}})
       psz.push({url: 'sys/szexam/listdaicanzhanshi', data: data2})
       this.$postalldayu2(psz)
         .then(res => {
@@ -106,7 +124,7 @@ export default {
             let it = {id: e.id, sz: e.szmc}
             that.szlist.push(it)
           })
-          that.totalrecord = res[1]
+          that.totalrecord = res[1].xiti
           let lb = res[2]
           let ind = 1
           lb.forEach(e => {

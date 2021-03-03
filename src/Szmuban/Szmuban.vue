@@ -25,7 +25,7 @@
           grow
         >
           <v-tab
-            v-for="item in items"
+            v-for="item in myitems"
             :key="item.tab"
           >
             {{ item.tab }}
@@ -35,7 +35,7 @@
     </v-toolbar>
     <v-tabs-items v-model="tab">
       <v-tab-item
-        v-for="item in items"
+        v-for="item in myitems"
         :key="item"
       >
         <component v-bind:is="item.tabtemp">
@@ -78,6 +78,7 @@ export default {
         { tab: '学研试题', tabtemp: Exam, content: 'Tab 2 Content' },
         { tab: '学研专栏', tabtemp: ZhuanLanLieBiao, content: 'Tab 3 Content', ifshow: false }
       ],
+      myitems: [],
       fuyuchushicishu: 0,
       ymszmc: ''
     }
@@ -88,15 +89,29 @@ export default {
       console.log('error')
     },
     fuyuchushi2 () {
-      console.log('次数' + this.fuyuchushicishu)
-      this.fuyuchushicishu++
-      console.log(typeof (this.$route.params.szmc))
-      if (this.$route.params.szmc === undefined) {
+      console.log(typeof (this.$route.params.szid))
+      if (this.$route.params.szid === undefined) {
         console.log('router没有带过来')
         return
       }
-      let cdszmc = this.$route.params.szmc
-      this.szsyszmingzi = this.szsyszmingzi + cdszmc
+      let szid1 = this.$route.params.szid
+      let data = {szid: szid1}
+      let that = this
+      this.$post('wbzt/gettab', data)
+        .then(res => {
+          if (res.jichu > 0) {
+            that.myitems.push({ tab: '学研基础', tabtemp: Zzsmuban, content: 'Tab 1 Content' })
+          }
+          if (res.xiti > 0) {
+            that.myitems.push({ tab: '学研试题', tabtemp: Exam, content: 'Tab 2 Content' })
+          }
+          if (res.zhuanlan > 0) {
+            that.myitems.push({ tab: '学研专栏', tabtemp: ZhuanLanLieBiao, content: 'Tab 3 Content' })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     gohome () {
       this.$router.push({name: 'SzLianjieShouye'})

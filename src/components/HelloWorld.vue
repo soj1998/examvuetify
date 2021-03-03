@@ -93,7 +93,8 @@ export default {
   },
   mounted () {
     let that = this
-    this.$post('up', { parentid: 1 })
+    let a = [{parentid: 2}, {abc: 3}]
+    this.$post('up', {a: a[1].abc})
       .then(res => {
         console.log(res)
         that.msg = res.message
