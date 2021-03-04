@@ -113,11 +113,11 @@ export default {
       let that = this
       // 索取全部题，还是知识点限定题，还是单一题目类型题
       let sqtm = ['quanbu', 'danxuan', '待定知识点']
-      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage, sid: szid, sqtm: sqtm[0]}
+      let data2 = {sid: szid, sqtm: sqtm[0]}
       let psz = []
       psz.push({url: 'sys/sz/listall', data: null})
       psz.push({url: 'wbzt/gettab', data: {szid: szid}})
-      psz.push({url: 'sys/szexam/listdaicanzhanshi', data: data2})
+      psz.push({url: 'wbzt/getquanbuxitibyszid', data: data2})
       this.$postalldayu2(psz)
         .then(res => {
           res[0].forEach(e => {
@@ -129,22 +129,9 @@ export default {
           let ind = 1
           lb.forEach(e => {
             let tmlx = that.zhuanhuan('tmlx', e.examtype)
-            let tmgs = e.que
-            this.$post('sys/szexam/listchoi', {tid: e.id})
-              .then(res => {
-                let xxiang = []
-                res.forEach(e1 => {
-                  let ea = e1.xuanxiang
-                  xxiang.push('<p>' + ea + '</p>')
-                })
-                let xxs = xxiang.join(' ')
-                let it = {id: ind, ycid: e.id, leix: tmlx, timu: tmgs, tmxuanx: xxs, daan: e.ans, jiexi: e.jiexi, ifshow: false}
-                that.desserts.push(it)
-                that.desserts.push({ divider: true })
-              })
-              .catch(err => {
-                console.log(err)
-              })
+            let it = {id: ind, ycid: e.id, leix: tmlx, timu: e.que, tmxuanx: 'aaa', daan: e.ans, jiexi: e.jiexi, ifshow: false}
+            that.desserts.push(it)
+            that.desserts.push({ divider: true })
           })
         }).catch(err => {
           console.log(err)
