@@ -19,6 +19,8 @@ exam vuetify
 	git add README.md
 	git commit -m '1224'
 	E.再推git push --force examvuetify master 
+	G.examspring git remote show origin git push origin master
+
 ```
 #  2.再搞vue
 ```

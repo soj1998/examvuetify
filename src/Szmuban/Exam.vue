@@ -6,7 +6,7 @@
     sort-by="id"
     class="elevation-1"
     :items-per-page.sync="perpage"
-    :page.sync="dangqianpage"
+    :page.sync="dqpage"
   >
     <template v-slot:top>
       <v-toolbar
@@ -26,11 +26,11 @@
         class="mx-auto"
       >
         <v-list three-line>
-          <template v-for="(item, index) in desserts">
+          <template v-for="(item, index) in mydesserts">
             <v-subheader
               v-if="item.header"
               :key="item.header"
-              v-text="item.header"
+              v-html="item.header"
             ></v-subheader>
 
             <v-divider
@@ -40,11 +40,39 @@
 
             <v-list-item
               v-else
-              :key="item.id"
+              :key="item.ycid"
             >
               <v-list-item-content>
+                <v-card-text class="text-start" v-html="item.xsid"></v-card-text>
                 <v-card-text class="text-start" v-html="item.timu"></v-card-text>
-                <v-card-text class="text-start" v-html="item.tmxuanx"></v-card-text>
+                <v-container fluid  v-if="item.youxx==='danxuan'">
+                  <v-radio-group v-model="item.xzdaan1" @change="danxuanbianhua(item)">
+                    <v-radio
+                      v-for="(itema, indexa) in item.tmxuanx"
+                      :key="indexa"
+                      :value="item.xzdaan[indexa]"
+                    >
+                      <template v-slot:label>
+                        <v-card-text class="text-start" v-html="itema"></v-card-text>
+                      </template>
+                    </v-radio>
+                  </v-radio-group>
+                  <v-card-text class="text-start" v-html="item.xsdaan2"></v-card-text>
+                </v-container>
+                <v-container fluid v-if="item.youxx==='duoxuan'">
+                  <v-checkbox
+                    v-for="(itema, indexa) in item.tmxuanx"
+                    :key="indexa"
+                    @change="duoxuanbianhua(item, indexa)"
+                    v-model="item.duoxuandaan[indexa]"
+                    :value="item.xzdaan[indexa]"
+                  >
+                    <template v-slot:label>
+                      <v-card-text class="text-start" v-html="itema"></v-card-text>
+                    </template>
+                  </v-checkbox>
+                  <v-card-text class="text-start" v-html="item.xsdaan2"></v-card-text>
+                  </v-container>
                 <v-card-actions>
                   <v-btn
                     color="orange lighten-2"
@@ -64,11 +92,9 @@
                 <v-expand-transition>
                   <div v-show="item.ifshow">
                     <v-divider></v-divider>
-                    <v-card-text class="text-start">
-                      {{item.daan}}
+                    <v-card-text v-html="item.daan" class="text-start">
                     </v-card-text>
-                    <v-card-text class="text-start">
-                      {{item.jiexi}}
+                    <v-card-text v-html="item.jiexi" class="text-start">
                     </v-card-text>
                   </div>
                 </v-expand-transition>
@@ -95,21 +121,19 @@ export default {
       openids: [],
       shoucidian: false,
       desserts: [],
-      dangqianpage: 1,
+      mydesserts: [],
+      dqpage: 1,
       perpage: 10,
       totalrecord: 1,
       szlist: [],
-      t_items: [],
-      t_items2: [],
-      active2: [],
-      gotop: false, // 判断是否应该上滚
-      atcid: 1,
-      ymszmc: ''
+      pttimuzihao: 20,
+      datimuzihao: 25,
+      checkbox: -1
     }
   },
   methods: {
     listall (szid) {
-      this.desserts.push({ header: '今日试题' })
+      // this.desserts.push({ header: '今日试题' })
       let that = this
       // 索取全部题，还是知识点限定题，还是单一题目类型题
       let sqtm = ['quanbu', 'danxuan', '待定知识点']
@@ -127,15 +151,75 @@ export default {
           that.totalrecord = res[1].xiti
           let lb = res[2]
           let ind = 1
+          let indda = 1
+          let templx = null
           lb.forEach(e => {
-            let tmlx = that.zhuanhuan('tmlx', e.examtype)
-            let it = {id: ind, ycid: e.id, leix: tmlx, timu: e.que, tmxuanx: 'aaa', daan: e.ans, jiexi: e.jiexi, ifshow: false}
+            // let tmlx = that.zhuanhuan('tmlx', e.examtype)
+            let xx = []
+            let zihao = that.pttimuzihao
+            let xxlai = e.xuanxiang
+            let youxx1 = 'weizhi'
+            let xxdaan = []
+            let xxdaan2 = []
+            if (xxlai !== null) {
+              youxx1 = e.examtype
+              xxlai.forEach(e => {
+                let ae = that.zhuandaziti(e, zihao - 3)
+                xx.push(ae)
+                let ae2 = e.substr(0, 1)
+                xxdaan.push(ae2)
+                xxdaan2.push(false)
+              })
+            }
+            // let xxg = xx.join('')
+            if (templx == null) {
+              templx = e.examtype
+            } else {
+              if (e.examtype !== templx) {
+                templx = e.examtype
+                indda++
+              }
+            }
+            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan: that.zhuandaziti('答案：' + e.ans, zihao), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao), ifshow: false}
             that.desserts.push(it)
-            that.desserts.push({ divider: true })
+            // that.desserts.push({ divider: true })
+            ind++
           })
+          if (that.mydesserts.length === 0) {
+            console.log('当前为空 ' + that.perpage)
+            let df = that.desserts
+            let qidian = (that.dqpage - 1) * that.perpage
+            let zhdian = that.dqpage * that.perpage
+            for (let i = qidian; i < zhdian; i++) {
+              let hed = that.zhuandaziti(that.zhuanhuan('datimu', df[i].dxh) + that.zhuanhuan('tmlx', df[i].leix), that.datimuzihao)
+              if (i > qidian && i < zhdian) {
+                let a = df[i - 1].leix
+                let b = df[i].leix
+                if (a !== b) {
+                  that.mydesserts.push({ header: hed })
+                  df[i].id = df[i].xxh - df[i - 1].xxh
+                } else {
+                  df[i].id = df[i - 1].id + 1
+                }
+              }
+              if (i === qidian) {
+                that.mydesserts.push({ header: hed })
+                df[i].id = df[i].xxh
+              }
+              df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao)
+              console.log('shouci塞几次 ' + i + ',qidian' + qidian + ',zhdian' + zhdian + ',ycid' + df[i].ycid)
+              df[i].timu = '<span style= "font-size:20px; " >' + df[i].timu + '</span>'
+              df[i].yxid = i
+              that.mydesserts.push(df[i])
+              that.mydesserts.push({ divider: true })
+            }
+          }
         }).catch(err => {
           console.log(err)
         })
+    },
+    zhuandaziti (nr, zihao) {
+      return '<span style= "font-size:' + zihao + 'px; " >' + nr + '</span>'
     },
     zhuanhuan (zhmc, srx) {
       let rs = ''
@@ -153,8 +237,33 @@ export default {
           }
         })
       }
+      if (zhmc === 'datimu') {
+        switch (srx) {
+          case 1:
+            rs = '一.'
+            break
+          case 2:
+            rs = '二.'
+            break
+          case 3:
+            rs = '三.'
+            break
+          case 4:
+            rs = '四.'
+            break
+          case 5:
+            rs = '五.'
+            break
+          default:
+            rs = '六.'
+            break
+        }
+      }
       if (zhmc === 'tmlx') {
         switch (srx) {
+          case 'weizhi':
+            rs = '未知'
+            break
           case 'danxuan':
             rs = '单选'
             break
@@ -188,7 +297,66 @@ export default {
       return rs
     },
     showdaan (index) {
-      this.desserts[index].ifshow = !this.desserts[index].ifshow
+      this.mydesserts[index].ifshow = !this.mydesserts[index].ifshow
+    },
+    toTop () {
+      let top = document.documentElement.scrollTop || document.body.scrollTop
+      console.log('滚不滚' + top)
+      const timeTop = setInterval(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = top -= 50
+        if (top <= 0) {
+          clearInterval(timeTop)
+        }
+      }, 10)
+    },
+    danxuanbianhua (item) {
+      item.xsdaan2 = '<span style= "font-size:20px; " > 你选择的答案是：<span style= "color:red; " > ' + item.xzdaan1 + '</span></span>'
+    },
+    duoxuanbianhua (item, indexa) {
+      item.xzdaan2 = []
+      item.duoxuandaan.forEach(e => {
+        if (e !== false && e !== null) {
+          item.xzdaan2.push(e)
+        }
+      })
+      item.xsdaan2 = '<span style= "font-size:20px; " > 你选择的答案是：<span style= "color:red; " > ' + item.xzdaan2.join('') + '</span></span>'
+    }
+  },
+  watch: {
+    dqpage (newValue, oldValue) {
+      console.log('dqpage ' + newValue)
+      this.mydesserts = []
+      let df = this.desserts
+      let qidian = (newValue - 1) * this.perpage
+      let zhdian = newValue * this.perpage
+      let that = this
+      for (let i = qidian; i < zhdian; i++) {
+        let hed = that.zhuandaziti(that.zhuanhuan('datimu', df[i].dxh) + that.zhuanhuan('tmlx', df[i].leix), that.datimuzihao)
+        if (i > qidian && i < zhdian) {
+          let a = df[i - 1].leix
+          let b = df[i].leix
+          if (a !== b) {
+            that.mydesserts.push({ header: hed })
+            df[i].id = df[i].xxh - df[i - 1].xxh
+          } else {
+            df[i].id = df[i - 1].id + 1
+          }
+        }
+        if (i === qidian && qidian > 0) {
+          that.mydesserts.push({ header: hed })
+          df[i].id = df[qidian - 1].id + 1
+        }
+        console.log('perpage塞几次 ' + i + ',qidian' + qidian + ',zhdian' + zhdian)
+        df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao)
+        df[i].timu = '<span style= "font-size:20px; " >' + df[i].timu + '</span>'
+        df[i].yxid = i
+        that.mydesserts.push(df[i])
+        that.mydesserts.push({ divider: true })
+      }
+      that.toTop()
+    },
+    perpage (newValue, oldValue) {
+      console.log('perpage ' + newValue)
     }
   },
   mounted () {
@@ -220,10 +388,13 @@ a {
   color: #42b983;
 }
 [v-cloak] {
-    display: none;
+  display: none;
 }
-#divmar {
-  color: red;
+p {
+  background-color: red;
+}
+.divmar {
+  background-color: red;
 }
 #zzsdh-title-right {
   width: 5px;
