@@ -47,6 +47,16 @@
         v-if="gaojichu"
         required
       ></v-text-field>
+      <v-select
+            v-model="timuselect"
+            :items="timuselectitems"
+            item-text="timu_text"
+            item-value="id"
+            :rules= "[v => !!v || '题目样式判断']"
+            label="题目样式选择"
+            v-if="gaoshiti"
+            required
+          ></v-select>
       <v-file-input
             v-model="fileInfo"
             required
@@ -124,7 +134,9 @@ export default {
       snackbar: false,
       gaoshiti: false,
       gaojichu: false,
-      gaozhuanlan: false
+      gaozhuanlan: false,
+      timuselect: null,
+      timuselectitems: [{id: 1, timu_text: '每个题目信息全'}, {id: 2, timu_text: '一个知识点一个类型'}]
     }
   },
   methods: {
@@ -160,6 +172,7 @@ export default {
         formData.append('wzlx', this.wzlxselect)
         formData.append('sz', this.szselect)
         formData.append('wzlaiyuan', this.wzlaiyuan)
+        formData.append('danduchongfu', this.timuselect)
         this.zhidingurlpost('sys/szexam/uploadsave', formData)
       }
       if (!this.gaojichu) {
@@ -199,6 +212,7 @@ export default {
       this.fileInfo = ''
       this.szselect = null
       this.wzlxselect = null
+      this.timuselect = null
       this.wzbanben = ''
       this.wzjiagou = ''
       this.wzlaiyuan = ''
