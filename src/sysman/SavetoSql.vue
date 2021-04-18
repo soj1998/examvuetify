@@ -217,6 +217,9 @@ export default {
       this.wzjiagou = ''
       this.wzlaiyuan = ''
       this.uploadFormValid = false
+      this.gaoshiti = false
+      this.gaozhuanlan = false
+      this.gaojichu = false
     },
     uploadFile1 () {
       // console.log(this.fileInfo, '文件信息');

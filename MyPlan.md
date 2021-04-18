@@ -25,3 +25,11 @@
     11.修改试题 将试题 可以有 单选  1  2 .或、导入的形式
 
 ```
+
+...
+DELETE FROM t_examchoisjk;
+
+DELETE FROM t_examquesjk;
+
+DELETE FROM t_examansda;
+...
