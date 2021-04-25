@@ -1,131 +1,190 @@
 <template>
-  <div class="d-flex flex-column mb-6">
-    <v-card
-      class="pa-2"
-      outlined
-      tile
+  <div class="main">
+    <v-form
+       ref="uploadFileForm"
+       v-model="uploadFormValid"
+       lazy-validation>
+      <v-select
+            v-model="szselect"
+            :items="szitems"
+            item-text="sz"
+            item-value="id"
+            :rules= "[v => !!v || '税种不能为空']"
+            label="税种"
+            required
+      ></v-select>
+      <v-text-field
+        v-model="wzriqi"
+        :rules="riqiRules"
+        :counter="100"
+        label="文章日期"
+      ></v-text-field>
+      <v-text-field
+        v-model="wzlaiyuan"
+        :rules= "[v => !!v || '文章来源不能为空']"
+        :counter="1000"
+        label="文章来源"
+        required
+      ></v-text-field>
+      <v-text-field
+        v-model="wzxilie"
+        :counter="1000"
+        label="文章系列"
+      ></v-text-field>
+      <div id="div1"></div>
+    </v-form>
+    <v-btn
+      :disabled="!uploadFormValid"
+      color="success"
+      class="mr-4"
+      @click="submitform"
     >
-      左侧图标，中间搜索
-    </v-card>
-    <v-card
-      class="pa-2"
-      outlined
-      tile
-      style = "height:260px;"
+      保存
+    </v-btn>
+    <v-btn color="warning"
+      class="mr-4"
+      @click="clear">
+      清空
+    </v-btn>
+    <v-snackbar
+      v-model="snackbar"
     >
-      一个大图标和部分介绍的话
-    </v-card>
-    <v-card
-      class="pa-2"
-      outlined
-      tile
-    >
-      一堆图标导航进入
-    </v-card>
+      {{ uploadok }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="pink"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          关闭
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
+import E from 'wangeditor'
 export default {
-  name: 'Content',
+  name: 'dangezhuanlan1',
   data () {
     return {
-      items: [
-        { header: 'Today' },
-        {
-          avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-          title: 'Brunch this weekend?',
-          subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-          ifshow: false
-        },
-        { divider: true },
-        {
-          avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-          title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>',
-          subtitle: `<span class="text--primary">to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend.`,
-          ifshow: false
-        },
-        { divider: true, inset: true },
-        {
-          avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
-          title: 'Oui oui',
-          subtitle: '<span class="text--primary">Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?',
-          ifshow: false
-        },
-        { divider: true, inset: true },
-        {
-          avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
-          title: 'Birthday gift',
-          subtitle: '<span class="text--primary">Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?',
-          ifshow: false
-        },
-        { divider: true, inset: true },
-        {
-          avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-          title: 'Recipe to try',
-          subtitle: '<span class="text--primary">Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
-          ifshow: false
-        }
+      msg: 'Welcome to Your Vue.js App',
+      loading: {uploadIsLoading: false},
+      riqiRules: [
+        v => !!v || '日期不能为空',
+        v => /^((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29))$/.test(v) || '格式:yyyy-mm-dd'
       ],
-      show: false,
-      model: null,
-      selected: [],
-      page: 1,
-      pageCount: 60,
-      itemsPerPage: 2,
-      daan: 'aaaaa',
-      jiexi: 'bbbb'
+      uploadFormValid: false,
+      szitems: [],
+      szselect: null,
+      wzriqi: '',
+      wzlaiyuan: '',
+      wzxilie: '',
+      uploadok: '',
+      snackbar: false,
+      editorw: null
+    }
+  },
+  methods: {
+    submitform () {
+      let a = 2
+      // console.log(this.fileInfo, '文件信息');
+      if (!this.$refs.uploadFileForm.validate()) {
+        console.log('验证未通过')
+        return
+      }
+      let wznr = this.editorw.txt.html()
+      if (wznr === null || wznr.length === 0) {
+        console.log('富文本编辑器内容为空')
+        this.editorw.txt.html('<p>***请删除，编辑器内容不能为空</p>')
+        return
+      }
+      let wznr2 = this.editorw.txt.text()
+      if (wznr2.indexOf('***请删除，编辑器内容不能为空') >= 0) {
+        console.log('没有删除指定的提示语')
+        this.uploadok = '没有删除指定的提示语'
+        this.snackbar = true
+        return
+      }
+      if (a === 1) {
+        return
+      }
+      this.loading.uploadIsLoading = true
+      let data = {'szid': this.szselect,
+        'wzriqi': this.wzriqi,
+        'wzlaiyuan': this.wzlaiyuan,
+        'wzxilie': this.wzxilie,
+        'wzquanbu': this.editorw.txt.html() }
+      this.zhidingurlpost('sys/zhuanlan/uploadztsave', data)
+    },
+    zhidingurlpost (url, formData) {
+      let that = this
+      this.$post(url, formData)
+        .then(res => {
+          if (res === 'ok') {
+            console.log('ok')
+            that.uploadok = '上传成功'
+          } else {
+            that.uploadok = '存在问题，未能更新成功'
+          }
+          that.loading.uploadIsLoading = false
+          that.snackbar = true
+          that.clear()
+        }).catch(err => {
+          console.log(err)
+          that.uploadok = '失败，服务器故障'
+          that.snackbar = true
+          that.loading.uploadIsLoading = false
+        })
+    },
+    clear () {
+      // this.$refs.uploadFileForm.reset()
+      this.fileInfo = ''
+      this.szselect = null
+      this.wzxilie = ''
+      this.wzriqi = this.$globalfunc.getDqYYMMDD()
+      this.wzlaiyuan = ''
+      this.uploadFormValid = false
+      this.editorw.txt.clear()
+    },
+    test () {
+      console.log('error')
+    },
+    getandputsz () {
+      let that = this
+      this.$post('sys/sz/listall')
+        .then(res => {
+          res.forEach(e => {
+            let it = {id: e.id, sz: e.szmc}
+            that.szitems.push(it)
+          })
+        }).catch(err => {
+          console.log(err)
+        })
+    }
+  },
+  watch: {
+    uploadFormValid (newValue, oldValue) {
+      console.log('uploadFormValid ' + newValue)
     }
   },
   mounted () {
-    let arr = [{id: 1, xx: 'ddd'}, {id: 2, xx: 'xxx'}]
-    console.log(arr)
-    arr.sort((a, b) => {
-      let val1 = a.id
-      let val2 = b.id
-      if (val1 < val2) {
-        return 1
-      } else if (val1 > val2) {
-        return -1
-      } else {
-        return 0
-      }
-    })
-    console.log(arr)
-  },
-  methods: {
-    showdaan (index) {
-      this.items[index].ifshow = !this.items[index].ifshow
-    },
-    toTop () {
-      let top = document.documentElement.scrollTop || document.body.scrollTop
-      const timeTop = setInterval(() => {
-        document.body.scrollTop = document.documentElement.scrollTop = top -= 50
-        if (top <= 0) {
-          clearInterval(timeTop)
-        }
-      }, 10)
-    },
-    postone () {
-      return this.$post('sys/sz/listall')
-        .then(res => {
-          res.forEach(e => {
-            console.log(e)
-          })
-        }).catch(err => {
-          console.log(err)
-        })
-    },
-    posttwo () {
-      return this.$post('sys/wzlx/listall')
-        .then(res => {
-          res.forEach(e => {
-            console.log(e)
-          })
-        }).catch(err => {
-          console.log(err)
-        })
-    }
+    console.log('准备搞单个专栏文章的保存' + this.$globalfunc.getDqYYMMDD())
+    this.editorw = new E('#div1')
+    this.editorw.config.uploadImgServer = 'http://localhost:8080/houtai/sys/zhuanlan/uploadimg'
+    this.editorw.config.onchangeTimeout = 500 // 修改为 500ms
+    this.editorw.config.withCredentials = true
+    // 配置alt选项
+    this.editorw.config.showLinkImgAlt = false
+    // 配置超链接
+    this.editorw.config.showLinkImgHref = false
+    this.editorw.create()
+    this.wzriqi = this.$globalfunc.getDqYYMMDD()
+    this.uploadFormValid = false
+    this.getandputsz()
   }
 }
 </script>

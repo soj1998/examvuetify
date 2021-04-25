@@ -93,7 +93,6 @@
       v-model="snackbar"
     >
       {{ uploadok }}
-
       <template v-slot:action="{ attrs }">
         <v-btn
           color="pink"
@@ -196,7 +195,6 @@ export default {
       this.$postfile(url, formData)
         .then(res => {
           that.loading.uploadIsLoading = false
-          that.uploadDialog = false
           that.uploadok = '上传成功'
           that.snackbar = true
           that.clear()
@@ -232,7 +230,6 @@ export default {
           .then(res => {
             that.loading.uploadIsLoading = false
             that.$refs.notify.show('文件上传成功', {timeout: 1000, color: 'success'})
-            that.uploadDialog = false
             that.search()
           }).catch(err => {
             console.log(err)
@@ -241,31 +238,7 @@ export default {
       }
     },
     test () {
-      console.log('error')
-    },
-    b (e) {
-      console.log('ref ' + JSON.stringify(this.$refs))
-      console.log('e  ' + e)
-      this.active.push(1)
-    },
-    syhji (hsz, nr) {
-      switch (hsz) {
-        case 1: {
-          return '<div class="text-h1 text-center">' + nr + '</div>'
-        }
-        case 2: {
-          return '<div class="text-h2 text-center">' + nr + '</div>'
-        }
-        case 3: {
-          return '<div class="text-h3 text-center">' + nr + '</div>'
-        }
-        case 4: {
-          return '<div class="text-h4 text-center">' + nr + '</div>'
-        }
-        default: {
-          return '<div class="text-h5 text-center">' + nr + '</div>'
-        }
-      }
+      console.log('error1234')
     },
     getselectedwzlxmc () {
       let that = this

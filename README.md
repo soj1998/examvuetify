@@ -124,5 +124,10 @@ exam vuetify
 	npm run dev
 ```
 
+# 8.引入wangeditor搞专栏录入
+```
+	（1）官方网址:https://www.wangeditor.com/
+	（2）cdn引入
+```
 
 	
