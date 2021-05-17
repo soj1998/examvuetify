@@ -7,6 +7,7 @@ import ZhuanLanMx from '@/szmuban/ZhuanLanMx'
 import Mytest from '@/components/Mytest'
 import Mytest2 from '@/components/Mytest2'
 import SavetoSql from '@/sysman/SavetoSql'
+import SaveOneZhuanLan from '@/sysman/SaveZhuanLan'
 import EditShuiZhong from '@/sysman/EditShuiZhong'
 import EditWenZhangLeiXing from '@/sysman/EditWenZhangLeiXing'
 import EditSzExam from '@/sysman/EditSzExam'
@@ -57,6 +58,11 @@ export default new Router({
       path: '/sys/addjichu',
       name: 'SavetoSql',
       component: SavetoSql
+    },
+    {
+      path: '/sys/addzhuanlan',
+      name: 'SaveOneZhuanLan',
+      component: SaveOneZhuanLan
     },
     {
       path: '/sys/peizhi/editsz',

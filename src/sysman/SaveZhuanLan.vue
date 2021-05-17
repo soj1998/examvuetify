@@ -67,7 +67,7 @@
 
 <script>
 export default {
-  name: 'savezhuanlan',
+  name: 'dangezhuanlan1',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
