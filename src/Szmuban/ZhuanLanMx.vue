@@ -49,44 +49,64 @@ export default {
     }
   },
   methods: {
-    getPageContent (zhuanlanid) {
+    getPageContent (zhuanlanid, btid) {
       let that = this
-      console.log('zhuanlanid:' + zhuanlanid)
-      this.$post('sys/zhuanlan/getzlbyid', {tid: zhuanlanid})
-        .then(res => {
-          that.pagecontent = []
-          let neir = res
-          let pcsz = []
-          neir.forEach(element => {
-            // console.log('2.' + element.hangshu + that.pagecontent + element.qbneirong)
-            let json =
-            {
-              'hangshu': element.hangshu,
-              'nr': element.zlduanluo,
-              'btid': element.btid,
-              'lrsj': element.lrsj,
-              'wzly': element.wzlaiyuan
+      if (btid === -1) {
+        this.$post('sys/zhuanlan/getzlbyid', {tid: zhuanlanid})
+          .then(res => {
+            that.pagecontent = []
+            let neir = res
+            let pcsz = []
+            neir.forEach(element => {
+              // console.log('2.' + element.hangshu + that.pagecontent + element.qbneirong)
+              let json =
+              {
+                'hangshu': element.hangshu,
+                'nr': element.zlduanluo,
+                'btid': element.btid,
+                'lrsj': element.lrsj,
+                'wzly': element.wzlaiyuan
+              }
+              pcsz.push(json)
+            })
+            pcsz.sort((n1, n2) => {
+              return n1.hangshu - n2.hangshu
+            })
+            // console.log(pcsz)
+            that.t_items2 = []
+            pcsz.forEach(e => {
+              if (e.btid === -1) {
+                e.nr = '<div class="text-h4 text-center">' + e.nr + '</div>'
+              } else {
+                e.nr = '<p>' + e.nr + '</p>'
+              }
+              that.pagecontent = that.pagecontent + e.nr
+            })
+            that.pagecontent = '<div class="text-body-1 text-start" style="margin-top: 10px">' + that.pagecontent + '</div>'
+          })
+          .catch(error => {
+            console.log('error' + error)
+          })
+      }
+      if (btid === -100) {
+        this.$post('sys/zhuanlan/getzlztbyid', {tid: zhuanlanid})
+          .then(res => {
+            let neir = res
+            that.pagecontent = ''
+            if (neir.zlxilie !== null) {
+              that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;">系列:  ' + neir.zlxilie + '</div>'
             }
-            pcsz.push(json)
-          })
-          pcsz.sort((n1, n2) => {
-            return n1.hangshu - n2.hangshu
-          })
-          // console.log(pcsz)
-          that.t_items2 = []
-          pcsz.forEach(e => {
-            if (e.btid === -1) {
-              e.nr = '<div class="text-h4 text-center">' + e.nr + '</div>'
-            } else {
-              e.nr = '<p>' + e.nr + '</p>'
+            if (neir.wzlaiyuan !== null) {
+              that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">来源:  ' + neir.wzlaiyuan + '</div>'
             }
-            that.pagecontent = that.pagecontent + e.nr
+            that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">录入时间:  ' + this.$globalfunc.getZhiDingYYMMDD(new Date(neir.lrsj)) + '</div>'
+            that.pagecontent = that.pagecontent + '<div class="text-body-1" style="margin-top:20px;margin-bottom:20px;">' + neir.zlzhengge + '</div>'
+            that.pagecontent = '<div class="text-body-1 text-start" style="margin-top: 10px">' + that.pagecontent + '</div>'
           })
-          that.pagecontent = '<div class="text-body-1 text-start" style="margin-top: 10px">' + that.pagecontent + '</div>'
-        })
-        .catch(error => {
-          console.log('error' + error)
-        })
+          .catch(error => {
+            console.log('error' + error)
+          })
+      }
     },
     test () {
       console.log('error')
@@ -95,14 +115,14 @@ export default {
 
   mounted () {
     console.log('赋予初始值')
-    console.log(this.$route.params.zlid)
     if (this.$route.params.zlid === undefined) {
       console.log('router没有带过来')
       this.pagecontent = '非正常进入，没有内容要显示'
       return
     }
     let zlid = this.$route.params.zlid
-    this.getPageContent(zlid)
+    let btid = this.$route.params.zlbtid
+    this.getPageContent(zlid, btid)
   }
 }
 </script>
@@ -137,5 +157,9 @@ a {
   margin-top: 3px;
   vertical-align: top;
   margin-right: 10px;
+}
+.tiltemargin {
+  margin: 140px;
+  color: red;
 }
 </style>

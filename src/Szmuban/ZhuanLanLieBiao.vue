@@ -105,7 +105,7 @@ export default {
       let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1, szid: cdszid} // 加一了删除一个有补得 删除两个有补得 就加2
       let psz = []
       psz.push({url: 'sys/sz/listall', data: null})
-      psz.push({url: 'sys/zhuanlan/getcount', data: null})
+      psz.push({url: 'sys/zhuanlan/getcountbysz', data: {szid: cdszid}})
       psz.push({url: 'sys/zhuanlan/listdaicanzhanshi', data: data2})
       this.$postalldayu2(psz)
         .then(res => {
@@ -118,7 +118,15 @@ export default {
           let ind = 1
           lb.forEach(e => {
             let szmc1 = that.zhuanhuan('sz', e.szid)
-            let it = {id: ind, ycid: e.id, szmc: szmc1, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.atcSjk.yxbz}
+            let it
+            if (e.btid === -1) {
+              it = {id: ind, ycid: e.id, szmc: szmc1, biaotiid: e.btid, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.yxbz}
+            }
+            if (e.btid === -100) {
+              let a = (String)(e.zlzhengge).substr(1, 10)
+              console.log(a)
+              it = {id: ind, ycid: e.id, szmc: szmc1, biaotiid: e.btid, biaoti: a, xilie: e.zlxilie, yxbz: e.yxbz}
+            }
             that.desserts.push(it)
             ind++
           })
@@ -152,7 +160,7 @@ export default {
         })
     },
     rowClick (item, row) {
-      this.$router.push({name: 'ZhuanLanMx', params: { zlid: item.ycid }})
+      this.$router.push({name: 'ZhuanLanMx', params: { zlid: item.ycid, zlbtid: item.biaotiid }})
     }
   }
 }
