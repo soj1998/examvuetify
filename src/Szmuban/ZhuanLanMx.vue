@@ -93,13 +93,13 @@ export default {
           .then(res => {
             let neir = res
             that.pagecontent = ''
-            if (neir.zlxilie !== null) {
+            if (that.$globalfunc.strNotNil(neir.zlxilie)) {
               that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;">系列:  ' + neir.zlxilie + '</div>'
             }
             if (neir.wzlaiyuan !== null) {
               that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">来源:  ' + neir.wzlaiyuan + '</div>'
             }
-            that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">录入时间:  ' + this.$globalfunc.getZhiDingYYMMDD(new Date(neir.lrsj)) + '</div>'
+            that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">录入时间:  ' + that.$globalfunc.getZhiDingYYMMDD(new Date(neir.lrsj)) + '</div>'
             that.pagecontent = that.pagecontent + '<div class="text-body-1" style="margin-top:20px;margin-bottom:20px;">' + neir.zlzhengge + '</div>'
             that.pagecontent = '<div class="text-body-1 text-start" style="margin-top: 10px">' + that.pagecontent + '</div>'
           })

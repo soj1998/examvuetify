@@ -123,7 +123,7 @@ export default {
               it = {id: ind, ycid: e.id, szmc: szmc1, biaotiid: e.btid, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.yxbz}
             }
             if (e.btid === -100) {
-              let a = (String)(e.zlzhengge).substr(1, 10)
+              let a = (String)(e.zlzhenggetxt).substr(0, 10)
               console.log(a)
               it = {id: ind, ycid: e.id, szmc: szmc1, biaotiid: e.btid, biaoti: a, xilie: e.zlxilie, yxbz: e.yxbz}
             }

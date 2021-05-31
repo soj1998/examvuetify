@@ -10,7 +10,7 @@
             item-text="sz"
             item-value="id"
             :rules= "[v => !!v || '税种不能为空']"
-            label="税种"
+            label="学科"
             required
       ></v-select>
       <v-text-field
@@ -24,6 +24,13 @@
         :rules= "[v => !!v || '文章来源不能为空']"
         :counter="1000"
         label="文章来源"
+        required
+      ></v-text-field>
+      <v-text-field
+        v-model="wzzsd"
+        :rules= "[v => !!v || '文章知识点不能为空']"
+        :counter="1000"
+        label="文章知识点，用***分层级"
         required
       ></v-text-field>
       <v-text-field
@@ -81,6 +88,7 @@ export default {
       szselect: null,
       wzriqi: '',
       wzlaiyuan: '',
+      wzzsd: '',
       wzxilie: '',
       uploadok: '',
       snackbar: false,
@@ -91,6 +99,7 @@ export default {
     submitform () {
       let a = 2
       // console.log(this.fileInfo, '文件信息');
+      // 提交的文档字符串长度不能超过8000
       if (!this.$refs.uploadFileForm.validate()) {
         console.log('验证未通过')
         return
@@ -108,6 +117,11 @@ export default {
         this.snackbar = true
         return
       }
+      if ((String)(wznr).length > 8000) {
+        console.log('文字内容长度已超过8000，不能保存')
+        this.editorw.txt.html('<p>***请删除，文字内容长度已超过8000，不能保存</p>')
+        return
+      }
       if (a === 1) {
         return
       }
@@ -116,7 +130,10 @@ export default {
         'wzriqi': this.wzriqi,
         'wzlaiyuan': this.wzlaiyuan,
         'wzxilie': this.wzxilie,
-        'wzquanbu': this.editorw.txt.html() }
+        'wzquanbu': this.editorw.txt.html(),
+        'wzquanbutxt': this.editorw.txt.text(),
+        'wzzsd': this.wzzsd
+      }
       this.zhidingurlpost('sys/zhuanlan/uploadztsave', data)
     },
     zhidingurlpost (url, formData) {

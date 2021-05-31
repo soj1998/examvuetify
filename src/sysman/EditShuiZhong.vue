@@ -9,7 +9,7 @@
       <v-toolbar
         flat
       >
-        <v-toolbar-title>税费种类</v-toolbar-title>
+        <v-toolbar-title>学科名称</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -65,7 +65,7 @@
                       <v-text-field
                         v-model="editedItem.sz"
                         :rules="[v =>  v.length > 0 || '不能为空']"
-                        label="税种"
+                        label="学科"
                       ></v-text-field>
                     </v-col>
                   </v-row>

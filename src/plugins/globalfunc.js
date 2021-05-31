@@ -16,8 +16,16 @@ export function ceshiglobal () {
   return '--测试global func11---'
 }
 
+export function strNotNil (obj) {
+  if (obj !== null && (String)(obj).length > 0) {
+    return true
+  }
+  return false
+}
+
 export default {
   getDqYYMMDD,
   getZhiDingYYMMDD,
-  ceshiglobal
+  ceshiglobal,
+  strNotNil
 }
