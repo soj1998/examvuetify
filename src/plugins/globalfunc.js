@@ -23,9 +23,29 @@ export function strNotNil (obj) {
   return false
 }
 
+export function zhuanhuan (obj1, obj2, shuzu) {
+  let rs = ''
+  if (obj1 === 'sz') {
+    shuzu.forEach(e => {
+      if (e.id === obj2) {
+        rs = e.sz
+      }
+    })
+  }
+  if (obj1 === 'szmc') {
+    shuzu.forEach(e => {
+      if (e.sz === obj2) {
+        rs = e.id
+      }
+    })
+  }
+  return rs
+}
+
 export default {
   getDqYYMMDD,
   getZhiDingYYMMDD,
   ceshiglobal,
-  strNotNil
+  strNotNil,
+  zhuanhuan
 }
