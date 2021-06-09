@@ -9,6 +9,9 @@ export function getZhiDingYYMMDD (date) {
     mm = '0' + mm
   }
   let dd = date.getDate() // 获取当前日(1-31)
+  if ((dd + '').length < 2) {
+    dd = '0' + dd
+  }
   return yy + '-' + mm + '-' + dd
 }
 
