@@ -302,7 +302,7 @@ export default {
       console.log('uploadFormValid ' + newValue)
     },
     wzlxselect () {
-      this.getselectedwzlxmc()
+      console.log(this.getselectedwzlxmc())
       if (this.wzlxselectmc.indexOf('基础') >= 0) {
         console.log('选中了搞基础 ')
         this.gaojichu = true

@@ -50,6 +50,7 @@ export default {
   },
   methods: {
     getPageContent (zhuanlanid, btid) {
+      console.log('2.' + btid)
       let that = this
       if (btid === -1) {
         this.$post('sys/zhuanlan/getzlbyid', {tid: zhuanlanid})
@@ -96,6 +97,7 @@ export default {
             if (that.$globalfunc.strNotNil(neir.zlxilie)) {
               that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;">系列:  ' + neir.zlxilie + '</div>'
             }
+            that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-left:120px;">' + neir.biaoti + '</div>'
             if (neir.wzlaiyuan !== null) {
               that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">来源:  ' + neir.wzlaiyuan + '</div>'
             }
@@ -114,7 +116,7 @@ export default {
   },
 
   mounted () {
-    console.log('赋予初始值')
+    console.log('赋予初始值zlmx')
     if (this.$route.params.zlid === undefined) {
       console.log('router没有带过来')
       this.pagecontent = '非正常进入，没有内容要显示'

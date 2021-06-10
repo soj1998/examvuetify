@@ -72,7 +72,7 @@ export default {
           let ind = 1
           lb.forEach(e => {
             let lrsj1 = that.$globalfunc.getZhiDingYYMMDD(new Date(e.lrsj))
-            let it = {id: ind, ycid: e.id, xueke: e.sz, zsd: e.zsd, leixing: e.xinxiyuanleixing, xinxiyuanid: e.xinxiyuanid, lrsj: lrsj1}
+            let it = {id: ind, ycid: e.id, biaoti: e.biaoti, biaotiid: e.zlbiaotiid, xueke: e.sz, zsd: e.zsd, leixing: e.xinxiyuanleixing, xinxiyuanid: e.xinxiyuanid, lrsj: lrsj1}
             that.desserts.push(it)
             ind++
           })
