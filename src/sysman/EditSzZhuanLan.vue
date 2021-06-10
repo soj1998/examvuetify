@@ -103,7 +103,7 @@ export default {
         sortable: false,
         value: 'id'
       },
-      { text: '税种', value: 'szmc', sortable: false },
+      { text: '学科', value: 'szmc', sortable: false },
       { text: '标题', value: 'biaoti', sortable: false },
       { text: '系列', value: 'xilie', sortable: false },
       { text: '有效标志', value: 'yxbz', sortable: false },
@@ -210,7 +210,7 @@ export default {
           let ind = 1
           lb.forEach(e => {
             let szmc1 = that.zhuanhuan('sz', e.szid)
-            let it = {id: ind, ycid: e.id, szmc: szmc1, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.atcSjk.yxbz}
+            let it = {id: ind, ycid: e.id, szmc: szmc1, biaoti: e.biaoti, xilie: e.zlxilie, yxbz: e.yxbz}
             that.desserts.push(it)
             ind++
           })
@@ -234,7 +234,7 @@ export default {
           let desserts2 = []
           res.forEach(e => {
             let szmc1 = that.zhuanhuan('sz', e.atcSjk.szid)
-            let it = {id: ind, ycid: e.id, szmc: szmc1, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.atcSjk.yxbz}
+            let it = {id: ind, ycid: e.id, szmc: szmc1, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.yxbz}
             desserts2.push(it)
             that.desserts.splice(ind - 1, 1, it)
             ind++

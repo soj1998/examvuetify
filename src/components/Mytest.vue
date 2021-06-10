@@ -60,42 +60,22 @@ export default {
       this.listall()
     },
     listall () {
-      console.log(typeof (this.$route.params.szmc))
-      if (this.$route.params.szmc === undefined) {
-        console.log('router没有带过来')
-        return
-      }
-      let cdszid = this.$route.params.szid
       let that = this
-      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1, szid: cdszid} // 加一了删除一个有补得 删除两个有补得 就加2
+      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1} // 加一了删除一个有补得 删除两个有补得 就加2
       let psz = []
-      psz.push({url: 'sys/sz/listall', data: null})
-      psz.push({url: 'sys/zhuanlan/getcountbysz', data: {szid: cdszid}})
-      psz.push({url: 'sys/zhuanlan/listdaicanzhanshi', data: data2})
+      psz.push({url: 'wbzt/getsyxxcount'})
+      psz.push({url: 'wbzt/getsyxx', data: data2})
       this.$postalldayu2(psz)
         .then(res => {
-          res[0].forEach(e => {
-            let it = {id: e.id, sz: e.szmc}
-            that.szlist.push(it)
-          })
-          that.totalrecord = res[1]
-          let lb = res[2]
+          that.totalrecord = res[0]
+          let lb = res[1]
           let ind = 1
           lb.forEach(e => {
-            let szmc1 = that.zhuanhuan('sz', e.szid)
-            let it
-            if (e.btid === -1) {
-              it = {id: ind, ycid: e.id, szmc: szmc1, biaotiid: e.btid, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.yxbz}
-            }
-            if (e.btid === -100) {
-              let a = (String)(e.zlzhenggetxt).substr(0, 10)
-              console.log(a)
-              it = {id: ind, ycid: e.id, szmc: szmc1, biaotiid: e.btid, biaoti: a, xilie: e.zlxilie, yxbz: e.yxbz}
-            }
+            let lrsj1 = that.$globalfunc.getZhiDingYYMMDD(new Date(e.lrsj))
+            let it = {id: ind, ycid: e.id, xueke: e.sz, zsd: e.zsd, leixing: e.xinxiyuanleixing, xinxiyuanid: e.xinxiyuanid, lrsj: lrsj1}
             that.desserts.push(it)
             ind++
           })
-          that.dangqianpage = 1
           if (ind > 10) {
             for (let i = ind; i < that.totalrecord + 1; i++) {
               let myarray = {id: i}

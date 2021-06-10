@@ -80,7 +80,7 @@ export default new Router({
       component: EditSzExam
     },
     {
-      path: '/sys/peizhi/editzhuanl',
+      path: '/sys/peizhi/editzhuanlan',
       name: 'EditSzZhuanLan',
       component: EditSzZhuanLan
     }

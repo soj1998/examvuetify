@@ -14,9 +14,15 @@
             required
       ></v-select>
       <v-text-field
+        v-model="wzbiaoti"
+        :rules= "[v => !!v || '文章标题不能为空']"
+        :counter="200"
+        label="文章标题"
+        required
+      ></v-text-field>
+      <v-text-field
         v-model="wzriqi"
         :rules="riqiRules"
-        :counter="100"
         label="文章日期"
       ></v-text-field>
       <v-text-field
@@ -87,6 +93,7 @@ export default {
       szitems: [],
       szselect: null,
       wzriqi: '',
+      wzbiaoti: '',
       wzlaiyuan: '',
       wzzsd: '',
       wzxilie: '',
@@ -127,6 +134,7 @@ export default {
       }
       this.loading.uploadIsLoading = true
       let data = {'szid': this.szselect,
+        'wzbiaoti': this.wzbiaoti,
         'wzriqi': this.wzriqi,
         'wzlaiyuan': this.wzlaiyuan,
         'wzxilie': this.wzxilie,
@@ -198,6 +206,20 @@ export default {
     this.editorw.config.showLinkImgAlt = false
     // 配置超链接
     this.editorw.config.showLinkImgHref = false
+    let pandingchaochu = true
+    let zuiduozifushu = 8000
+    this.editorw.config.onchange = function (newHtml) {
+      let wznr = newHtml
+      if (pandingchaochu && (String)(wznr).length > zuiduozifushu) {
+        console.log('文字内容长度已超过8000，不能保存1,长度:' + (String)(wznr).length + ',判定标志:' + pandingchaochu)
+        alert('文字内容长度' + (String)(wznr).length + '已超过' + zuiduozifushu + '，不能保存')
+        pandingchaochu = !pandingchaochu
+      }
+      if (!pandingchaochu && (String)(wznr).length <= zuiduozifushu) {
+        console.log('文字内容长度已超过8000，不能保存2,长度:' + (String)(wznr).length + ',判定标志:' + pandingchaochu)
+        pandingchaochu = true
+      }
+    }
     this.editorw.create()
     this.wzriqi = this.$globalfunc.getDqYYMMDD()
     this.uploadFormValid = false
