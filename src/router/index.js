@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Content from '@/components/Content'
-import Szmuban from '@/szmuban/Szmuban'
-import ZhuanLanMx from '@/szmuban/ZhuanLanMx'
+import Szmuban from '@/Szmuban/Szmuban'
+import ZhuanLanMx from '@/Szmuban/ZhuanLanMx'
+import ExamMx from '@/Szmuban/ExamMx'
 import Mytest from '@/components/Mytest'
 import Mytest2 from '@/components/Mytest2'
 import SavetoSql from '@/sysman/SavetoSql'
@@ -13,6 +14,7 @@ import EditWenZhangLeiXing from '@/sysman/EditWenZhangLeiXing'
 import EditSzExam from '@/sysman/EditSzExam'
 import EditSzZhuanLan from '@/sysman/EditSzZhuanLan'
 import SzLianjieShouye from '@/lianjie/SzLianjieShouye'
+import ShouYe from '@/ShouYe/ShouYe'
 
 Vue.use(Router)
 
@@ -35,6 +37,11 @@ export default new Router({
       component: SzLianjieShouye
     },
     {
+      path: '/sy1',
+      name: 'ShouYe',
+      component: ShouYe
+    },
+    {
       path: '/szmb',
       name: 'Szmuban',
       component: Szmuban
@@ -43,6 +50,11 @@ export default new Router({
       path: '/zlmx',
       name: 'ZhuanLanMx',
       component: ZhuanLanMx
+    },
+    {
+      path: '/exammx',
+      name: 'ExamMx',
+      component: ExamMx
     },
     {
       path: '/3',

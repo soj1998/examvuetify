@@ -49,7 +49,7 @@
 <script>
 import Zzsmuban from '@/Szmuban/Zzsmuban'
 import ZhuanLanLieBiao from '@/Szmuban/ZhuanLanLieBiao'
-import Exam from '@/Szmuban/Exam'
+import Exam from '@/Szmuban/ExamMx'
 import UploadBtnHaoKan from '@/components/UploadBtnHaoKan'
 export default {
   name: 'Szmuban',

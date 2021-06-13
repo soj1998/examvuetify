@@ -112,7 +112,7 @@
 
 <script>
 export default {
-  name: 'Exam',
+  name: 'ExamMx',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
@@ -161,7 +161,7 @@ export default {
             let youxx1 = 'weizhi'
             let xxdaan = []
             let xxdaan2 = []
-            if (xxlai !== null) {
+            if (xxlai !== undefined && xxlai !== null) {
               youxx1 = e.examtype
               xxlai.forEach(e => {
                 let ae = that.zhuandaziti(e, zihao - 3)
@@ -360,13 +360,8 @@ export default {
     }
   },
   mounted () {
-    console.log(typeof (this.$route.params.szmc))
-    if (this.$route.params.szmc === undefined) {
-      console.log('router没有带过来')
-      return
-    }
-    let szid = this.$route.params.szid
-    this.listall(szid)
+    let biaoti = this.$route.params.biaoti
+    this.listall(biaoti)
   }
 }
 </script>

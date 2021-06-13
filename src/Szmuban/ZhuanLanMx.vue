@@ -122,7 +122,7 @@ export default {
       this.pagecontent = '非正常进入，没有内容要显示'
       return
     }
-    let zlid = this.$route.params.zlid
+    let zlid = this.$route.params.xinxiyuanid
     let btid = this.$route.params.zlbtid
     this.getPageContent(zlid, btid)
   }
