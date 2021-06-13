@@ -204,9 +204,9 @@ export default {
                 that.mydesserts.push({ header: hed })
                 df[i].id = df[i].xxh
               }
-              df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + df[i].timu
               console.log('shouci塞几次 ' + i + ',qidian' + qidian + ',zhdian' + zhdian + ',ycid' + df[i].ycid)
               df[i].timu = '<span style= "font-size:20px; " >' + df[i].timu + '</span>'
+              df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + df[i].timu
               df[i].yxid = i
               that.mydesserts.push(df[i])
               that.mydesserts.push({ divider: true })
@@ -347,6 +347,7 @@ export default {
         console.log('perpage塞几次 ' + i + ',qidian' + qidian + ',zhdian' + zhdian)
         df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao)
         df[i].timu = '<span style= "font-size:20px; " >' + df[i].timu + '</span>'
+        df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + df[i].timu
         df[i].yxid = i
         that.mydesserts.push(df[i])
         that.mydesserts.push({ divider: true })
