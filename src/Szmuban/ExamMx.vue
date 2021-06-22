@@ -129,7 +129,8 @@ export default {
       szlist: [],
       pttimuzihao: 20,
       datimuzihao: 25,
-      checkbox: -1
+      checkbox: -1,
+      isMobile: false
     }
   },
   methods: {
@@ -361,7 +362,11 @@ export default {
   mounted () {
     let szid = this.$route.params.szid
     let biaoti = this.$route.params.biaoti
-    console.log(szid + '  ' + biaoti)
+    this.isMobile = window.matchMedia('(max-width: 425px)').matches
+    console.log(szid + '  ' + biaoti + ' ismobile' + this.isMobile)
+    if (this.isMobile) {
+      this.perpage = 1
+    }
     this.listall(szid, biaoti)
   }
 }
