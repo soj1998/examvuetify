@@ -64,6 +64,7 @@ export default {
               {
                 'hangshu': element.hangshu,
                 'nr': element.zlduanluo,
+                'biaoti': element.biaoti,
                 'btid': element.btid,
                 'lrsj': element.lrsj,
                 'wzly': element.wzlaiyuan
@@ -77,7 +78,9 @@ export default {
             that.t_items2 = []
             pcsz.forEach(e => {
               if (e.btid === -1) {
-                e.nr = '<div class="text-h4 text-center">' + e.nr + '</div>'
+                e.nr = '<div class="text-h4 text-center">' +
+                 e.biaoti + '</div>' +
+                '<p>' + e.nr + '</p>'
               } else {
                 e.nr = '<p>' + e.nr + '</p>'
               }
