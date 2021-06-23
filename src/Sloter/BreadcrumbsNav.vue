@@ -1,9 +1,10 @@
 <template>
   <div>
-    <v-breadcrumbs
-      :items="items"
-      divider="-"
-    ></v-breadcrumbs>
+    <v-breadcrumbs :items="items">
+      <template v-slot:divider>
+        <v-icon>mdi-chevron-right</v-icon>
+      </template>
+    </v-breadcrumbs>
   </div>
 </template>
 
@@ -13,19 +14,14 @@ export default {
   data: () => ({
     items: [
       {
-        text: 'Dashboard',
+        text: '首页',
         disabled: false,
-        href: 'breadcrumbs_dashboard'
+        href: '/houtai/#/sy1'
       },
       {
-        text: 'Link 1',
-        disabled: false,
-        href: 'breadcrumbs_link_1'
-      },
-      {
-        text: 'Link 2',
+        text: '当前页',
         disabled: true,
-        href: 'breadcrumbs_link_2'
+        href: 'breadcrumbs_link_1'
       }
     ]
   })

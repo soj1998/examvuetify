@@ -1,5 +1,7 @@
 <template>
   <v-container class="grey lighten-5">
+    <BreadcrumbsNav>
+    </BreadcrumbsNav>
     <v-row no-gutters>
       <v-col
         cols="12"
@@ -20,6 +22,7 @@
 </template>
 
 <script>
+import BreadcrumbsNav from '@/sloter/BreadcrumbsNav'
 export default {
   name: 'ZhuanLanMx',
   data () {
@@ -40,6 +43,11 @@ export default {
           ]
         }
       ],
+      item: {
+        text: 'Dashboard1',
+        disabled: false,
+        href: 'breadcrumbs_dashboard'
+      },
       t_items: [],
       t_items2: [],
       active2: [],
@@ -47,6 +55,9 @@ export default {
       atcid: 1,
       ymszmc: ''
     }
+  },
+  components: {
+    BreadcrumbsNav
   },
   methods: {
     getPageContent (zhuanlanid, btid) {
