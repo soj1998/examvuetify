@@ -9,6 +9,8 @@
     :page.sync="dqpage"
   >
     <template v-slot:top>
+      <BreadcrumbsNav>
+      </BreadcrumbsNav>
       <v-toolbar
         flat
       >
@@ -112,6 +114,7 @@
 </template>
 
 <script>
+import BreadcrumbsNav from '@/sloter/BreadcrumbsNav'
 export default {
   name: 'ExamMx',
   data () {
@@ -132,6 +135,9 @@ export default {
       checkbox: -1,
       isMobile: false
     }
+  },
+  components: {
+    BreadcrumbsNav
   },
   methods: {
     listall (szid, biaoti) {

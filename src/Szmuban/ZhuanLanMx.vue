@@ -87,6 +87,13 @@ export default {
             })
             // console.log(pcsz)
             that.t_items2 = []
+            if (neir[0].wzlaiyuan !== null) {
+              that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">来源:  ' + neir[0].wzlaiyuan + '</div>'
+            }
+            if (that.$globalfunc.strNotNil(neir[0].zlxilie)) {
+              that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;">系列:  ' + neir[0].zlxilie + '</div>'
+            }
+            that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">录入时间:  ' + that.$globalfunc.getZhiDingYYMMDD(new Date(neir[0].lrsj)) + '</div>'
             pcsz.forEach(e => {
               if (e.btid === -1) {
                 e.nr = '<div class="text-h4 text-center">' +
@@ -108,14 +115,14 @@ export default {
           .then(res => {
             let neir = res
             that.pagecontent = ''
-            if (that.$globalfunc.strNotNil(neir.zlxilie)) {
-              that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;">系列:  ' + neir.zlxilie + '</div>'
-            }
-            that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-left:120px;">' + neir.biaoti + '</div>'
             if (neir.wzlaiyuan !== null) {
               that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">来源:  ' + neir.wzlaiyuan + '</div>'
             }
+            if (that.$globalfunc.strNotNil(neir.zlxilie)) {
+              that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;">系列:  ' + neir.zlxilie + '</div>'
+            }
             that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">录入时间:  ' + that.$globalfunc.getZhiDingYYMMDD(new Date(neir.lrsj)) + '</div>'
+            that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-left:120px;">' + neir.biaoti + '</div>'
             that.pagecontent = that.pagecontent + '<div class="text-body-1" style="margin-top:20px;margin-bottom:20px;">' + neir.zlzhengge + '</div>'
             that.pagecontent = '<div class="text-body-1 text-start" style="margin-top: 10px">' + that.pagecontent + '</div>'
           })
