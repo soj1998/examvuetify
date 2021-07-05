@@ -49,7 +49,6 @@ export default {
         href: 'breadcrumbs_dashboard'
       },
       t_items: [],
-      t_items2: [],
       active2: [],
       gotop: false, // 判断是否应该上滚
       atcid: 1,
@@ -61,7 +60,7 @@ export default {
   },
   methods: {
     getPageContent (zhuanlanid, btid) {
-      console.log('2.' + btid)
+      console.log('1 zhuanlanid. ' + zhuanlanid + ',2 btid. ' + btid)
       let that = this
       if (btid === -1) {
         this.$post('sys/zhuanlan/getzlbyid', {tid: zhuanlanid})
@@ -85,8 +84,6 @@ export default {
             pcsz.sort((n1, n2) => {
               return n1.hangshu - n2.hangshu
             })
-            // console.log(pcsz)
-            that.t_items2 = []
             if (neir[0].wzlaiyuan !== null) {
               that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">来源:  ' + neir[0].wzlaiyuan + '</div>'
             }
@@ -98,9 +95,15 @@ export default {
               if (e.btid === -1) {
                 e.nr = '<div class="text-h4 text-center">' +
                  e.biaoti + '</div>' +
-                '<p>' + e.nr + '</p>'
+                '<p style="text-indent: 2em;">' + e.nr + '</p>'
               } else {
-                e.nr = '<p>' + e.nr + '</p>'
+                let snr = String(e.nr)
+                if (snr.indexOf(':8080/houtai/image') >= 0) {
+                  console.log(snr)
+                  e.nr = '<img style="margin-left:40px;" src= "' + e.nr + '" />'
+                } else {
+                  e.nr = '<p style="text-indent: 2em;">' + e.nr + '</p>'
+                }
               }
               that.pagecontent = that.pagecontent + e.nr
             })
@@ -168,6 +171,9 @@ a {
 }
 [v-cloak] {
     display: none;
+}
+p {
+  text-indent: 2em; /*em是相对单位，2em即现在一个字大小的两倍*/
 }
 #divmar {
   color: red;

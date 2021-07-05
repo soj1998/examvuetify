@@ -29,9 +29,23 @@
       >
         <v-list three-line>
           <template v-for="(item, index) in mydesserts">
-            <v-list-item :key="index">
+            <v-subheader
+              v-if="item.header"
+              :key="item.header"
+              v-html="item.header"
+            ></v-subheader>
+
+            <v-divider
+              v-else-if="item.divider"
+              :key="index"
+            ></v-divider>
+
+            <v-list-item
+              v-else
+              :key="item.ycid"
+            >
               <v-list-item-content>
-                <v-card-text class="text-start" v-html="pagecontent"></v-card-text>
+                <v-card-text class="text-start" v-html="item.xsid"></v-card-text>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -91,13 +105,13 @@ export default {
                 'wzly': element.wzlaiyuan
               }
               pcsz.push(json)
-              that.mydesserts.push(element.zlduanluo)
             })
             pcsz.sort((n1, n2) => {
               return n1.hangshu - n2.hangshu
             })
             that.totalrecord = pcsz.length
             // console.log(pcsz)
+            that.mydesserts = pcsz
             if (neir[0].wzlaiyuan !== null) {
               that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">来源:  ' + neir[0].wzlaiyuan + '</div>'
             }
@@ -213,7 +227,7 @@ export default {
     },
     zhuandaziti (nr, zihao) {
       return '<span style= "font-size:' + zihao + 'px; " >' + nr + '</span>'
-    },
+    },    
     toTop () {
       let top = document.documentElement.scrollTop || document.body.scrollTop
       console.log('滚不滚' + top)
@@ -223,7 +237,7 @@ export default {
           clearInterval(timeTop)
         }
       }, 10)
-    }
+    }    
   },
   watch: {
     dqpage (newValue, oldValue) {
@@ -271,14 +285,14 @@ export default {
     if (this.isMobile) {
       this.perpage = 1
     }
-    // this.listall(szid, biaoti)
+    //this.listall(szid, biaoti)
     if (this.$route.params.zlid === undefined) {
       console.log('router没有带过来')
       this.pagecontent = '非正常进入，没有内容要显示'
-      // return
+      return
     }
-    let zlid = 3803 // this.$route.params.xinxiyuanid
-    let btid = -1 // this.$route.params.zlbtid
+    let zlid = this.$route.params.xinxiyuanid
+    let btid = this.$route.params.zlbtid
     this.getPageContent(zlid, btid)
   }
 }

@@ -199,7 +199,9 @@ export default {
     console.log('准备搞单个专栏文章的保存' + this.$globalfunc.getDqYYMMDD())
     const E = window.wangEditor
     this.editorw = new E('#div1')
-    this.editorw.config.uploadImgServer = 'http://localhost:8080/houtai/sys/zhuanlan/uploadimg'
+    var isPro = process.env.NODE_ENV === 'production' // process.env.NODE_ENV用于区分是生产环境还是开发环境
+    let baseURL = isPro ? 'http://1.116.123.109:8080/houtai' : 'http://localhost:8080/houtai'
+    this.editorw.config.uploadImgServer = baseURL + '/sys/zhuanlan/uploadimg'
     this.editorw.config.onchangeTimeout = 500 // 修改为 500ms
     this.editorw.config.withCredentials = true
     // 配置alt选项
