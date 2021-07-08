@@ -141,13 +141,14 @@ export default {
 
   mounted () {
     console.log('赋予初始值zlmx')
-    if (this.$route.params.zlid === undefined) {
+    if (this.$route.params.xinxiyuanid === undefined) {
       console.log('router没有带过来')
       this.pagecontent = '非正常进入，没有内容要显示'
       return
     }
     let zlid = this.$route.params.xinxiyuanid
     let btid = this.$route.params.zlbtid
+    btid = -1
     this.getPageContent(zlid, btid)
   }
 }

@@ -63,12 +63,11 @@ export default {
       let that = this
       let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1} // 加一了删除一个有补得 删除两个有补得 就加2
       let psz = []
-      psz.push({url: 'wbzt/getsyxxcount'})
+      // psz.push({url: 'wbzt/getsyxxcount'})
       psz.push({url: 'wbzt/getsyxx', data: data2})
       this.$postalldayu2(psz)
         .then(res => {
-          that.totalrecord = res[0]
-          let lb = res[1]
+          let lb = res[0]
           let ind = 1
           lb.forEach(e => {
             let lrsj1 = that.$globalfunc.getZhiDingYYMMDD(new Date(e.lrsj))
@@ -76,6 +75,7 @@ export default {
             that.desserts.push(it)
             ind++
           })
+          that.totalrecord = ind
           if (ind > 10) {
             for (let i = ind; i < that.totalrecord + 1; i++) {
               let myarray = {id: i}
@@ -107,10 +107,10 @@ export default {
     rowClick (item, row) {
       let xinxiyuanleixing1 = item.leixing
       console.log(item.xinxiyuanid)
-      if (xinxiyuanleixing1 === '专栏') {
+      if (xinxiyuanleixing1 === 'zhuanlan') {
         this.$router.push({name: 'ZhuanLanMx', params: { zlid: item.ycid, zlbtid: item.biaotiid, xinxiyuanleixing: item.leixing, xinxiyuanid: item.xinxiyuanid }})
       }
-      if (xinxiyuanleixing1 === '试题') {
+      if (xinxiyuanleixing1 === 'exam') {
         this.$router.push({name: 'ExamMx', params: { szid: item.szid, biaoti: item.biaoti }})
       }
     }

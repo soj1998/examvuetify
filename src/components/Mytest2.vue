@@ -1,47 +1,24 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="desserts"
-    hide-default-header
-    sort-by="id"
-    class="elevation-1"
-    :items-per-page.sync="perpage"
-    :page.sync="dqpage"
-  >
-    <template v-slot:top>
-      <BreadcrumbsNav>
-      </BreadcrumbsNav>
-      <v-toolbar
-        flat
-      >
-        <v-toolbar-title>文章内容</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
-        <v-spacer></v-spacer>
-      </v-toolbar>
-    </template>
-    <template v-slot:body>
-      <v-card
-        class="mx-auto"
-      >
-        <v-list three-line>
-          <template v-for="(item, index) in mydesserts">
-            <v-list-item :key="index">
-              <v-list-item-content>
-                <v-card-text class="text-start" v-html="pagecontent"></v-card-text>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-        </v-list>
-      </v-card>
-    </template>
-    <template v-slot:no-data>
-      暂无数据
-    </template>
-  </v-data-table>
+  <v-app id="inspire">
+    <v-card
+      v-model="page"
+      class="mx-auto"
+    >
+      <v-list three-line>
+        <template v-for="(item, index) in mydesserts">
+          <v-list-item :key="index">
+            <v-list-item-content>
+              <v-card-text class="text-start" v-html="item.nr"></v-card-text>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+      </v-list>
+    </v-card>
+    <v-pagination
+    v-model="page"
+    :length="mydesserts.length"
+    ></v-pagination>
+  </v-app>
 </template>
 
 <script>
@@ -59,7 +36,7 @@ export default {
       mydesserts: [],
       dqpage: 1,
       perpage: 10,
-      totalrecord: 1,
+      totalrecord: 112,
       szlist: [],
       pttimuzihao: 20,
       datimuzihao: 25,
@@ -91,13 +68,13 @@ export default {
                 'wzly': element.wzlaiyuan
               }
               pcsz.push(json)
-              that.mydesserts.push(element.zlduanluo)
             })
             pcsz.sort((n1, n2) => {
               return n1.hangshu - n2.hangshu
             })
+            console.log(pcsz)
             that.totalrecord = pcsz.length
-            // console.log(pcsz)
+            console.log(that.totalrecord)
             if (neir[0].wzlaiyuan !== null) {
               that.pagecontent = that.pagecontent + '<div class="text-h5" style="margin-top:20px;margin-bottom:20px">来源:  ' + neir[0].wzlaiyuan + '</div>'
             }
@@ -119,7 +96,8 @@ export default {
                   e.nr = '<p style="text-indent: 2em;">' + e.nr + '</p>'
                 }
               }
-              that.pagecontent = that.pagecontent + e.nr
+              let item = {id: e.hangshu, nr: e.nr}
+              that.mydesserts.push(item)
             })
             that.pagecontent = '<div class="text-body-1 text-start" style="margin-top: 10px">' + that.pagecontent + '</div>'
           })
@@ -277,7 +255,7 @@ export default {
       this.pagecontent = '非正常进入，没有内容要显示'
       // return
     }
-    let zlid = 3803 // this.$route.params.xinxiyuanid
+    let zlid = 4027 // this.$route.params.xinxiyuanid
     let btid = -1 // this.$route.params.zlbtid
     this.getPageContent(zlid, btid)
   }
