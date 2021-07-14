@@ -1,0 +1,24 @@
+1方法一、利用CSS3属性mix-blend-mode:lighten;实现
+使用 mix-blend-mode 能够轻易实现，我们只需要构造出黑色文字，白色底色的文字 div ，叠加上图片，再运用 mix-blend-mode 即可，简单原理如下：
+<div class="container">
+    <div class="pic"></div>
+    <div class="text">IMAGE</div>
+</div>
+复制代码
+.pic {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: url($img);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+ 
+.text {
+    position: absolute;
+    width:100%;
+    height:100%;
+    color: #000;
+    mix-blend-mode: lighten;
+    background-color: #fff;
+}

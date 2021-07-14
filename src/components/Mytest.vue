@@ -2,28 +2,27 @@
   <v-data-table
     :headers="headers"
     :items="desserts"
-    sort-by="id"
+    hide-default-header
     class="elevation-1"
     :items-per-page.sync="perpage"
-    :page.sync="dangqianpage"
-    @click:row="rowClick"
+    :page.sync="dqpage"
   >
-    <template v-slot:top>
-      <v-toolbar
-        flat
-      >
-        <v-toolbar-title>学研社articles列表</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
-        <v-spacer></v-spacer>
-      </v-toolbar>
-    </template>
-    <template v-slot:no-data>
-      暂无数据
-    </template>
+  <template v-slot:body>
+    <v-card
+      v-model="page"
+      class="mx-auto"
+    >
+      <v-list three-line>
+        <template v-for="(item, index) in mydesserts">
+          <v-list-item :key="index">
+            <v-list-item-content>
+              <v-card-text class="text-start" v-html="item.nr"></v-card-text>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+      </v-list>
+    </v-card>
+  </template>
   </v-data-table>
 </template>
 
@@ -31,88 +30,116 @@
 export default {
   data: () => ({
     name: 'ShouYe',
-    dialogDelete: false,
     headers: [
-      { text: '标题', value: 'biaoti', sortable: false },
-      { text: '学科', value: 'xueke', sortable: false },
-      { text: '知识点', value: 'zsd', sortable: false },
-      { text: '类型', value: 'leixing', sortable: false },
-      { text: '录入时间', value: 'lrsj', sortable: false }
+      {
+        text: 'Dessert (100g serving)',
+        align: 'start',
+        sortable: false,
+        value: 'nr'
+      }
     ],
+    mydesserts: [],
     desserts: [],
-    dangqianpage: 1,
+    dqpage: 1,
     perpage: 10,
-    totalrecord: 1
+    totalrecord: 1,
+    isMobile: false
   }),
   watch: {
-    dangqianpage () {
-      console.log('当前页: ' + this.dangqianpage)
-      this.listzhiding(this.dangqianpage, this.perpage)
+    dqpage (newValue, oldValue) {
+      console.log('dqpage ' + newValue)
+      this.mydesserts = []
+      let df = this.desserts
+      let qidian = (newValue - 1) * this.perpage
+      let zhdian = newValue * this.perpage
+      let that = this
+      for (let i = qidian; i < zhdian; i++) {
+        that.mydesserts.push(df[i])
+      }
+      that.toTop()
+    },
+    perpage (newValue, oldValue) {
+      console.log('perpage ' + newValue)
     }
   },
-
-  created () {
-    this.initialize()
+  mounted () {
+    let szid = this.$route.params.szid
+    let biaoti = this.$route.params.biaoti
+    this.isMobile = window.matchMedia('(max-width: 425px)').matches
+    console.log(szid + '  ' + biaoti + ' ismobile' + this.isMobile)
+    if (this.isMobile) {
+      this.perpage = 2
+    }
+    // this.listall(szid, biaoti)
+    if (this.$route.params.zlid === undefined) {
+      console.log('router没有带过来')
+      this.pagecontent = '非正常进入，没有内容要显示'
+      // return
+    }
+    let zlid = 4027 // this.$route.params.xinxiyuanid
+    let btid = -1 // this.$route.params.zlbtid
+    this.getPageContent(zlid, btid)
   },
-
   methods: {
-    initialize () {
-      this.listall()
-    },
-    listall () {
+    getPageContent (zhuanlanid, btid) {
       let that = this
-      let data2 = {pageNum: that.dangqianpage, pageSize: that.perpage + 1} // 加一了删除一个有补得 删除两个有补得 就加2
-      let psz = []
-      psz.push({url: 'wbzt/getsyxxcount'})
-      psz.push({url: 'wbzt/getsyxx', data: data2})
-      this.$postalldayu2(psz)
-        .then(res => {
-          that.totalrecord = res[0]
-          let lb = res[1]
-          let ind = 1
-          lb.forEach(e => {
-            let lrsj1 = that.$globalfunc.getZhiDingYYMMDD(new Date(e.lrsj))
-            let it = {id: ind, ycid: e.id, biaoti: e.biaoti, biaotiid: e.zlbiaotiid, xueke: e.sz, szid: e.szid, zsd: e.zsd, leixing: e.xinxiyuanleixing, xinxiyuanid: e.xinxiyuanid, lrsj: lrsj1}
-            that.desserts.push(it)
-            ind++
-          })
-          if (ind > 10) {
-            for (let i = ind; i < that.totalrecord + 1; i++) {
-              let myarray = {id: i}
-              that.desserts.push(myarray)
+      if (btid === -1) {
+        this.$post('sys/zhuanlan/getzlbyid', {tid: zhuanlanid})
+          .then(res => {
+            that.pagecontent = []
+            let neir = res
+            let pcsz = []
+            neir.forEach(element => {
+              // console.log('2.' + element.hangshu + that.pagecontent + element.qbneirong)
+              let json =
+              {
+                'hangshu': element.hangshu,
+                'nr': element.zlduanluo,
+                'biaoti': element.biaoti,
+                'btid': element.btid,
+                'lrsj': element.lrsj,
+                'wzly': element.wzlaiyuan
+              }
+              pcsz.push(json)
+            })
+            pcsz.sort((n1, n2) => {
+              return n1.hangshu - n2.hangshu
+            })
+            that.totalrecord = pcsz.length
+            pcsz.forEach(e => {
+              if (e.btid === -1) {
+                e.nr = '<div class="text-h4 text-center">' +
+                e.biaoti + '</div>' +
+                '<p style="text-indent: 2em;" class="text-h6 text-start">' + e.nr + '</p>'
+              } else {
+                let snr = String(e.nr)
+                if (snr.indexOf(':8080/houtai/image') >= 0) {
+                  console.log(snr)
+                  e.nr = '<img style="margin-left:40px;" src= "' + e.nr + '" />'
+                } else {
+                  e.nr = '<p style="text-indent: 2em;" class="text-h6 text-start">' + e.nr + '</p>'
+                }
+              }
+              that.desserts.push(e)
+            })
+            for (let i = 0; i < that.perpage; i++) {
+              that.mydesserts.push(that.desserts[i])
             }
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-    },
-    listzhiding (dqy, pagesz) {
-      let that = this
-      let data = {pageNum: dqy, pageSize: pagesz + 1}
-      this.$post('sys/zhuanlan/listdaican', data)
-        .then(res => {
-          let ind = (dqy - 1) * pagesz + 1
-          let desserts2 = []
-          res.forEach(e => {
-            let szmc1 = that.zhuanhuan('sz', e.atcSjk.szid)
-            let it = {id: ind, ycid: e.id, szmc: szmc1, biaoti: e.zlduanluo, xilie: e.zlxilie, yxbz: e.atcSjk.yxbz}
-            desserts2.push(it)
-            that.desserts.splice(ind - 1, 1, it)
-            ind++
           })
-        }).catch(err => {
-          console.log(err)
-        })
+          .catch(error => {
+            console.log('error' + error)
+          })
+      }
     },
-    rowClick (item, row) {
-      let xinxiyuanleixing1 = item.leixing
-      console.log(item.xinxiyuanid)
-      if (xinxiyuanleixing1 === '专栏') {
-        this.$router.push({name: 'ZhuanLanMx', params: { zlid: item.ycid, zlbtid: item.biaotiid, xinxiyuanleixing: item.leixing, xinxiyuanid: item.xinxiyuanid }})
-      }
-      if (xinxiyuanleixing1 === '试题') {
-        this.$router.push({name: 'ExamMx', params: { szid: item.szid, biaoti: item.biaoti }})
-      }
+    toTop () {
+      let top = document.documentElement.scrollTop || document.body.scrollTop
+      console.log('滚不滚' + top)
+      const timeTop = setInterval(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = top -= 50
+        if (top <= 0) {
+          clearInterval(timeTop)
+        }
+      }, 10)
     }
   }
 }
