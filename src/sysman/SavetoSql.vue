@@ -11,7 +11,7 @@
             item-value="id"
             :rules= "[v => !!v || '税种不能为空']"
             label="税种"
-            v-if="!gaozhuanlan"
+            v-if="gaojichu"
             required
           ></v-select>
       <v-select
@@ -36,7 +36,7 @@
         :rules= "[v => !!v || '文章来源不能为空']"
         :counter="1000"
         label="文章来源"
-        v-if="!gaozhuanlan"
+        v-if="gaojichu"
         required
       ></v-text-field>
       <v-text-field
@@ -54,7 +54,7 @@
             item-value="id"
             :rules= "[v => !!v || '题目样式判断']"
             label="题目样式选择"
-            v-if="gaoshiti"
+            v-if="gaoshiti && 1==2"
             required
           ></v-select>
       <v-file-input
@@ -168,10 +168,6 @@ export default {
         this.loading.uploadIsLoading = true
         let formData = new window.FormData()
         formData.append('file', this.fileInfo)
-        formData.append('wzlx', this.wzlxselect)
-        formData.append('sz', this.szselect)
-        formData.append('wzlaiyuan', this.wzlaiyuan)
-        formData.append('danduchongfu', this.timuselect)
         this.zhidingurlpost('sys/szexam/uploadsave', formData)
       }
       if (!this.gaojichu) {
