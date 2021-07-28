@@ -47,7 +47,7 @@
               <v-list-item-content>
                 <v-card-text class="text-start" v-html="item.xsid"></v-card-text>
                 <v-container fluid  v-if="item.youxx==='danxuan'">
-                  <v-radio-group v-model="item.xzdaan1" @change="danxuanbianhua(item)">
+                  <v-radio-group v-model="item.xzdaan1" @change="danxuanbianhua(item, index)">
                     <v-radio
                       v-for="(itema, indexa) in item.tmxuanx"
                       :key="indexa"
@@ -64,7 +64,7 @@
                   <v-checkbox
                     v-for="(itema, indexa) in item.tmxuanx"
                     :key="indexa"
-                    @change="duoxuanbianhua(item, indexa)"
+                    @change="duoxuanbianhua(item, indexa, index)"
                     v-model="item.duoxuandaan[indexa]"
                     :value="item.xzdaan[indexa]"
                   >
@@ -185,7 +185,7 @@ export default {
             if ((String)(e.jiexi).length > 0) {
               ifshow1 = true
             }
-            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan: that.zhuandaziti('答案：' + e.ans, zihao), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao), ifshow: false, ifshow1: ifshow1}
+            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan1: e.ans, daan: that.zhuandaziti('答案：' + e.ans, zihao), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao), ifshow: false, ifshow1: ifshow1}
             that.desserts.push(it)
             // that.desserts.push({ divider: true })
             ind++
@@ -314,10 +314,20 @@ export default {
         }
       }, 10)
     },
-    danxuanbianhua (item) {
-      item.xsdaan2 = '<span style= "font-size:20px; " > 你选择的答案是：<span style= "color:red; " > ' + item.xzdaan1 + '</span></span>'
+    danxuanbianhua (item, index) {
+      let ab = item.xzdaan1 === item.daan1
+      let duicuo = '答错了'
+      if (ab) {
+        duicuo = '答对了'
+      }
+      console.log(item.daan1 + '  ' + item.xzdaan1 + '   ' + ab)
+      item.xsdaan2 = '<span style= "font-size:20px; " > 你选择的答案是：<span style= "color:red; " > ' + item.xzdaan1 + '</span>' +
+      ',' + duicuo + '</span>'
+      if (!this.mydesserts[index].ifshow) {
+        this.showdaan(index)
+      }
     },
-    duoxuanbianhua (item, indexa) {
+    duoxuanbianhua (item, indexa, index) {
       item.xzdaan2 = []
       item.duoxuandaan.forEach(e => {
         if (e !== false && e !== null) {
@@ -367,7 +377,7 @@ export default {
   },
   mounted () {
     let szid = this.$route.params.szid
-    let biaoti = this.$route.params.biaoti
+    let biaoti = this.$route.params.biaotiid
     this.isMobile = window.matchMedia('(max-width: 425px)').matches
     console.log(szid + '  ' + biaoti + ' ismobile' + this.isMobile)
     if (this.isMobile) {

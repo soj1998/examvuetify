@@ -71,7 +71,7 @@ export default {
           let ind = 1
           lb.forEach(e => {
             let lrsj1 = that.$globalfunc.getZhiDingYYMMDD(new Date(e.lrsj))
-            let it = {id: ind, ycid: e.id, biaoti: e.biaoti, biaotiid: e.zlbiaotiid, xueke: e.sz, szid: e.szid, zsd: e.zsd, leixing: e.xinxiyuanleixing, xinxiyuanid: e.xinxiyuanid, lrsj: lrsj1}
+            let it = {id: ind, ycid: e.id, biaoti: e.biaoti, biaotiid: e.biaotiid, xueke: e.sz, szid: e.szid, zsd: e.zsd, leixing: e.xinxiyuanleixing, xinxiyuanid: e.xinxiyuanid, lrsj: lrsj1}
             that.desserts.push(it)
             ind++
           })
@@ -111,7 +111,7 @@ export default {
         this.$router.push({name: 'ZhuanLanMx', params: { zlid: item.ycid, zlbtid: item.biaotiid, xinxiyuanleixing: item.leixing, xinxiyuanid: item.xinxiyuanid }})
       }
       if (xinxiyuanleixing1 === 'exam') {
-        this.$router.push({name: 'ExamMx', params: { szid: item.szid, biaoti: item.biaoti }})
+        this.$router.push({name: 'ExamMx', params: { szid: item.szid, biaoti: item.biaoti, biaotiid: item.biaotiid }})
       }
     }
   }
