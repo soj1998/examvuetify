@@ -60,6 +60,21 @@ export default {
     },
     perpage (newValue, oldValue) {
       console.log('perpage ' + newValue)
+      this.mydesserts = []
+      let df = this.desserts
+      let qidian = (this.dqpage - 1) * newValue
+      let zhdian = this.dqpage * newValue
+      let that = this
+      if (newValue === -1) {
+        for (let i = 0; i < this.desserts.length; i++) {
+          that.mydesserts.push(df[i])
+        }
+      } else {
+        for (let i = qidian; i < zhdian; i++) {
+          that.mydesserts.push(df[i])
+        }
+      }
+      that.toTop()
     }
   },
   mounted () {
