@@ -14,6 +14,16 @@
       style = "height:260px;"
     >
       一个大图标和部分介绍的话
+      <div></div>
+      <v-btn
+          x-large
+          color="success"
+          dark
+          class="mybtncalss"
+          @click="daohangsz1()"
+        >
+          点我吧，开始一场测试
+        </v-btn>
     </v-card>
     <v-card
       class="pa-2"
@@ -100,6 +110,9 @@ export default {
     daohangsz (item) {
       console.log(item.szmc)
       this.$router.push({name: 'Szmuban', params: { szid: item.id, szmc: item.szmc }})
+    },
+    daohangsz1 () {
+      this.$router.push({name: 'ExamMx', params: { szid: 1, biaoti: -100, biaotiid: -100 }})
     },
     getszfromhoutai () {
       let that = this

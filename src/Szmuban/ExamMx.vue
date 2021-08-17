@@ -223,6 +223,88 @@ export default {
           console.log(err)
         })
     },
+    listall2 (szid) {
+      // this.desserts.push({ header: '今日试题' })
+      let that = this
+      let data2 = {sid: szid}
+      let psz = []
+      psz.push({url: 'wbzt/getsuijixitibyszid', data: data2})
+      this.$postalldayu2(psz)
+        .then(res => {
+          let lb = res[0]
+          let ind = 1
+          let indda = 1
+          let templx = null
+          lb.forEach(e => {
+            // let tmlx = that.zhuanhuan('tmlx', e.examtype)
+            let xx = []
+            let zihao = that.pttimuzihao
+            let xxlai = e.xuanxiang
+            let youxx1 = 'weizhi'
+            let xxdaan = []
+            let xxdaan2 = []
+            if (xxlai !== undefined && xxlai !== null) {
+              youxx1 = e.examtype
+              xxlai.forEach(e => {
+                let ae = that.zhuandaziti(e, zihao - 3)
+                xx.push(ae)
+                let ae2 = e.substr(0, 1)
+                xxdaan.push(ae2)
+                xxdaan2.push(false)
+              })
+            }
+            // let xxg = xx.join('')
+            if (templx == null) {
+              templx = e.examtype
+            } else {
+              if (e.examtype !== templx) {
+                templx = e.examtype
+                indda++
+              }
+            }
+            let ifshow1 = false
+            if ((String)(e.jiexi).length > 0) {
+              ifshow1 = true
+            }
+            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan1: e.ans, daan: that.zhuandaziti('答案：' + e.ans, zihao), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao), ifshow: false, ifshow1: ifshow1}
+            that.desserts.push(it)
+            // that.desserts.push({ divider: true })
+            ind++
+          })
+          that.totalrecord = ind
+          if (that.mydesserts.length === 0) {
+            console.log('当前为空 ' + that.perpage)
+            let df = that.desserts
+            let qidian = (that.dqpage - 1) * that.perpage
+            let zhdian = that.dqpage * that.perpage
+            for (let i = qidian; i < zhdian; i++) {
+              let hed = that.zhuandaziti(that.zhuanhuan('datimu', df[i].dxh) + that.zhuanhuan('tmlx', df[i].leix), that.datimuzihao)
+              if (i > qidian && i < zhdian) {
+                let a = df[i - 1].leix
+                let b = df[i].leix
+                if (a !== b) {
+                  that.mydesserts.push({ header: hed })
+                  df[i].id = df[i].xxh - df[i - 1].xxh
+                } else {
+                  df[i].id = df[i - 1].id + 1
+                }
+              }
+              if (i === qidian) {
+                that.mydesserts.push({ header: hed })
+                df[i].id = df[i].xxh
+              }
+              console.log('shouci塞几次 ' + i + ',qidian' + qidian + ',zhdian' + zhdian + ',ycid' + df[i].ycid)
+              df[i].timu = '<span style= "font-size:20px; " >' + df[i].timu + '</span>'
+              df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + df[i].timu
+              df[i].yxid = i
+              that.mydesserts.push(df[i])
+              that.mydesserts.push({ divider: true })
+            }
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+    },
     zhuandaziti (nr, zihao) {
       return '<span style= "font-size:' + zihao + 'px; " >' + nr + '</span>'
     },
@@ -383,7 +465,11 @@ export default {
     if (this.isMobile) {
       this.perpage = 1
     }
-    this.listall(szid, biaoti)
+    if (biaoti !== -100) {
+      this.listall(szid, biaoti)
+    } else {
+      this.listall2(szid)
+    }
   }
 }
 </script>
