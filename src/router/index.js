@@ -5,6 +5,7 @@ import Content from '@/components/Content'
 import Szmuban from '@/Szmuban/Szmuban'
 import ZhuanLanMx from '@/Szmuban/ZhuanLanMx'
 import ExamMx from '@/Szmuban/ExamMx'
+import ExamTest from '@/Szmuban/ExamTest'
 import Mytest from '@/components/Mytest'
 import Mytest2 from '@/components/Mytest2'
 import SavetoSql from '@/sysman/SavetoSql'
@@ -55,6 +56,11 @@ export default new Router({
       path: '/exammx',
       name: 'ExamMx',
       component: ExamMx
+    },
+    {
+      path: '/examtest',
+      name: 'ExamTest',
+      component: ExamTest
     },
     {
       path: '/3',

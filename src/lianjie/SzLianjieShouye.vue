@@ -112,7 +112,7 @@ export default {
       this.$router.push({name: 'Szmuban', params: { szid: item.id, szmc: item.szmc }})
     },
     daohangsz1 () {
-      this.$router.push({name: 'ExamMx', params: { szid: 1, biaoti: -100, biaotiid: -100 }})
+      this.$router.push({name: 'ExamTest', params: { szid: 1, biaoti: -100, biaotiid: -100 }})
     },
     getszfromhoutai () {
       let that = this
