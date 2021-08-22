@@ -185,7 +185,7 @@ export default {
             if ((String)(e.jiexi).length > 0) {
               ifshow1 = true
             }
-            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan1: e.ans, daan: that.zhuandaziti('答案：' + e.ans, zihao), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao), ifshow: false, ifshow1: ifshow1}
+            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan1: e.ans, daan: that.zhuandaziti('答案：' + e.ans, zihao, 'green'), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao, 'green'), ifshow: false, ifshow1: ifshow1}
             that.desserts.push(it)
             // that.desserts.push({ divider: true })
             ind++
@@ -305,8 +305,11 @@ export default {
           console.log(err)
         })
     },
-    zhuandaziti (nr, zihao) {
-      return '<span style= "font-size:' + zihao + 'px; " >' + nr + '</span>'
+    zhuandaziti (nr, zihao, color) {
+      if (color === undefined) {
+        color = 'white'
+      }
+      return '<span style= "font-size:' + zihao + 'px; color:' + color + '">' + nr + '</span>'
     },
     zhuanhuan (zhmc, srx) {
       let rs = ''

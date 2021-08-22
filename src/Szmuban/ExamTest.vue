@@ -30,12 +30,23 @@
         >
           交卷
         </v-btn>
+        <div v-html = "zongdefen"></div>
       </v-toolbar>
     </template>
     <template v-slot:body>
       <v-card
         class="mx-auto"
       >
+      <v-progress-linear
+        v-if="probarbool"
+        v-model="progbar"
+        color="blue-grey"
+        height="25"
+      >
+        <template v-slot:default="{ value }">
+          <strong>{{ Math.ceil(value) }}%</strong>
+        </template>
+      </v-progress-linear>
         <v-list three-line>
           <template v-for="(item, index) in mydesserts">
             <v-subheader
@@ -128,11 +139,14 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       pagecontent: '',
+      progbar: 10,
+      probarbool: false,
       active: [],
       openids: [],
       shoucidian: false,
       desserts: [],
       mydesserts: [],
+      mydesserts2: [],
       dqpage: 1,
       perpage: 10,
       totalrecord: 1,
@@ -140,96 +154,14 @@ export default {
       pttimuzihao: 20,
       datimuzihao: 25,
       checkbox: -1,
-      isMobile: false
+      isMobile: false,
+      zongdefen: ''
     }
   },
   components: {
     BreadcrumbsNav
   },
   methods: {
-    listall (szid, biaoti) {
-      // this.desserts.push({ header: '今日试题' })
-      let that = this
-      let data2 = {sid: szid, biaoti: biaoti}
-      let psz = []
-      psz.push({url: 'wbzt/getquanbuxitibyszidbiaoticount', data: data2})
-      psz.push({url: 'wbzt/getquanbuxitibyszidbiaoti', data: data2})
-      this.$postalldayu2(psz)
-        .then(res => {
-          that.totalrecord = res[0]
-          let lb = res[1]
-          let ind = 1
-          let indda = 1
-          let templx = null
-          lb.forEach(e => {
-            // let tmlx = that.zhuanhuan('tmlx', e.examtype)
-            let xx = []
-            let zihao = that.pttimuzihao
-            let xxlai = e.xuanxiang
-            let youxx1 = 'weizhi'
-            let xxdaan = []
-            let xxdaan2 = []
-            if (xxlai !== undefined && xxlai !== null) {
-              youxx1 = e.examtype
-              xxlai.forEach(e => {
-                let ae = that.zhuandaziti(e, zihao - 3)
-                xx.push(ae)
-                let ae2 = e.substr(0, 1)
-                xxdaan.push(ae2)
-                xxdaan2.push(false)
-              })
-            }
-            // let xxg = xx.join('')
-            if (templx == null) {
-              templx = e.examtype
-            } else {
-              if (e.examtype !== templx) {
-                templx = e.examtype
-                indda++
-              }
-            }
-            let ifshow1 = false
-            if ((String)(e.jiexi).length > 0) {
-              ifshow1 = true
-            }
-            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan1: e.ans, daan: that.zhuandaziti('答案：' + e.ans, zihao), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao), ifshow: false, ifshow1: ifshow1}
-            that.desserts.push(it)
-            // that.desserts.push({ divider: true })
-            ind++
-          })
-          if (that.mydesserts.length === 0) {
-            console.log('当前为空 ' + that.perpage)
-            let df = that.desserts
-            let qidian = (that.dqpage - 1) * that.perpage
-            let zhdian = that.dqpage * that.perpage
-            for (let i = qidian; i < zhdian; i++) {
-              let hed = that.zhuandaziti(that.zhuanhuan('datimu', df[i].dxh) + that.zhuanhuan('tmlx', df[i].leix), that.datimuzihao)
-              if (i > qidian && i < zhdian) {
-                let a = df[i - 1].leix
-                let b = df[i].leix
-                if (a !== b) {
-                  that.mydesserts.push({ header: hed })
-                  df[i].id = df[i].xxh - df[i - 1].xxh
-                } else {
-                  df[i].id = df[i - 1].id + 1
-                }
-              }
-              if (i === qidian) {
-                that.mydesserts.push({ header: hed })
-                df[i].id = df[i].xxh
-              }
-              console.log('shouci塞几次 ' + i + ',qidian' + qidian + ',zhdian' + zhdian + ',ycid' + df[i].ycid)
-              df[i].timu = '<span style= "font-size:20px; " >' + df[i].timu + '</span>'
-              df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + df[i].timu
-              df[i].yxid = i
-              that.mydesserts.push(df[i])
-              that.mydesserts.push({ divider: true })
-            }
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-    },
     listall2 (szid) {
       // this.desserts.push({ header: '今日试题' })
       let that = this
@@ -273,11 +205,17 @@ export default {
             if ((String)(e.jiexi).length > 0) {
               ifshow1 = true
             }
-            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan1: e.ans, daan: that.zhuandaziti('答案：' + e.ans, zihao), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao), ifshow: false, ifshow1: ifshow1}
+            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan1: e.ans, daan: that.zhuandaziti('答案：' + e.ans, zihao, 'green'), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao, 'green'), ifshow: false, ifshow1: ifshow1}
             that.desserts.push(it)
             // that.desserts.push({ divider: true })
             ind++
           })
+          for (let i = 0; i < that.desserts.length; i++) {
+            let df = that.desserts[i]
+            df.defen = -1
+            df.xuanze = []
+            that.mydesserts2.push(df)
+          }
           that.totalrecord = ind
           if (that.mydesserts.length === 0) {
             console.log('当前为空 ' + that.perpage)
@@ -312,8 +250,11 @@ export default {
           console.log(err)
         })
     },
-    zhuandaziti (nr, zihao) {
-      return '<span style= "font-size:' + zihao + 'px; " >' + nr + '</span>'
+    zhuandaziti (nr, zihao, color) {
+      if (color === undefined) {
+        color = 'white'
+      }
+      return '<span style= "font-size:' + zihao + 'px; color:' + color + '">' + nr + '</span>'
     },
     zhuanhuan (zhmc, srx) {
       let rs = ''
@@ -411,6 +352,10 @@ export default {
       if (!this.mydesserts[index].ifshow) {
         this.showdaan(index)
       }
+      this.mydesserts2[index].xuanze = item.xzdaan1
+      if (ab) {
+        this.mydesserts2[index].defen = 1.5
+      }
     },
     duoxuanbianhua (item, indexa, index) {
       item.xzdaan2 = []
@@ -420,11 +365,32 @@ export default {
         }
       })
       item.xsdaan2 = '<span style= "font-size:20px; " > 你选择的答案是：<span style= "color:red; " > ' + item.xzdaan2.join('') + '</span></span>'
+      this.mydesserts2[index].xuanze = item.xzdaan2.join('')
+      // let  result =  item.xzdaan2.length === listB.length && listA.every(a => listB.some(b => a === b)) && listB.every(_b => listA.some(_a => _a === _b));
+      if (item.xzdaan2.join('') === item.daan1) {
+        this.mydesserts2[index].defen = 2.5
+      }
     },
     jiaojuan () {
+      let zdefen = 0
+      let meizuo = 0
+      this.mydesserts2.forEach(e => {
+        if (e.defen !== undefined && e.defen === -1) {
+          meizuo++
+        }
+        if (e.defen !== undefined) {
+          zdefen = zdefen + e.defen
+        }
+      })
+      if (meizuo > 0) {
+        this.zongdefen = '<span style= "font-size:20px; " > 您还有<span style= "color:red; " > ' + meizuo + '道题没有做，请做完!</span>' + '</span>'
+        return
+      }
       this.mydesserts.forEach(e => {
         e.ifshow = true
       })
+      console.log('zdefen is ' + zdefen)
+      this.zongdefen = '<span style= "font-size:20px; " > 您的总得分是：<span style= "color:red; " > ' + zdefen + '</span>' + '</span>'
     }
   },
   watch: {
@@ -473,11 +439,7 @@ export default {
     if (this.isMobile) {
       this.perpage = 1
     }
-    if (biaoti !== -100) {
-      this.listall(szid, biaoti)
-    } else {
-      this.listall2(szid)
-    }
+    this.listall2(szid)
   }
 }
 </script>
