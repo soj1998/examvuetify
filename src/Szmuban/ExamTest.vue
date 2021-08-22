@@ -151,8 +151,8 @@ export default {
       perpage: 10,
       totalrecord: 1,
       szlist: [],
-      pttimuzihao: 20,
-      datimuzihao: 25,
+      pttimuzihao: 25,
+      datimuzihao: 35,
       checkbox: -1,
       isMobile: false,
       zongdefen: ''
@@ -254,7 +254,7 @@ export default {
       if (color === undefined) {
         color = 'white'
       }
-      return '<span style= "font-size:' + zihao + 'px; color:' + color + '">' + nr + '</span>'
+      return '<span style= "font-size:' + zihao + 'px; color:' + color + ';line-height: 2em;">' + nr + '</span>'
     },
     zhuanhuan (zhmc, srx) {
       let rs = ''
@@ -347,15 +347,20 @@ export default {
     },
     danxuanbianhua (item, index) {
       let ab = item.xzdaan1 === item.daan1
-      console.log(item.daan1 + '  ' + item.xzdaan1 + '   ' + ab)
+      console.log(index + ':正确答案：' + item.daan1 + '，你选择的答案' + item.xzdaan1 + '   ' + this.mydesserts2[index].defen)
       item.xsdaan2 = '<span style= "font-size:20px; " > 你选择的答案是：<span style= "color:red; " > ' + item.xzdaan1 + '</span>' + '</span>'
       if (!this.mydesserts[index].ifshow) {
         this.showdaan(index)
       }
-      this.mydesserts2[index].xuanze = item.xzdaan1
-      if (ab) {
-        this.mydesserts2[index].defen = 1.5
-      }
+      this.mydesserts2.forEach(e => {
+        if (e.ycid === item.ycid) {
+          if (ab) {
+            e.defen = 1.5
+          } else {
+            e.defen = 0
+          }
+        }
+      })
     },
     duoxuanbianhua (item, indexa, index) {
       item.xzdaan2 = []
@@ -364,16 +369,23 @@ export default {
           item.xzdaan2.push(e)
         }
       })
+      console.log(item.xxh + '正确答案：' + item.daan2 + '，你选择的答案' + item.xzdaan2)
       item.xsdaan2 = '<span style= "font-size:20px; " > 你选择的答案是：<span style= "color:red; " > ' + item.xzdaan2.join('') + '</span></span>'
-      this.mydesserts2[index].xuanze = item.xzdaan2.join('')
       // let  result =  item.xzdaan2.length === listB.length && listA.every(a => listB.some(b => a === b)) && listB.every(_b => listA.some(_a => _a === _b));
-      if (item.xzdaan2.join('') === item.daan1) {
-        this.mydesserts2[index].defen = 2.5
-      }
+      this.mydesserts2.forEach(e => {
+        if (e.ycid === item.ycid) {
+          if (item.xzdaan2.join('') === item.daan1) {
+            e.defen = 2.5
+          } else {
+            e.defen = 0
+          }
+        }
+      })
     },
     jiaojuan () {
       let zdefen = 0
       let meizuo = 0
+      console.log(this.mydesserts2)
       this.mydesserts2.forEach(e => {
         if (e.defen !== undefined && e.defen === -1) {
           meizuo++
