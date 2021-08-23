@@ -369,12 +369,13 @@ export default {
           item.xzdaan2.push(e)
         }
       })
-      console.log(item.xxh + '正确答案：' + item.daan + '，你选择的答案' + item.xzdaan2)
       item.xsdaan2 = '<span style= "font-size:20px; " > 你选择的答案是：<span style= "color:red; " > ' + item.xzdaan2.join('') + '</span></span>'
+      let duoxuanxuanzedaan = item.xzdaan2.join('')
+      console.log(item.xxh + '正确答案：' + item.daan1 + '，你选择的答案' + duoxuanxuanzedaan)
       // let  result =  item.xzdaan2.length === listB.length && listA.every(a => listB.some(b => a === b)) && listB.every(_b => listA.some(_a => _a === _b));
       this.mydesserts2.forEach(e => {
         if (e.ycid === item.ycid) {
-          if (item.xzdaan2.join('') === item.daan1) {
+          if (duoxuanxuanzedaan === item.daan1) {
             e.defen = 2.5
           } else {
             e.defen = 0
