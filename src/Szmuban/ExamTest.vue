@@ -240,7 +240,7 @@ export default {
               }
               console.log('shouci塞几次 ' + i + ',qidian' + qidian + ',zhdian' + zhdian + ',ycid' + df[i].ycid)
               df[i].timu = '<span style= "font-size:20px; " >' + df[i].timu + '</span>'
-              df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + df[i].timu
+              df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + '<span style= "margin-left:12px; " ></span>' + df[i].timu
               df[i].yxid = i
               that.mydesserts.push(df[i])
               that.mydesserts.push({ divider: true })
@@ -433,10 +433,15 @@ export default {
         console.log('perpage塞几次 ' + i + ',qidian' + qidian + ',zhdian' + zhdian)
         df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao)
         df[i].timu = '<span style= "font-size:20px; " >' + df[i].timu + '</span>'
-        df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + df[i].timu
+        df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + '<span style= "margin-left:12px; " ></span>' + df[i].timu
         df[i].yxid = i
         that.mydesserts.push(df[i])
         that.mydesserts.push({ divider: true })
+        if (this.zongdefen !== '' && this.zongdefen.indexOf('道题没有做，请做完!') < 0) {
+          this.mydesserts.forEach(e => {
+            e.ifshow = true
+          })
+        }
       }
       that.toTop()
     },
