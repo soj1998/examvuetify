@@ -185,7 +185,7 @@ export default {
             if (xxlai !== undefined && xxlai !== null) {
               youxx1 = e.examtype
               xxlai.forEach(e => {
-                let ae = that.zhuandaziti(e, zihao - 3)
+                let ae = that.zhuandaziti(e, zihao - 3, '#FFF2E2')
                 xx.push(ae)
                 let ae2 = e.substr(0, 1)
                 xxdaan.push(ae2)
@@ -205,7 +205,7 @@ export default {
             if ((String)(e.jiexi).length > 0) {
               ifshow1 = true
             }
-            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan1: e.ans, daan: that.zhuandaziti('答案：' + e.ans, zihao, 'green'), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao, 'green'), ifshow: false, ifshow1: ifshow1}
+            let it = {dxh: indda, xxh: ind, ycid: e.id, leix: e.examtype, timu: that.zhuandaziti(e.que, zihao, '#FFF2E2'), youxx: youxx1, tmxuanx: xx, xzdaan: xxdaan, duoxuandaan: xxdaan2, daan1: e.ans, daan: that.zhuandaziti('答案：' + e.ans, zihao, 'green'), jiexi: that.zhuandaziti('解析：' + e.jiexi, zihao, 'green'), ifshow: false, ifshow1: ifshow1}
             that.desserts.push(it)
             // that.desserts.push({ divider: true })
             ind++
@@ -223,7 +223,7 @@ export default {
             let qidian = (that.dqpage - 1) * that.perpage
             let zhdian = that.dqpage * that.perpage
             for (let i = qidian; i < zhdian; i++) {
-              let hed = that.zhuandaziti(that.zhuanhuan('datimu', df[i].dxh) + that.zhuanhuan('tmlx', df[i].leix), that.datimuzihao)
+              let hed = that.zhuandaziti(that.zhuanhuan('datimu', df[i].dxh, '#FFF2E2') + that.zhuanhuan('tmlx', df[i].leix, '#FFF2E2'), that.datimuzihao, '#FFF2E2')
               if (i > qidian && i < zhdian) {
                 let a = df[i - 1].leix
                 let b = df[i].leix
@@ -240,7 +240,7 @@ export default {
               }
               console.log('shouci塞几次 ' + i + ',qidian' + qidian + ',zhdian' + zhdian + ',ycid' + df[i].ycid)
               df[i].timu = '<span style= "font-size:20px; " >' + df[i].timu + '</span>'
-              df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao) + '.' + '<span style= "margin-left:12px; " ></span>' + df[i].timu
+              df[i].xsid = that.zhuandaziti(df[i].id, that.pttimuzihao, '#FFF2E2') + '.' + '<span style= "margin-left:12px; " ></span>' + df[i].timu
               df[i].yxid = i
               that.mydesserts.push(df[i])
               that.mydesserts.push({ divider: true })
