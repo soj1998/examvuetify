@@ -246,7 +246,8 @@ export default {
             if (xxlai !== undefined && xxlai !== null) {
               youxx1 = e.examtype
               xxlai.forEach(e => {
-                let ae = that.zhuandaziti(e, zihao - 3)
+                let xuanxae = e.substr(0, 2) + "<span style='margin-left:12px; color:red;'></span>" + e.substr(2)
+                let ae = that.zhuandaziti(xuanxae, zihao - 3, '#FFF2E2')
                 xx.push(ae)
                 let ae2 = e.substr(0, 1)
                 xxdaan.push(ae2)

@@ -55,7 +55,7 @@
       tile
       style="margin-top:120px;"
     >
-      版权所有 联系我们
+      版权所有 联系我们 当前版本1.0
     </v-card>
   </div>
 </template>

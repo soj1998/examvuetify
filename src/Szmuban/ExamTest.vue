@@ -185,7 +185,8 @@ export default {
             if (xxlai !== undefined && xxlai !== null) {
               youxx1 = e.examtype
               xxlai.forEach(e => {
-                let ae = that.zhuandaziti(e, zihao - 3, '#FFF2E2')
+                let xuanxae = e.substr(0, 2) + "<span style='margin-left:22px;'></span>" + e.substr(2)
+                let ae = that.zhuandaziti(xuanxae, zihao - 3, '#FFF2E2')
                 xx.push(ae)
                 let ae2 = e.substr(0, 1)
                 xxdaan.push(ae2)
@@ -217,7 +218,7 @@ export default {
             that.mydesserts2.push(df)
           }
           that.totalrecord = ind
-          if (that.mydesserts.length === 0) {
+          if (that.mydesserts.length === 0 && that.desserts.length > 0) {
             console.log('当前为空 ' + that.perpage)
             let df = that.desserts
             let qidian = (that.dqpage - 1) * that.perpage
