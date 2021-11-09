@@ -13,7 +13,7 @@ exam vuetify
    （4）做好github的deploy设置。
 	A.打开GitHub上的myrepo仓库，进入setting，设置deploy keys，将id_rsa.pub中的内容粘贴进去即可。
 	title随便设置。
-	B.git remote add mycode git@github.com:myname/myrepo.git。
+	B.git remote add origin git@github.com:myname/myrepo.git。
 	C.ssh -T git@github.com，提示输入yes，只输入y不行。 	
 	D.先拽git pull examvuetify master，修改README.md，保存关闭。
 	git add README.md
