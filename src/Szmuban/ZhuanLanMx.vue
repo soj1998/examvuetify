@@ -1,8 +1,9 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
+    :items="mydesserts"
     hide-default-header
+    hide-default-footer
     class="elevation-1"
     :items-per-page.sync="perpage"
     :page.sync="dqpage"
@@ -78,10 +79,10 @@ export default {
     }
   },
   mounted () {
-    let szid = this.$route.params.szid
-    let biaoti = this.$route.params.biaoti
+    let szid = this.$route.params.zlid
+    let xinxiyuanid = this.$route.params.xinxiyuanid
     this.isMobile = window.matchMedia('(max-width: 425px)').matches
-    console.log(szid + '  ' + biaoti + ' ismobile' + this.isMobile)
+    console.log(szid + '  ' + xinxiyuanid + ' ismobile' + this.isMobile)
     if (this.isMobile) {
       this.perpage = 2
     }
@@ -91,7 +92,7 @@ export default {
       this.pagecontent = '非正常进入，没有内容要显示'
       return
     }
-    let zlid = this.$route.params.xinxiyuanid
+    let zlid = xinxiyuanid
     let btid = -1 // this.$route.params.zlbtid
     this.getPageContent(zlid, btid)
   },
@@ -137,7 +138,7 @@ export default {
               }
               that.desserts.push(e)
             })
-            for (let i = 0; i < that.perpage; i++) {
+            for (let i = 0; i < that.desserts.length; i++) {
               that.mydesserts.push(that.desserts[i])
             }
           })
