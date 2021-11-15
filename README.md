@@ -16,7 +16,7 @@ exam vuetify
 	B.git remote add origin git@github.com:myname/myrepo.git。
 	C.ssh -T git@github.com，提示输入yes，只输入y不行。 	
 	D.先拽git pull examvuetify master，修改README.md，保存关闭。
-	git add README.md
+	git add README.md0
 	git commit -m '1224'
 	E.再推git push --force examvuetify master 
 	G.examspring git remote show origin git push origin master git pull origin master
