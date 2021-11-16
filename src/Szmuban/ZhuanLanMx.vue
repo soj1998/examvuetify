@@ -133,7 +133,13 @@ export default {
                   console.log(snr)
                   e.nr = '<img style="margin-left:40px;" src= "' + e.nr + '" />'
                 } else {
-                  e.nr = '<p style="text-indent: 2em;" class="text-h6 text-start">' + e.nr + '</p>'
+                  let enr = e.nr.toString()
+                  if (enr.startsWith('@@@')) {
+                    e.nr = enr.replace('@@@', '')
+                    e.nr = that.mkdwon(e.nr)
+                  } else {
+                    e.nr = '<p style="text-indent: 2em;" class="text-h6 text-start">' + e.nr + '</p>'
+                  }
                 }
               }
               that.desserts.push(e)
@@ -156,6 +162,9 @@ export default {
           clearInterval(timeTop)
         }
       }, 10)
+    },
+    mkdwon (value) {
+      return this.$mkdown(value)
     }
   }
 }
