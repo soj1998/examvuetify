@@ -13,7 +13,7 @@
       v-model="page"
       class="mx-auto"
     >
-      <v-list three-line>
+      <v-list dense>
         <template v-for="(item, index) in mydesserts">
           <v-list-item :key="index">
             <v-list-item-content>
@@ -111,7 +111,7 @@ export default {
               {
                 'hangshu': element.hangshu,
                 'nr': element.zlduanluo,
-                'biaoti': element.biaoti,
+                'biaoti': element.biaotinr,
                 'btid': element.btid,
                 'lrsj': element.lrsj,
                 'wzly': element.wzlaiyuan
@@ -126,7 +126,7 @@ export default {
               if (e.btid === -1) {
                 e.nr = '<div class="text-h4 text-center">' +
                 e.biaoti + '</div>' +
-                '<p style="text-indent: 2em;" class="text-h6 text-start">' + e.nr + '</p>'
+                '<div style="text-indent: 2em; line-height: 10px; margin-top:20px;" class="text-h6 text-start">' + e.nr + '</div>'
               } else {
                 let snr = String(e.nr)
                 if (snr.indexOf(':8080/houtai/image') >= 0) {
@@ -136,9 +136,12 @@ export default {
                   let enr = e.nr.toString()
                   if (enr.startsWith('@@@')) {
                     e.nr = enr.replace('@@@', '')
+                    console.log('1  ' + e.nr)
                     e.nr = that.mkdwon(e.nr)
+                    e.nr = '<div style="margin-left:40px;">' + e.nr + '</div>'
+                    console.log('2  ' + e.nr)
                   } else {
-                    e.nr = '<p style="text-indent: 2em;" class="text-h6 text-start">' + e.nr + '</p>'
+                    e.nr = '<div style="text-indent: 2em; line-height: 10px;" class="text-h6 text-start">' + e.nr + '</div>'
                   }
                 }
               }
