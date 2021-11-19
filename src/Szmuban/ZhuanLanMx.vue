@@ -148,7 +148,6 @@ export default {
               return n1.hangshu - n2.hangshu
             })
             that.totalrecord = pcsz.length
-            let indpc = 1
             pcsz.forEach(e => {
               if (e.btid === -1) {
                 let nr2
@@ -170,17 +169,9 @@ export default {
                   console.log(snr)
                   e.nr = '<img style="margin-left:40px;" src= "' + e.nr + '" />'
                 }
+                e.nr = '<div style="text-indent: 2em;" class="text-h6 text-start">' + that.mkdown(e.nr) + '</div>'
               }
-              indpc++
               that.desserts.push(e)
-              if (indpc === pcsz.length) {
-                let anr = {nr: ''}
-                anr.nr = '```java <br/>'
-                anr.nr = anr.nr + 'java```'
-                anr.nr = that.mkdown(anr.nr)
-                console.log(anr.nr)
-                that.desserts.push(anr)
-              }
             })
             for (let i = 0; i < that.desserts.length; i++) {
               that.mydesserts.push(that.desserts[i])
