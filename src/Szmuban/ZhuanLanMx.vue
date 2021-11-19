@@ -8,9 +8,24 @@
     :items-per-page.sync="perpage"
     :page.sync="dqpage"
   >
+  <template v-slot:top>
+    <BreadcrumbsNav>
+    </BreadcrumbsNav>
+    <v-toolbar
+      flat
+    >
+      <v-toolbar-title>专栏</v-toolbar-title>
+      <v-divider
+        class="mx-4"
+        inset
+        vertical
+      ></v-divider>
+      <v-toolbar-title v-html="zlbiaoti">专栏</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-toolbar>
+  </template>
   <template v-slot:body>
     <v-card
-      v-model="page"
       class="mx-auto"
     >
       <v-list dense>
@@ -24,10 +39,15 @@
       </v-list>
     </v-card>
   </template>
+  <template v-slot:footer>
+    <v-card-text class="text-start" v-html="zllaiyuan"></v-card-text>
+    <v-card-text class="text-start" v-html="zllrsj"></v-card-text>
+  </template>
   </v-data-table>
 </template>
 
 <script>
+import BreadcrumbsNav from '@/sloter/BreadcrumbsNav'
 export default {
   data: () => ({
     name: 'ZhuanLanMx',
@@ -44,8 +64,14 @@ export default {
     dqpage: 1,
     perpage: 10,
     totalrecord: 1,
-    isMobile: false
+    isMobile: false,
+    zllaiyuan: 'abc',
+    zllrsj: null,
+    zlbiaoti: 'abc'
   }),
+  components: {
+    BreadcrumbsNav
+  },
   watch: {
     dqpage (newValue, oldValue) {
       console.log('dqpage ' + newValue)
@@ -122,30 +148,39 @@ export default {
               return n1.hangshu - n2.hangshu
             })
             that.totalrecord = pcsz.length
+            let indpc = 1
             pcsz.forEach(e => {
               if (e.btid === -1) {
-                e.nr = '<div class="text-h4 text-center">' +
-                e.biaoti + '</div>' +
-                '<div style="text-indent: 2em; line-height: 10px; margin-top:20px;" class="text-h6 text-start">' + e.nr + '</div>'
+                let nr2
+                let enr = e.nr.toString()
+                if (enr.startsWith('@@@')) {
+                  nr2 = enr.replace('@@@', '')
+                  nr2 = that.mkdown(nr2)
+                  nr2 = '<div style="margin-left:40px;">' + nr2 + '</div>'
+                } else {
+                  nr2 = '<div style="text-indent: 2em;" class="text-h6 text-start">' + e.nr + '</div>'
+                }
+                e.nr = nr2
+                that.zllaiyuan = '<div style="margin-right:260px;" class="text-h6 text-end">' + '<span style="margin-right:3px;"> 来源：' + '</span>' + e.wzly + '</div>'
+                that.zllrsj = '<div style="margin-right:240px;" class="text-h6 text-end">' + e.lrsj.toString().substr(0, 10) + '</div>'
+                that.zlbiaoti = '<div class="text-h4 text-center">' + e.biaoti + '</div>'
               } else {
                 let snr = String(e.nr)
                 if (snr.indexOf(':8080/houtai/image') >= 0) {
                   console.log(snr)
                   e.nr = '<img style="margin-left:40px;" src= "' + e.nr + '" />'
-                } else {
-                  let enr = e.nr.toString()
-                  if (enr.startsWith('@@@')) {
-                    e.nr = enr.replace('@@@', '')
-                    console.log('1  ' + e.nr)
-                    e.nr = that.mkdwon(e.nr)
-                    e.nr = '<div style="margin-left:40px;">' + e.nr + '</div>'
-                    console.log('2  ' + e.nr)
-                  } else {
-                    e.nr = '<div style="text-indent: 2em; line-height: 10px;" class="text-h6 text-start">' + e.nr + '</div>'
-                  }
                 }
               }
+              indpc++
               that.desserts.push(e)
+              if (indpc === pcsz.length) {
+                let anr = {nr: ''}
+                anr.nr = '```java <br/>'
+                anr.nr = anr.nr + 'java```'
+                anr.nr = that.mkdown(anr.nr)
+                console.log(anr.nr)
+                that.desserts.push(anr)
+              }
             })
             for (let i = 0; i < that.desserts.length; i++) {
               that.mydesserts.push(that.desserts[i])
@@ -166,7 +201,7 @@ export default {
         }
       }, 10)
     },
-    mkdwon (value) {
+    mkdown (value) {
       return this.$mkdown(value)
     }
   }

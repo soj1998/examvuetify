@@ -21,6 +21,7 @@
         <v-spacer></v-spacer>
       </v-toolbar>
     </template>
+    <mavon-editor v-model="value"/>
     <template v-slot:no-data>
       暂无数据
     </template>
