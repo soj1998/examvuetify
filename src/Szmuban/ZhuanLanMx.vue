@@ -4,7 +4,7 @@
     :items="mydesserts"
     hide-default-header
     hide-default-footer
-    class="elevation-1"
+    class="elevation-1 something"
     :items-per-page.sync="perpage"
     :page.sync="dqpage"
   >
@@ -13,14 +13,15 @@
     </BreadcrumbsNav>
     <v-toolbar
       flat
+      color = "#E0F7FA"
     >
-      <v-toolbar-title>专栏</v-toolbar-title>
+      <v-toolbar-title class="something">专栏</v-toolbar-title>
       <v-divider
         class="mx-4"
         inset
         vertical
       ></v-divider>
-      <v-toolbar-title v-html="zlbiaoti">专栏</v-toolbar-title>
+      <v-toolbar-title v-html="zlbiaoti"></v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
   </template>
@@ -28,11 +29,11 @@
     <v-card
       class="mx-auto"
     >
-      <v-list dense>
+      <v-list dense color = "#E0F7FA">
         <template v-for="(item, index) in mydesserts">
           <v-list-item :key="index">
             <v-list-item-content>
-              <v-card-text class="text-start" v-html="item.nr"></v-card-text>
+              <v-card-text class="text-start something" v-html="item.nr"></v-card-text>
             </v-list-item-content>
           </v-list-item>
         </template>
@@ -152,24 +153,24 @@ export default {
               if (e.btid === -1) {
                 let nr2
                 let enr = e.nr.toString()
-                if (enr.startsWith('@@@')) {
+                if (enr.startsWith('@@@***QQQ')) {
                   nr2 = enr.replace('@@@', '')
                   nr2 = that.mkdown(nr2)
                   nr2 = '<div style="margin-left:40px;">' + nr2 + '</div>'
                 } else {
-                  nr2 = '<div style="text-indent: 2em;" class="text-h6 text-start">' + e.nr + '</div>'
+                  nr2 = '<div style="text-indent: 2em;" class="something text-start">' + that.mkdown(e.nr) + '</div>'
                 }
                 e.nr = nr2
-                that.zllaiyuan = '<div style="margin-right:260px;" class="text-h6 text-end">' + '<span style="margin-right:3px;"> 来源：' + '</span>' + e.wzly + '</div>'
-                that.zllrsj = '<div style="margin-right:240px;" class="text-h6 text-end">' + e.lrsj.toString().substr(0, 10) + '</div>'
-                that.zlbiaoti = '<div class="text-h4 text-center">' + e.biaoti + '</div>'
+                that.zllaiyuan = '<div style="margin-right:260px; font-size: 20px;" class="something text-end">' + '<span style="margin-right:3px;"> 来源：' + '</span>' + e.wzly + '</div>'
+                that.zllrsj = '<div style="margin-right:240px; font-size: 20px;" class="something text-end">' + e.lrsj.toString().substr(0, 10) + '</div>'
+                that.zlbiaoti = '<div style="font-size: 30px;" class="something text-end">' + e.biaoti + '</div>'
               } else {
                 let snr = String(e.nr)
                 if (snr.indexOf(':8080/houtai/image') >= 0) {
                   console.log(snr)
                   e.nr = '<img style="margin-left:40px;" src= "' + e.nr + '" />'
                 }
-                e.nr = '<div style="text-indent: 2em;" class="text-h6 text-start">' + that.mkdown(e.nr) + '</div>'
+                e.nr = '<div style="text-indent: 2em; line-height: 56px;" class="text-start something">' + that.mkdown(e.nr) + '</div>'
               }
               that.desserts.push(e)
             })
@@ -219,5 +220,11 @@ a {
   height: 0;
   width: 0;
   visibility: hidden;
+}
+.something {
+  color: var(--v-primary-base);
+  background-color: #E0F7FA;
+  font-family :"FangSong",Georgia,Serif!important;
+  font-size: 24px;
 }
 </style>

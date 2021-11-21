@@ -26,8 +26,10 @@ export function strNotNil (obj) {
   return false
 }
 
-export function zhuanhuan (obj1, obj2, shuzu) {
+const leixing = [{'sz': 'zhuanlan', 'id': '专栏'}, {'sz': 'shiti', 'id': '试题'}]
+export function zhuanhuan (obj1, obj2) {
   let rs = ''
+  let shuzu = []
   if (obj1 === 'sz') {
     shuzu.forEach(e => {
       if (e.id === obj2) {
@@ -36,6 +38,14 @@ export function zhuanhuan (obj1, obj2, shuzu) {
     })
   }
   if (obj1 === 'szmc') {
+    shuzu.forEach(e => {
+      if (e.sz === obj2) {
+        rs = e.id
+      }
+    })
+  }
+  if (obj1 === 'leixing') {
+    shuzu = leixing
     shuzu.forEach(e => {
       if (e.sz === obj2) {
         rs = e.id

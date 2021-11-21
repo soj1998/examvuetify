@@ -17,7 +17,6 @@
       <div></div>
       <v-btn
           x-large
-          color="success"
           dark
           class="mybtncalss"
           @click="daohangsz1()"
@@ -137,6 +136,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  @import '../styles/base.css';
   .buttonhw {
     height: 138;
     width: 120;
@@ -147,5 +147,6 @@ export default {
   }
   .mybtncalss {
     margin: 6px;
+    color: var(--bg-color);
   }
 </style>

@@ -8,6 +8,7 @@ import {mkdown} from '@/plugins/showdown'
 import * as globalfunc from '@/plugins/globalfunc' // path to vuetify export
 import {fetch, post, postobject, postfile, postall, postalldayu2} from './api/axios'// 这里就写了两种方式（fetch）get 和post方式
 import './mock/mock'
+import '@/styles/base.css'
 
 Vue.prototype.$fetch = fetch
 Vue.prototype.$post = post

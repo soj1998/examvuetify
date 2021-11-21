@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-breadcrumbs :items="items">
+    <v-breadcrumbs :items="items" large>
       <template v-slot:divider>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
@@ -34,5 +34,11 @@ export default {
     text-align: center;
     font-size: large;
     line-height: 20px;
+  }
+  .something {
+    color: var(--v-primary-base);
+    background-color: #E0F7FA;
+    font-family :"FangSong",Georgia,Serif!important;
+    font-size: 24px;
   }
 </style>
