@@ -187,12 +187,12 @@ a {
 }
 .something {
   color: var(--v-primary-base);
-  background-color: var(--bg-color);
+  /*background-color: var(--bg-color);*/
   font-family :"FangSong",Georgia,Serif;
 }
 .shaoweidadian {
   font-size: 20px!important;
-  color: var(--bg-color)!important;
+  /*color: var(--bg-color)!important;*/
   font-family :"FangSong",Georgia,Serif!important;
 }
 .shaoweidadian1 {

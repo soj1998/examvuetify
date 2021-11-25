@@ -151,16 +151,7 @@ export default {
             that.totalrecord = pcsz.length
             pcsz.forEach(e => {
               if (e.btid === -1) {
-                let nr2
-                let enr = e.nr.toString()
-                if (enr.startsWith('@@@***QQQ')) {
-                  nr2 = enr.replace('@@@', '')
-                  nr2 = that.mkdown(nr2)
-                  nr2 = '<div style="margin-left:40px;">' + nr2 + '</div>'
-                } else {
-                  nr2 = '<div style="text-indent: 2em;" class="something text-start">' + that.mkdown(e.nr) + '</div>'
-                }
-                e.nr = nr2
+                e.nr = '<div style="text-indent: 2em;" class="something text-start">' + that.mkdown(e.nr) + '</div>'
                 that.zllaiyuan = '<div style="margin-right:260px; font-size: 20px;" class="something text-end">' + '<span style="margin-right:3px;"> 来源：' + '</span>' + e.wzly + '</div>'
                 that.zllrsj = '<div style="margin-right:240px; font-size: 20px;" class="something text-end">' + e.lrsj.toString().substr(0, 10) + '</div>'
                 that.zlbiaoti = '<div style="font-size: 30px;" class="something text-end">' + e.biaoti + '</div>'
